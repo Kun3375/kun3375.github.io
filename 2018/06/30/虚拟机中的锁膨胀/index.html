@@ -113,7 +113,7 @@
 
 
   <meta name="description" content="尽管当下几乎所有的服务器环境都以集群为主，在考虑并发问题的时候通常会使用分布式技术,如 redis 等中间件来维护全局的资源和锁。但是对于一些实例层面上的资源，依旧需要使用传统的锁来维护。所以我觉得，理解 JVM 对锁的处理还是有价值的。 JVM上针对锁的处理（这里只描述内部锁，即 synchronized 的处理情况），除了有自旋锁，锁粗化，锁消除等简单的自动优化机制（不探讨啦），还可以从锁的维">
-<meta name="keywords" content="Java">
+<meta name="keywords" content="Java,JVM,锁">
 <meta property="og:type" content="article">
 <meta property="og:title" content="虚拟机中的锁膨胀">
 <meta property="og:url" content="http://kun3375.com/2018/06/30/虚拟机中的锁膨胀/index.html">
@@ -124,7 +124,7 @@
 <meta property="og:image" content="http://kun3375.com/images/偏向锁的获得和撤销.png">
 <meta property="og:image" content="http://kun3375.com/images/轻量级锁膨胀.png">
 <meta property="og:image" content="http://kun3375.com/images/锁关系.png">
-<meta property="og:updated_time" content="2018-06-30T05:08:07.782Z">
+<meta property="og:updated_time" content="2018-06-30T09:01:38.910Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="虚拟机中的锁膨胀">
 <meta name="twitter:description" content="尽管当下几乎所有的服务器环境都以集群为主，在考虑并发问题的时候通常会使用分布式技术,如 redis 等中间件来维护全局的资源和锁。但是对于一些实例层面上的资源，依旧需要使用传统的锁来维护。所以我觉得，理解 JVM 对锁的处理还是有价值的。 JVM上针对锁的处理（这里只描述内部锁，即 synchronized 的处理情况），除了有自旋锁，锁粗化，锁消除等简单的自动优化机制（不探讨啦），还可以从锁的维">
@@ -364,7 +364,7 @@
                 
               
 
-              <time title="创建时间：2018-06-30 10:58:00 / 修改时间：13:08:07" itemprop="dateCreated datePublished" datetime="2018-06-30T10:58:00+08:00">2018-06-30</time>
+              <time title="创建时间：2018-06-30 10:58:00 / 修改时间：17:01:38" itemprop="dateCreated datePublished" datetime="2018-06-30T10:58:00+08:00">2018-06-30</time>
             
 
             
@@ -480,6 +480,10 @@
           
             <a href="/tags/Java/" rel="tag"># Java</a>
           
+            <a href="/tags/JVM/" rel="tag"># JVM</a>
+          
+            <a href="/tags/锁/" rel="tag"># 锁</a>
+          
         </div>
       
 
@@ -515,6 +519,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/06/30/正则笔记/" rel="prev" title="正则笔记">
+                正则笔记 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -588,7 +596,7 @@
                 
                   <a href="/archives">
                 
-                    <span class="site-state-item-count">2</span>
+                    <span class="site-state-item-count">3</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -603,7 +611,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">1</span>
+                      
+                    
+                    <span class="site-state-item-count">2</span>
                     <span class="site-state-item-name">分类</span>
                   
                 </div>
@@ -618,7 +628,13 @@
                     
                       
                     
-                    <span class="site-state-item-count">1</span>
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
                     <span class="site-state-item-name">标签</span>
                   
                 </div>
