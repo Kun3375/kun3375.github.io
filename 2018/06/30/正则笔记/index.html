@@ -120,7 +120,7 @@
 <meta property="og:site_name" content="码路狂飙">
 <meta property="og:description" content="日常开发中，经常需要进行一些文本处理，这通常是十分繁琐而无趣的。学会并利用正则表达式可以快速解决这类文本处理问题，无论是在 Java，Python 等代码中抑或是 shell 环境下。正则中存在很多细小的知识点，十分容易遗忘，着手记录，知识整理还是有所必要。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-06-30T08:55:21.287Z">
+<meta property="og:updated_time" content="2018-06-30T09:05:03.546Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="正则笔记">
 <meta name="twitter:description" content="日常开发中，经常需要进行一些文本处理，这通常是十分繁琐而无趣的。学会并利用正则表达式可以快速解决这类文本处理问题，无论是在 Java，Python 等代码中抑或是 shell 环境下。正则中存在很多细小的知识点，十分容易遗忘，着手记录，知识整理还是有所必要。">
@@ -359,7 +359,7 @@
                 
               
 
-              <time title="创建时间：2018-06-30 16:06:13 / 修改时间：16:55:21" itemprop="dateCreated datePublished" datetime="2018-06-30T16:06:13+08:00">2018-06-30</time>
+              <time title="创建时间：2018-06-30 16:06:13 / 修改时间：17:05:03" itemprop="dateCreated datePublished" datetime="2018-06-30T16:06:13+08:00">2018-06-30</time>
             
 
             
@@ -482,12 +482,12 @@
 <li><strong><code>{n}</code></strong>  匹配 n 次，如 <code>C{3}</code> 即 CCC。</li>
 <li><strong><code>{n,}</code></strong>  匹配大于等于 n 次。如 <code>C{1,}</code> 等同于 C+</li>
 <li><strong><code>{n,m}</code></strong>  匹配大于等于 n 次，小于等于 m 次，闭区间。</li>
-<li><strong><code>*</code></strong>  等同于 {0,}</li>
-<li><strong><code>+</code></strong>  等同于 {1,}</li>
-<li><strong><code>?</code></strong>  等同于 {0,1}</li>
+<li><strong><code>*</code></strong>  等同于 <code>{0,}</code></li>
+<li><strong><code>+</code></strong>  等同于 <code>{1,}</code></li>
+<li><strong><code>?</code></strong>  等同于 <code>{0,1}</code></li>
 </ul>
-<h3 id="利用正则匹配的缓存"><a href="#利用正则匹配的缓存" class="headerlink" title="利用正则匹配的缓存"></a>利用正则匹配的缓存</h3><ul>
-<li><strong><code>\num</code></strong>  使用 ( ) 之后会进行匹配值的缓存，可以紧跟着 \num 指定匹配的子项，比如 <code>(.)\1</code> 可以匹配任意两个相同的字符。或者在 sed，vim 等工具使用替换操作时，可以在新字符串上使用 <code>\num</code> 以期达到精确的匹配但是局部替换的效果。</li>
+<h2 id="利用正则匹配的缓存"><a href="#利用正则匹配的缓存" class="headerlink" title="利用正则匹配的缓存"></a>利用正则匹配的缓存</h2><ul>
+<li><strong><code>\num</code></strong>  使用 <code>( )</code> 之后会进行匹配值的缓存，可以紧跟着 <code>\num</code> 指定匹配的子项，比如 <code>(.)\1</code> 可以匹配任意两个相同的字符。或者在 sed，vim 等工具使用替换操作时，可以在新字符串上使用 <code>\num</code> 以期达到精确的匹配但是局部替换的效果。</li>
 <li><strong><code>(?:pattern)</code></strong>  使用该符号会取消匹配值的缓存</li>
 <li><strong><code>(?=pattern)</code></strong>  正向肯定预查，使用该符号会取消匹配值的缓存，同时预查也是不消耗字符的。</li>
 <li><strong><code>(?!pattern)</code></strong>  反向预查，相反于前者</li>
@@ -710,7 +710,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#规则"><span class="nav-number">1.</span> <span class="nav-text">规则</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#指定需要匹配的字符"><span class="nav-number">1.1.</span> <span class="nav-text">指定需要匹配的字符</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#转义后特殊字符"><span class="nav-number">1.1.1.</span> <span class="nav-text">转义后特殊字符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#原生特殊字符"><span class="nav-number">1.1.2.</span> <span class="nav-text">原生特殊字符</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#指定匹配字符的候选范围"><span class="nav-number">1.2.</span> <span class="nav-text">指定匹配字符的候选范围</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#指定表达式的重复次数"><span class="nav-number">1.3.</span> <span class="nav-text">指定表达式的重复次数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#利用正则匹配的缓存"><span class="nav-number">1.4.</span> <span class="nav-text">利用正则匹配的缓存</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#规则"><span class="nav-number">1.</span> <span class="nav-text">规则</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#指定需要匹配的字符"><span class="nav-number">1.1.</span> <span class="nav-text">指定需要匹配的字符</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#转义后特殊字符"><span class="nav-number">1.1.1.</span> <span class="nav-text">转义后特殊字符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#原生特殊字符"><span class="nav-number">1.1.2.</span> <span class="nav-text">原生特殊字符</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#指定匹配字符的候选范围"><span class="nav-number">1.2.</span> <span class="nav-text">指定匹配字符的候选范围</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#指定表达式的重复次数"><span class="nav-number">1.3.</span> <span class="nav-text">指定表达式的重复次数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#利用正则匹配的缓存"><span class="nav-number">2.</span> <span class="nav-text">利用正则匹配的缓存</span></a></li></ol></div>
             
 
           </div>
