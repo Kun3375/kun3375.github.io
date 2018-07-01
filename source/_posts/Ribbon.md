@@ -12,17 +12,18 @@ categories: Java
 Ribbon 是由 netflix 开源的一个客户端负载均衡组件。从客户端的角度取维护服务间请求的负载均衡，并进行一定的容错处理。
 自然的它的核心接口就是：`com.netflix.loadbalancer.ILoadBalancer`。
 
-![ILoadBalancer](/images/ILoadBalancer.png)
-
-在配置 Ribbon 之前，了解一下 Ribbon 的几个重要的组成部分：
-
-<!-- more -->
+在配置 Ribbon 之前，了解一下 Ribbon 完成负载均衡的几个重要组成部分：
 
 - **`IRule`**：负载均衡的策略。
 - **`IPing`**：检测服务存活的策略。
 - **`ServerList<T>`**：拉取服务实例列表的策略。
 - **`ServerListUpdater`**：更新服务列表的触发策略。
 - **`ServerListFilter<T>`**：服务过滤方案。
+
+<!-- more -->
+参考下面的类关系图，可以有一个更好的印象：
+
+![ILoadBalancer](/images/ILoadBalancer.png)
 
 ### IRule ###
 
