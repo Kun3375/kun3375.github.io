@@ -1,10 +1,12 @@
 ---
 title: 实现 MyBatis 插件
+author: 斯特拉不用电
 date: 2018-07-18 21:35:05
 tags: 
   - Java
   - MyBatis
 categories: Java
+comments: true
 ---
 MyBatis 作为一个目前很常用的持久化框架，有着丰富的拓展。这些拓展功能常常以插件的形式嵌入到 MyBatis 的运作流程之中，而如何制作实现一个插件？MyBatis 已经为大家设计好了，一个 `Interceptor` 接口，实现它就够了。
 

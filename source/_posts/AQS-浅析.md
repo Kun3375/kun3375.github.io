@@ -1,10 +1,12 @@
 ---
 title: AQS 浅析
+author: 斯特拉不用电
 date: 2018-07-02 11:27:16
 tags: 
   - Java
-  - lock
+  - 并发
 categories: Java
+comments: true
 ---
 `java.util.concurrent` 包中提供了许多易用而有效的工具类，诸如 **ReentrantLock**，**CountDownLatch**，**Semaphore** 等等，给日常的并发编程带来了许多便利。他们都使用了同样的框架来完成基本的同步过程：***AbstractQueuedSynchronizer*** （AQS）来实现基本功能，比如获取资源和释放的步骤。
 

@@ -1,8 +1,10 @@
 ---
 title: Docker 挂载与数据存储
+author: 斯特拉不用电
 date: 2018-07-09 21:54:45
 tags: Docker
 categories: Docker
+comments: true
 ---
 
 Docker 镜像是层层分离的，分为只读的底层和可读写的当前层。容器在运行时候如果有文件改动，会自动从含有该文件的底层拷贝并更新在当前层。如果容器在 commit 之前被销毁，那么有这个镜像重新生成的容器是不包含改动的内容的。

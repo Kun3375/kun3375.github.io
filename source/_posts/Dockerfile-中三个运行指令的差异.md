@@ -1,8 +1,10 @@
 ---
 title: Dockerfile 中三个运行指令的差异
+author: 斯特拉不用电
 date: 2018-07-07 16:43:37
 tags: Docker
 categories: Docker
+comments: true
 ---
 
 在描述 Dockerfile 的时候，对于 `RUN`，`CMD`，`ENTRYPOINT` 三个命令，用法十分相似，功能也差不多，容易让人混用。其实一般来说，三个命令都能完成需要的操作，而差异点常常被一些使用者忽略。这里简单说一下，三个命令的不同之处。
