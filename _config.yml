@@ -89,3 +89,11 @@ admin:
   password_hash: $2a$10$SXUaVufRbH8JHIcrPOF.PuLvNQcTNnPKkG118KrDYkQYxVYNxSNeC
   secret: too difficult to figure it out
 
+# Search
+# npm install hexo-generator-search --save
+# npm install hexo-generator-searchdb --save
+search:
+  path: search.xml
+  field: post
+  format: html
+  limit: 50
