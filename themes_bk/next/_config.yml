@@ -121,7 +121,7 @@ menu:
   分类: /categories/ || th
   标签: /tags/ || tags
   归档: /archives/ || archive
-  关于: /about/ || user
+  #关于: /about/ || user
   #schedule: /schedule/ || calendar
   #sitemap: /sitemap.xml || sitemap
   #commonweal: /404/ || heartbeat

@@ -1,4 +1,5 @@
 title: tags
 date: 2018-06-29 23:49:10
+type: tags
+comments: false
 ---
-正在装修，客观请稍后再来
