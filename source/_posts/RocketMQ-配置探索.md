@@ -196,8 +196,16 @@ fi
 - `-p`：列出所有的配置项以及默认值
 - `-c`：指定一个 properties 文件，读取其中的内容覆盖默认配置并情动
 
+#### 自定义配置 ####
 所以，很多时候的做法是通过 `sh mqbroker -p > mqbroker.properties` 来获得一份默认配置文件（网上的方案可能不太准确，具体输出是携带 Rocket 的日志信息的，需要 sed 或者 awk 之类加工处理一下），在此基础上进行配置自定义，然后通后通过 `sh mqbroker -c mqbroker.properties` 来进行定制化的启动。
 
+#### 默认配置方案 ####
+同时在 conf 目录下，官方也给出了几种典型的配置方案供参考：
+- 二主二从异步刷盘：2m-2s-async 文件夹。这是最典型的生产配置，双 master 获得高可用性，同时主从间的数据同步由异步完成。
+- 二主二从同步刷盘：2m-2s-sync 文件夹。除了双 master 的配置，主从间的数据是同步的，也就是说只有在向 salve 成功同步数据才会向客户段返回成功。这保证了在 master 宕机时候消息仍然可以被实时消费，但是性能收到一定影响。
+- 二主无从异步刷盘：2m-nosalve 文件夹。双主模式仅仅保证了 RocketMQ 的高可用性，然而在一台 master 宕机后，客户端无法消费那批在宕机 master 上持久化的消息，直到宕机 master 恢复正常。当然这个方案节省了硬件资源。
+
+#### 参考配置类 ####
 Broker 的具体配置分为了具体的四个方面：
 - Broker 实例配置：参考源码 `org.apache.rocketmq.common.BrokerConfig`
 - Netty 服务端配置：参考源码 `org.apache.rocketmq.remoting.netty.NettyServerConfig`
