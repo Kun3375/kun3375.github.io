@@ -5,8 +5,8 @@
 # Site
 title: 码路狂飙
 subtitle: 爱飙车更爱撸码
-description: 
-keywords:
+description: 代码很酷，留下思考和记录
+keywords: Java,Docker,Linux,Shell,Python,MQ,Redis,ES
 author: 斯特拉不用电
 language: zh-CN
 timezone: Asia/Shanghai
@@ -15,7 +15,7 @@ timezone: Asia/Shanghai
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
 url: http://kun3375.com
 root: /
-permalink: :year/:month/:day/:title/
+permalink: :year/:month/:title/ # 比默认减少了 day 层
 permalink_defaults:
 
 # Directory
@@ -97,3 +97,10 @@ search:
   field: post
   format: html
   limit: 50
+
+# use nofollow to SEO
+nofollow:
+  enable: true
+  exclude:
+  - kun3375.com
+  - www.kun3375.com
