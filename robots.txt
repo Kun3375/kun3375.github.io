@@ -5,6 +5,7 @@ Allow: /categories/
 Allow: /tags/ 
 Disallow: /js/
 Disallow: /css/
+Disallow: /lib/
 Disallow: /fonts/
 Disallow: /vendors/
 Disallow: /fancybox/
