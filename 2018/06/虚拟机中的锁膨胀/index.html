@@ -112,27 +112,30 @@
 
 
 
-  <meta name="description" content="目前被广泛使用的 MQ 有很多，包括 ActiveMQ，Kafka，RabbitMQ，RocketMQ 等等，它们各有长短。而近期所在项目选择了 RocketMQ 作为消息中间件，此前并未系统地了解研究，所以趁此机会整理了一些笔记和想法。">
-<meta name="keywords" content="MQ,RocketMQ">
+  <meta name="description" content="尽管当下几乎所有的服务器环境都以集群为主，在考虑并发问题的时候通常会使用分布式技术,如 redis 等中间件来维护全局的资源和锁。但是对于一些实例层面上的资源，依旧需要使用传统的锁来维护。所以我觉得，理解 JVM 对锁的处理还是有价值的。 JVM上针对锁的处理（这里只描述内部锁，即 synchronized 的处理情况），除了有自旋锁，锁粗化，锁消除等简单的自动优化机制（不探讨啦），还可以从锁的维">
+<meta name="keywords" content="Java,并发,JVM">
 <meta property="og:type" content="article">
-<meta property="og:title" content="RocketMQ 配置探索">
-<meta property="og:url" content="http://kun3375.com/2018/07/28/RocketMQ-配置探索/index.html">
+<meta property="og:title" content="虚拟机中的锁膨胀">
+<meta property="og:url" content="http://kun3375.com/2018/06/虚拟机中的锁膨胀/index.html">
 <meta property="og:site_name" content="码路狂飙">
-<meta property="og:description" content="目前被广泛使用的 MQ 有很多，包括 ActiveMQ，Kafka，RabbitMQ，RocketMQ 等等，它们各有长短。而近期所在项目选择了 RocketMQ 作为消息中间件，此前并未系统地了解研究，所以趁此机会整理了一些笔记和想法。">
+<meta property="og:description" content="尽管当下几乎所有的服务器环境都以集群为主，在考虑并发问题的时候通常会使用分布式技术,如 redis 等中间件来维护全局的资源和锁。但是对于一些实例层面上的资源，依旧需要使用传统的锁来维护。所以我觉得，理解 JVM 对锁的处理还是有价值的。 JVM上针对锁的处理（这里只描述内部锁，即 synchronized 的处理情况），除了有自旋锁，锁粗化，锁消除等简单的自动优化机制（不探讨啦），还可以从锁的维">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://kun3375.com/images/rocketmq-net.png">
-<meta property="og:updated_time" content="2018-08-04T04:03:23.492Z">
+<meta property="og:image" content="http://kun3375.com/images/对象头.jpg">
+<meta property="og:image" content="http://kun3375.com/images/偏向锁的获得和撤销.png">
+<meta property="og:image" content="http://kun3375.com/images/轻量级锁膨胀.png">
+<meta property="og:image" content="http://kun3375.com/images/锁关系.png">
+<meta property="og:updated_time" content="2018-08-04T04:03:23.493Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="RocketMQ 配置探索">
-<meta name="twitter:description" content="目前被广泛使用的 MQ 有很多，包括 ActiveMQ，Kafka，RabbitMQ，RocketMQ 等等，它们各有长短。而近期所在项目选择了 RocketMQ 作为消息中间件，此前并未系统地了解研究，所以趁此机会整理了一些笔记和想法。">
-<meta name="twitter:image" content="http://kun3375.com/images/rocketmq-net.png">
+<meta name="twitter:title" content="虚拟机中的锁膨胀">
+<meta name="twitter:description" content="尽管当下几乎所有的服务器环境都以集群为主，在考虑并发问题的时候通常会使用分布式技术,如 redis 等中间件来维护全局的资源和锁。但是对于一些实例层面上的资源，依旧需要使用传统的锁来维护。所以我觉得，理解 JVM 对锁的处理还是有价值的。 JVM上针对锁的处理（这里只描述内部锁，即 synchronized 的处理情况），除了有自旋锁，锁粗化，锁消除等简单的自动优化机制（不探讨啦），还可以从锁的维">
+<meta name="twitter:image" content="http://kun3375.com/images/对象头.jpg">
 
 
 
 
 
 
-  <link rel="canonical" href="http://kun3375.com/2018/07/28/RocketMQ-配置探索/"/>
+  <link rel="canonical" href="http://kun3375.com/2018/06/虚拟机中的锁膨胀/"/>
 
 
 
@@ -142,7 +145,7 @@
   };
 </script>
 
-  <title>RocketMQ 配置探索 | 码路狂飙</title>
+  <title>虚拟机中的锁膨胀 | 码路狂飙</title>
   
 
 
@@ -342,7 +345,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://kun3375.com/2018/07/28/RocketMQ-配置探索/">
+    <link itemprop="mainEntityOfPage" href="http://kun3375.com/2018/06/虚拟机中的锁膨胀/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="斯特拉不用电">
@@ -359,7 +362,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">RocketMQ 配置探索
+          <h1 class="post-title" itemprop="name headline">虚拟机中的锁膨胀
               
             
           </h1>
@@ -384,7 +387,7 @@
                 
               
 
-              <time title="创建时间：2018-07-28 14:48:31" itemprop="dateCreated datePublished" datetime="2018-07-28T14:48:31+08:00">2018-07-28</time>
+              <time title="创建时间：2018-06-30 10:58:00" itemprop="dateCreated datePublished" datetime="2018-06-30T10:58:00+08:00">2018-06-30</time>
             
 
             
@@ -418,7 +421,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/RocketMQ/" itemprop="url" rel="index"><span itemprop="name">RocketMQ</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a></span>
 
                 
                 
@@ -433,8 +436,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2018/07/28/RocketMQ-配置探索/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2018/07/28/RocketMQ-配置探索/" itemprop="commentsCount"></span>
+                <a href="/2018/06/虚拟机中的锁膨胀/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2018/06/虚拟机中的锁膨胀/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -470,80 +473,36 @@
       
 
       
-        <p>目前被广泛使用的 MQ 有很多，包括 ActiveMQ，Kafka，RabbitMQ，RocketMQ 等等，它们各有长短。而近期所在项目选择了 RocketMQ 作为消息中间件，此前并未系统地了解研究，所以趁此机会整理了一些笔记和想法。</p>
+        <p>尽管当下几乎所有的服务器环境都以集群为主，在考虑并发问题的时候通常会使用分布式技术,如 redis 等中间件来维护全局的资源和锁。但是对于一些实例层面上的资源，依旧需要使用传统的锁来维护。所以我觉得，理解 JVM 对锁的处理还是有价值的。</p>
+<p>JVM上针对锁的处理（这里只描述内部锁，即 <code>synchronized</code> 的处理情况），除了有<strong>自旋锁</strong>，<strong>锁粗化</strong>，<strong>锁消除</strong>等简单的自动优化机制（不探讨啦），还可以从锁的维护的角度去看，可以分为<strong>偏向锁</strong>，<strong>轻量级锁</strong>，<strong>重量级锁</strong>。<br><em>三者的开销是递增的，演变顺序也是递增的，而且不可逆。</em><br>如轻型的锁可以膨胀升级至重型锁，但是不可以从重型的锁降级。</p>
 <a id="more"></a>
-<h2 id="优势"><a href="#优势" class="headerlink" title="优势"></a>优势</h2><p>简单地说一下在这么多消息中间件中的选型优势。作为阿里的开源项目，想必还是可靠的，尤其是经受过双十一的考验令人信服。</p>
+<p>之所以有不同程度的锁的处理方式，可以看一下这一个场景：如果在逻辑上某一时间基本只有一个线程，会访问由某个锁对象控制的同步块，很多时候不存在资源征用的问题。那么在这个时候，很多时候上锁解锁的开销就显得繁琐而低效了。以重量级锁（也是 <code>synchronized</code> 的最终形态）为例，取锁过程需要操作系统的介入，使线程从用户态进入核心态，开销还是挺大的。所以一开始 JVM 会对锁做偏向锁处理，在一些条件下升至轻量级锁乃至重量级锁。</p>
+<h3 id="前置概念"><a href="#前置概念" class="headerlink" title="前置概念"></a>前置概念</h3><p>在阐述锁膨胀之前，先插入几个内容点，<strong>对象头</strong>和<strong>自旋锁</strong>。</p>
+<h4 id="对象头"><a href="#对象头" class="headerlink" title="对象头"></a>对象头</h4><p>在 HotSpot 虚拟机中，对象在内存中存储的布局可以分为三块区域：<strong>对象头</strong>（Header）、<strong>实例数据</strong>（Instance Data）和<strong>对齐填充</strong>（Padding）。 </p>
+<p>实例数据内容和对齐填充不在赘述，说说对象头，这就类似一个对象的元信息，其中也分为三部分组成：<strong>标记字段</strong> Mark Word，<strong>类型指针</strong> Class Pointer，<strong>数组长度</strong> Array Length（如果该对象是数组，则记录了数组长度），三组数据分别用一个字长来存储（32位机上为32bit，64位机位64bit）。</p>
 <ul>
-<li>支持严格的消息顺序；</li>
-<li>支持 Topic 与 Queue 两种模式；</li>
-<li>亿级消息堆积能力；</li>
-<li>比较友好的分布式特性；</li>
-<li>同时支持 Push 与 Pull 方式消费消息；</li>
+<li><strong><em>类型指针</em></strong>：<br>在虚拟机加载类的时候，除了会在元空间/方法区存储类信息，也会在堆区生成一个 Class 对象。类型指针，便是为一个实例对象指向 Class 对象的指针。</li>
+<li><strong><em>标记字段</em></strong>：<br>在这一个字的区域内，描述了很多信息。通常一个对象会有其哈希码，年代标记（经历 GC 次数），锁标识等。但是如果该对象充当了一个上锁对象，情况会有所不同，下文详述。</li>
 </ul>
-<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><ul>
-<li><strong>Producer</strong>：消息生产者，生产消息。</li>
-<li><strong>Consumer</strong>：消息消费者，消费消息。<ul>
-<li><strong>Pull Consumer</strong>：消费者拉模型的实现。通过与 Broker 建立长连接，从中主动拉取消息。</li>
-<li><strong>Push Consumer</strong>：消费者推模型的实现。本质仍然是建立长连接，但是通过注册监听器，在收到消息时回调监听方法。</li>
-</ul>
-</li>
-<li><strong>Producer Group</strong>：生产者集合，通常包含发送逻辑一致的消费者，影响事务消息的流程。</li>
-<li><strong>Consumer Group</strong>：消费者集合，通常包含消费逻辑一致的消费者，影响着负载均衡和集群消息。</li>
-<li><strong>Name Server</strong>：注册服务器，可以由一到多个近乎无状态的节点构成，扮演者类似 Zookeeper 的角色。Broker 向其中注册，而 Producer 和 Consumer 向其中拉取 Broker 地址。</li>
-<li><strong>Broker</strong>：核心组件，保存和转发消息。</li>
-</ul>
-<p>拓扑结构如下：<br><img src="/images/rocketmq-net.png" alt="RocketMQ Network"></p>
-<h2 id="初次使用"><a href="#初次使用" class="headerlink" title="初次使用"></a>初次使用</h2><h3 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h3><p>RocketMQ 是纯 Java 语言的实现，你可以从 Github 上<a href="https://github.com/apache/rocketmq" target="_blank" rel="noopener">下载</a>源码并使用 Maven 进行编译，当然也可以从<a href="http://rocketmq.apache.org/" target="_blank" rel="noopener">官网入口</a>下载。</p>
-<h3 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h3><p>第一次启动，简单地测试一下效果，进入 bin 目录，使用 nohup 启动一下 NameService：</p>
-<pre><code>nohup ./mqnamesrv -n 127.0.0.1:9876 &amp;
-</code></pre><p>然后启动一下 Broker：</p>
-<pre><code>nohup ./mqbroker -n 127.0.0.1:9876 &amp;
-</code></pre><p>还有一个 mqadmin 也是常用的工具，包含的管理员常用的功能，包含查看集群列表，查看、删除主题等，可以直接通过 <code>./mqadmin</code> 获得帮助。</p>
-<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><p>在 RocketMQ 顺利启动之后，进行一下测试吧，快速的体验一把。<br>从 MavenRepository 找到对应的 RocketMQ 客户端：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- https://mvnrepository.com/artifact/org.apache.rocketmq/rocketmq-client --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.rocketmq<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>rocketmq-client<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>4.2.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>或者打开刚才从 Github 上下载的源码，example 模块下提供了许多测试用例，附上略微改动的生产者和消费者代码：</p>
-<ul>
-<li><p>生产者</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> MQClientException, InterruptedException </span>&#123;</span><br><span class="line"></span><br><span class="line">    DefaultMQProducer producer = <span class="keyword">new</span> DefaultMQProducer(<span class="string">"ProducerGroupName"</span>);</span><br><span class="line">    producer.setNamesrvAddr(<span class="string">"127.0.0.1:9876"</span>);</span><br><span class="line">    producer.setInstanceName(<span class="string">"p001"</span>);</span><br><span class="line">    <span class="comment">// 可以设定失败重试次数</span></span><br><span class="line">    producer.setRetryTimesWhenSendFailed(<span class="number">3</span>);</span><br><span class="line">    producer.start();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">1</span>; i++) &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Message msg = <span class="keyword">new</span> Message(</span><br><span class="line">	    	<span class="string">"TopicTest1"</span>,</span><br><span class="line">                <span class="string">"TagA"</span>,</span><br><span class="line">                <span class="string">"key113"</span>,</span><br><span class="line">                <span class="string">"Hello world"</span>.getBytes(RemotingHelper.DEFAULT_CHARSET));</span><br><span class="line">            SendResult sendResult = producer.send(msg);</span><br><span class="line">            System.out.printf(<span class="string">"%s%n"</span>, sendResult);</span><br><span class="line"></span><br><span class="line">            QueryResult queryMessage =</span><br><span class="line">                producer.queryMessage(<span class="string">"TopicTest1"</span>, <span class="string">"key113"</span>, <span class="number">10</span>, <span class="number">0</span>, System.currentTimeMillis());</span><br><span class="line">            <span class="keyword">for</span> (MessageExt m : queryMessage.getMessageList()) &#123;</span><br><span class="line">                System.out.printf(<span class="string">"%s%n"</span>, m);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    producer.shutdown();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>消费者</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException, MQClientException </span>&#123;</span><br><span class="line"></span><br><span class="line">    DefaultMQPushConsumer consumer = <span class="keyword">new</span> DefaultMQPushConsumer(<span class="string">"ConsumerGroupName"</span>);</span><br><span class="line">    <span class="comment">// 指定 NameServer 的地址，多个 NameServer 使用 ; 隔开</span></span><br><span class="line">    consumer.setNamesrvAddr(<span class="string">"127.0.0.1:9876"</span>);</span><br><span class="line">    consumer.setInstanceName(<span class="string">"c001"</span>);</span><br><span class="line">    <span class="comment">// 指定订阅的 Topic 以及 Tag，多个 Tag 使用 || 分开，* 代表全部 Tag</span></span><br><span class="line">    consumer.subscribe(<span class="string">"TopicATest1"</span>, <span class="string">"TagA"</span>);</span><br><span class="line">    <span class="comment">// 可以设定开始消费的位置，仅针对 Push Consumer</span></span><br><span class="line">    consumer.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_FIRST_OFFSET);</span><br><span class="line">    <span class="comment">// 可以设定批量消费数量，默认 1，不保证每次的数量，近针对 Push Consumer</span></span><br><span class="line">    consumer.setConsumeMessageBatchMaxSize(<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    consumer.registerMessageListener(<span class="keyword">new</span> MessageListenerConcurrently() &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> ConsumeConcurrentlyStatus <span class="title">consumeMessage</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">            List&lt;MessageExt&gt; msgs, ConsumeConcurrentlyContext context)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">for</span> (MessageExt msg : msgs) &#123;</span><br><span class="line">                System.out.println(<span class="keyword">new</span> String(msg.getBody()));</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> ConsumeConcurrentlyStatus.CONSUME_SUCCESS;  </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    consumer.start();</span><br><span class="line">    System.out.println(<span class="string">"Consumer Started."</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>动手运行一下吧。</p>
-<h2 id="关于配置"><a href="#关于配置" class="headerlink" title="关于配置"></a>关于配置</h2><p>事实上，大多数小伙伴在 RocketMQ 启动时都明显能感觉电脑卡卡的，是因为 RocketMQ 默认需求的内存太大了。那么，如何查看和修订所需要的配置呢？<br>之前我们通过 <code>./mqbroker</code> 启动了 Broker，那么来看一下 mqbroker 的脚本，注意脚本末尾的命令：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 省略 ROCKETMQ_HOME 的配置</span></span><br><span class="line">sh <span class="variable">$&#123;ROCKETMQ_HOME&#125;</span>/bin/runbroker.sh org.apache.rocketmq.broker.BrokerStartup <span class="variable">$@</span></span><br></pre></td></tr></table></figure></p>
-<p>这里将启动命令转移给了 runbroker.sh 进行执行。</p>
-<h3 id="JVM-参数配置"><a href="#JVM-参数配置" class="headerlink" title="JVM 参数配置"></a>JVM 参数配置</h3><p>既然如此，继续查看一下 runbroker.sh：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line"><span class="comment">#===========================================================================================</span></span><br><span class="line"><span class="comment"># Java Environment Setting</span></span><br><span class="line"><span class="comment">#===========================================================================================</span></span><br><span class="line">error_exit ()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"ERROR: <span class="variable">$1</span> !!"</span></span><br><span class="line">    <span class="built_in">exit</span> 1</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">[ ! -e <span class="string">"<span class="variable">$JAVA_HOME</span>/bin/java"</span> ] &amp;&amp; JAVA_HOME=<span class="variable">$HOME</span>/jdk/java</span><br><span class="line">[ ! -e <span class="string">"<span class="variable">$JAVA_HOME</span>/bin/java"</span> ] &amp;&amp; JAVA_HOME=/usr/java</span><br><span class="line">[ ! -e <span class="string">"<span class="variable">$JAVA_HOME</span>/bin/java"</span> ] &amp;&amp; error_exit <span class="string">"Please set the JAVA_HOME variable in your environment, We need java(x64)!"</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> JAVA_HOME</span><br><span class="line"><span class="built_in">export</span> JAVA=<span class="string">"<span class="variable">$JAVA_HOME</span>/bin/java"</span></span><br><span class="line"><span class="built_in">export</span> BASE_DIR=$(dirname <span class="variable">$0</span>)/..</span><br><span class="line"><span class="built_in">export</span> CLASSPATH=.:<span class="variable">$&#123;BASE_DIR&#125;</span>/conf:<span class="variable">$&#123;CLASSPATH&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#===========================================================================================</span></span><br><span class="line"><span class="comment"># JVM Configuration</span></span><br><span class="line"><span class="comment">#===========================================================================================</span></span><br><span class="line">JAVA_OPT=<span class="string">"<span class="variable">$&#123;JAVA_OPT&#125;</span> -server -Xms8g -Xmx8g -Xmn4g"</span></span><br><span class="line">JAVA_OPT=<span class="string">"<span class="variable">$&#123;JAVA_OPT&#125;</span> -XX:+UseG1GC -XX:G1HeapRegionSize=16m -XX:G1ReservePercent=25 -XX:InitiatingHeapOccupancyPercent=30 -XX:SoftRefLRUPolicyMSPerMB=0 -XX:SurvivorRatio=8 -XX:+DisableExplicitGC"</span></span><br><span class="line">JAVA_OPT=<span class="string">"<span class="variable">$&#123;JAVA_OPT&#125;</span> -verbose:gc -Xloggc:/dev/shm/mq_gc_%p.log -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintGCApplicationStoppedTime -XX:+PrintAdaptiveSizePolicy"</span></span><br><span class="line">JAVA_OPT=<span class="string">"<span class="variable">$&#123;JAVA_OPT&#125;</span> -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=5 -XX:GCLogFileSize=30m"</span></span><br><span class="line">JAVA_OPT=<span class="string">"<span class="variable">$&#123;JAVA_OPT&#125;</span> -XX:-OmitStackTraceInFastThrow"</span></span><br><span class="line">JAVA_OPT=<span class="string">"<span class="variable">$&#123;JAVA_OPT&#125;</span> -XX:+AlwaysPreTouch"</span></span><br><span class="line">JAVA_OPT=<span class="string">"<span class="variable">$&#123;JAVA_OPT&#125;</span> -XX:MaxDirectMemorySize=15g"</span></span><br><span class="line">JAVA_OPT=<span class="string">"<span class="variable">$&#123;JAVA_OPT&#125;</span> -XX:-UseLargePages -XX:-UseBiasedLocking"</span></span><br><span class="line">JAVA_OPT=<span class="string">"<span class="variable">$&#123;JAVA_OPT&#125;</span> -Djava.ext.dirs=<span class="variable">$&#123;BASE_DIR&#125;</span>/lib"</span></span><br><span class="line"><span class="comment">#JAVA_OPT="$&#123;JAVA_OPT&#125; -Xdebug -Xrunjdwp:transport=dt_socket,address=9555,server=y,suspend=n"</span></span><br><span class="line">JAVA_OPT=<span class="string">"<span class="variable">$&#123;JAVA_OPT&#125;</span> <span class="variable">$&#123;JAVA_OPT_EXT&#125;</span>"</span></span><br><span class="line">JAVA_OPT=<span class="string">"<span class="variable">$&#123;JAVA_OPT&#125;</span> -cp <span class="variable">$&#123;CLASSPATH&#125;</span>"</span></span><br><span class="line"></span><br><span class="line">numactl --interleave=all <span class="built_in">pwd</span> &gt; /dev/null 2&gt;&amp;1</span><br><span class="line"><span class="keyword">if</span> [ $? -eq 0 ]</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">	<span class="keyword">if</span> [ -z <span class="string">"<span class="variable">$RMQ_NUMA_NODE</span>"</span> ] ; <span class="keyword">then</span></span><br><span class="line">		numactl --interleave=all <span class="variable">$JAVA</span> <span class="variable">$&#123;JAVA_OPT&#125;</span> <span class="variable">$@</span></span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		numactl --cpunodebind=<span class="variable">$RMQ_NUMA_NODE</span> --membind=<span class="variable">$RMQ_NUMA_NODE</span> <span class="variable">$JAVA</span> <span class="variable">$&#123;JAVA_OPT&#125;</span> <span class="variable">$@</span></span><br><span class="line">	<span class="keyword">fi</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">	<span class="variable">$JAVA</span> <span class="variable">$&#123;JAVA_OPT&#125;</span> <span class="variable">$@</span></span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure></p>
-<p>通过这个文件可以获得很多信息：</p>
-<ul>
-<li>RocketMQ 的 JVM 配置信息<ul>
-<li>需求的内存空间达到了 8g，声明的最大堆外内存达到了 15g，这就是电脑变得卡卡的的原因了。</li>
-<li>可以在启动时配置 <strong>JAVA_OPT_EXT</strong> 变量来配置额外的参数或者覆盖默认配置。</li>
-</ul>
-</li>
-<li>结合 mqbroker.sh 可以发现，最终使用了 BrokerStartup 来启动 RocketMQ，命令行中的参数同时会被传递。</li>
-</ul>
-<h3 id="Broker-实例配置"><a href="#Broker-实例配置" class="headerlink" title="Broker 实例配置"></a>Broker 实例配置</h3><p>那么接下来就去 BrokerStartup 查看一下 RocketMQ 的启动过程。由于这个文件实在是太过冗长，这里不再贴出，感兴趣的小伙伴请自行查看。在这个文件中，主要对命令行中几个具体参数进行了解析：</p>
-<ul>
-<li><code>-m</code>：列出所有的配置项</li>
-<li><code>-p</code>：列出所有的配置项以及默认值</li>
-<li><code>-c</code>：指定一个 properties 文件，读取其中的内容覆盖默认配置并情动</li>
-</ul>
-<h4 id="自定义配置"><a href="#自定义配置" class="headerlink" title="自定义配置"></a>自定义配置</h4><p>所以，很多时候的做法是通过 <code>sh mqbroker -p &gt; mqbroker.properties</code> 来获得一份默认配置文件（网上的方案可能不太准确，具体输出是携带 Rocket 的日志信息的，需要 sed 或者 awk 之类加工处理一下），在此基础上进行配置自定义，然后通后通过 <code>sh mqbroker -c mqbroker.properties</code> 来进行定制化的启动。</p>
-<h4 id="默认配置方案"><a href="#默认配置方案" class="headerlink" title="默认配置方案"></a>默认配置方案</h4><p>同时在 conf 目录下，官方也给出了几种典型的配置方案供参考：</p>
-<ul>
-<li>二主二从异步复制：2m-2s-async 文件夹。这是最典型的生产配置，双 master 获得高可用性，同时主从间的数据同步由异步完成。</li>
-<li>二主二从同步复制：2m-2s-sync 文件夹。除了双 master 的配置，主从间的数据是同步的，也就是说只有在向 salve 成功同步数据才会向客户段返回成功。这保证了在 master 宕机时候消息仍然可以被实时消费，但是性能收到一定影响。</li>
-<li>二主无从：2m-nosalve 文件夹。双主模式仅仅保证了 RocketMQ 的高可用性，然而在一台 master 宕机后，客户端无法消费那批在宕机 master 上持久化的消息，直到宕机 master 恢复正常。当然这个方案节省了硬件资源。</li>
-</ul>
-<p>三种默认配置方案都是采用了异步刷盘，尽管在刷盘间隙宕机会丢失少量数据，但是效率提升可观。</p>
-<h4 id="参考配置类"><a href="#参考配置类" class="headerlink" title="参考配置类"></a>参考配置类</h4><p>Broker 的具体配置分为了具体的四个方面：</p>
-<ul>
-<li>Broker 实例配置：参考源码 <code>org.apache.rocketmq.common.BrokerConfig</code></li>
-<li>Netty 服务端配置：参考源码 <code>org.apache.rocketmq.remoting.netty.NettyServerConfig</code></li>
-<li>Netty 客户端配置：参考源码 <code>org.apache.rocketmq.remoting.netty.NettyClientConfig</code></li>
-<li>Message 持久化配置：参考源码 <code>org.apache.rocketmq.store.config.MessageStoreConfig</code></li>
-</ul>
-<p>关于 RocketMQ 的启动和配置，就先告一段落。</p>
+<p><img src="/images/对象头.jpg" alt="对象头示意图"></p>
+<h4 id="自旋锁"><a href="#自旋锁" class="headerlink" title="自旋锁"></a>自旋锁</h4><p>通常来说，取锁时候如果未能获得锁，线程会进入<em>阻塞状态</em>（Blocking），同时会让线程进入等待队列/同步块的入口集中，并导致一个<em>上下文切换</em>，出让 CPU 资源。<br>我们可以实现一个忙轮询的机制来尝试获得锁。比如使用一个状态对象来代替锁，使用一个循环来判断状态是否未可用，如下是代码层面的实现。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">volatile</span> <span class="keyword">boolean</span> flag = <span class="keyword">false</span>;</span><br><span class="line"><span class="keyword">while</span>(<span class="keyword">true</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span>(flag) &#123;</span><br><span class="line">	<span class="comment">// do something</span></span><br><span class="line">	<span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这可以避免在首次取得锁失败的时候直接线程切出，在同步逻辑处理量较少的时候可以带来明显的效率提升，但是如果如果说“同步块”的处理时间很长，或者在“同步块”内的线程发生异常未能更改状态量，将严重损失性能乃至发生更严重的死锁。</p>
+<p><strong>所以自旋锁适合同步逻辑的处理时间很短的场合</strong>（几个循环内能拿到锁）</p>
+<h3 id="锁膨胀过程中的三个阶段"><a href="#锁膨胀过程中的三个阶段" class="headerlink" title="锁膨胀过程中的三个阶段"></a>锁膨胀过程中的三个阶段</h3><p>现在已经了解了对象在堆中的存储形式，以及依靠自旋可以在短时间内减少加锁开销。继续深入 JVM 中不同并发程度下锁的不同的机制。</p>
+<h4 id="偏向锁"><a href="#偏向锁" class="headerlink" title="偏向锁"></a>偏向锁</h4><p>偏向锁是在 JDK 1.5？1.6 之后对锁进行的优化。先来看一个图：</p>
+<p><img src="/images/偏向锁的获得和撤销.png" alt="偏向锁示意图"></p>
+<p>前文提到过，如果一个线程经常获得锁，且资源争用不严重，那么可以尽量减少取锁的开销。JDK 是这么做的：<br>在一个线程获得锁的时候，会在栈帧记录中以及锁对象的标记字段中写入线程 id，在该线程进入/离开同步块的时候不需要额外的锁开销，这里甚至不需要 CAS 操作，因为只需要比较标记字段中的线程 id 与自身是否一致。如果在尝试获得锁的时候发现标记字段中的线程 id 与自身不一致，会尝试利用 CAS 操作来争抢这个偏向锁。</p>
+<p>补充：偏向锁是默认启用的，但是它在应用程序启动几秒钟之后才激活，如有必要可以使用 JVM 参数来关闭延迟 <code>-XX:BiasedLockingStartupDelay=0</code>。如果你确定自己应用程序里所有的锁通常情况下处于竞争状态，甚至可以通过 JVM 参数关闭偏向锁 <code>-XX:-UseBiasedLocking=false</code>，那么所有的内部锁都会直接进入轻量级锁状态。</p>
+<h4 id="轻量级锁"><a href="#轻量级锁" class="headerlink" title="轻量级锁"></a>轻量级锁</h4><p>线程在执行同步块之前，JVM 会先在当前线程的栈桢中创建用于存储锁记录的空间，并将对象头中的标记字段复制到锁记录中。然后线程尝试使用 CAS 将对象头中的标记字段替换为指向锁记录的指针。如果成功，当前线程获得锁；如果失败，则进行自旋来获取锁，当自旋获取锁仍然失败时，表示竞争严重（两条或两条以上的线程竞争同一个锁），则轻量级锁会膨胀成重量级锁。</p>
+<p><img src="/images/轻量级锁膨胀.png" alt="轻量级锁膨胀示意图"></p>
+<h4 id="重量级锁"><a href="#重量级锁" class="headerlink" title="重量级锁"></a>重量级锁</h4><p>重量级锁其实才是通常涉及的锁概念，这时候它已经是一个彻底的<em>悲观锁</em>了。在 JVM 中又叫<strong>对象监视器</strong>，它至少包含一个竞争锁的队列，和一个信号阻塞队列（wait队列），前者负责做互斥，后一个用于做线程同步。</p>
+<p><img src="/images/锁关系.png" alt="锁关系示意图"></p>
+<h6 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h6><ol>
+<li>《Java多线程编程实战指南》 黄文海</li>
+<li>《深入理解Java虚拟机》 周志明</li>
+<li><a href="https://www.cnblogs.com/wade-luffy/p/5969418.html" target="_blank" rel="noopener">https://www.cnblogs.com/wade-luffy/p/5969418.html</a></li>
+<li><a href="https://blog.csdn.net/wolegequdidiao/article/details/45116141" target="_blank" rel="noopener">https://blog.csdn.net/wolegequdidiao/article/details/45116141</a></li>
+</ol>
 
       
     </div>
@@ -588,9 +547,11 @@
       
         <div class="post-tags">
           
-            <a href="/tags/MQ/" rel="tag"># MQ</a>
+            <a href="/tags/Java/" rel="tag"># Java</a>
           
-            <a href="/tags/RocketMQ/" rel="tag"># RocketMQ</a>
+            <a href="/tags/并发/" rel="tag"># 并发</a>
+          
+            <a href="/tags/JVM/" rel="tag"># JVM</a>
           
         </div>
       
@@ -618,18 +579,14 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/07/18/实现-MyBatis-插件/" rel="next" title="实现 MyBatis 插件">
-                <i class="fa fa-chevron-left"></i> 实现 MyBatis 插件
-              </a>
-            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/08/11/RocketMQ-配置项/" rel="prev" title="RokcetMQ 配置项">
-                RokcetMQ 配置项 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/06/正则笔记/" rel="prev" title="正则笔记">
+                正则笔记 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -816,7 +773,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#优势"><span class="nav-number">1.</span> <span class="nav-text">优势</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基本概念"><span class="nav-number">2.</span> <span class="nav-text">基本概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#初次使用"><span class="nav-number">3.</span> <span class="nav-text">初次使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#下载"><span class="nav-number">3.1.</span> <span class="nav-text">下载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动"><span class="nav-number">3.2.</span> <span class="nav-text">启动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试"><span class="nav-number">3.3.</span> <span class="nav-text">测试</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于配置"><span class="nav-number">4.</span> <span class="nav-text">关于配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#JVM-参数配置"><span class="nav-number">4.1.</span> <span class="nav-text">JVM 参数配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Broker-实例配置"><span class="nav-number">4.2.</span> <span class="nav-text">Broker 实例配置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#自定义配置"><span class="nav-number">4.2.1.</span> <span class="nav-text">自定义配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#默认配置方案"><span class="nav-number">4.2.2.</span> <span class="nav-text">默认配置方案</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考配置类"><span class="nav-number">4.2.3.</span> <span class="nav-text">参考配置类</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前置概念"><span class="nav-number">1.</span> <span class="nav-text">前置概念</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#对象头"><span class="nav-number">1.1.</span> <span class="nav-text">对象头</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#自旋锁"><span class="nav-number">1.2.</span> <span class="nav-text">自旋锁</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#锁膨胀过程中的三个阶段"><span class="nav-number">2.</span> <span class="nav-text">锁膨胀过程中的三个阶段</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#偏向锁"><span class="nav-number">2.1.</span> <span class="nav-text">偏向锁</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#轻量级锁"><span class="nav-number">2.2.</span> <span class="nav-text">轻量级锁</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#重量级锁"><span class="nav-number">2.3.</span> <span class="nav-text">重量级锁</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#参考"><span class="nav-number">2.3.0.1.</span> <span class="nav-text">参考</span></a></li></ol></li></ol></li></ol></li></ol></div>
             
 
           </div>
@@ -1017,7 +974,7 @@
       <script type="text/javascript">
       function renderGitment(){
         var gitment = new Gitmint({
-            id: '1532760511000',
+            id: '1530327480000',
             owner: 'Kun3375',
             repo: 'kun3375.github.io',
             

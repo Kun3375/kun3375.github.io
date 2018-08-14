@@ -112,25 +112,25 @@
 
 
 
-  <meta name="description" content="日常开发中，经常需要进行一些文本处理，这通常是十分繁琐而无趣的。学会并利用正则表达式可以快速解决这类文本处理问题，无论是在 Java，Python 等代码中抑或是 shell 环境下。正则中存在很多细小的知识点，十分容易遗忘，着手记录，知识整理还是有所必要。">
+  <meta name="description" content="sed 是非常常用的流式处理编辑工具，配合正则表达式可以进行十分效率的文字处理。它通过逐行地将文字读取，暂存进模式空间，通过指定的命令进行处理后，输出至标准输出，直到文件或者说输入的结束。原理十分简单，来学习一下吧。">
 <meta name="keywords" content="Regex">
 <meta property="og:type" content="article">
-<meta property="og:title" content="正则笔记">
-<meta property="og:url" content="http://kun3375.com/2018/06/30/正则笔记/index.html">
+<meta property="og:title" content="文字处理-sed">
+<meta property="og:url" content="http://kun3375.com/2018/07/文字处理-sed/index.html">
 <meta property="og:site_name" content="码路狂飙">
-<meta property="og:description" content="日常开发中，经常需要进行一些文本处理，这通常是十分繁琐而无趣的。学会并利用正则表达式可以快速解决这类文本处理问题，无论是在 Java，Python 等代码中抑或是 shell 环境下。正则中存在很多细小的知识点，十分容易遗忘，着手记录，知识整理还是有所必要。">
+<meta property="og:description" content="sed 是非常常用的流式处理编辑工具，配合正则表达式可以进行十分效率的文字处理。它通过逐行地将文字读取，暂存进模式空间，通过指定的命令进行处理后，输出至标准输出，直到文件或者说输入的结束。原理十分简单，来学习一下吧。">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:updated_time" content="2018-08-04T04:03:23.493Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="正则笔记">
-<meta name="twitter:description" content="日常开发中，经常需要进行一些文本处理，这通常是十分繁琐而无趣的。学会并利用正则表达式可以快速解决这类文本处理问题，无论是在 Java，Python 等代码中抑或是 shell 环境下。正则中存在很多细小的知识点，十分容易遗忘，着手记录，知识整理还是有所必要。">
+<meta name="twitter:title" content="文字处理-sed">
+<meta name="twitter:description" content="sed 是非常常用的流式处理编辑工具，配合正则表达式可以进行十分效率的文字处理。它通过逐行地将文字读取，暂存进模式空间，通过指定的命令进行处理后，输出至标准输出，直到文件或者说输入的结束。原理十分简单，来学习一下吧。">
 
 
 
 
 
 
-  <link rel="canonical" href="http://kun3375.com/2018/06/30/正则笔记/"/>
+  <link rel="canonical" href="http://kun3375.com/2018/07/文字处理-sed/"/>
 
 
 
@@ -140,7 +140,7 @@
   };
 </script>
 
-  <title>正则笔记 | 码路狂飙</title>
+  <title>文字处理-sed | 码路狂飙</title>
   
 
 
@@ -340,7 +340,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://kun3375.com/2018/06/30/正则笔记/">
+    <link itemprop="mainEntityOfPage" href="http://kun3375.com/2018/07/文字处理-sed/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="斯特拉不用电">
@@ -357,7 +357,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">正则笔记
+          <h1 class="post-title" itemprop="name headline">文字处理-sed
               
             
           </h1>
@@ -382,7 +382,7 @@
                 
               
 
-              <time title="创建时间：2018-06-30 16:06:13" itemprop="dateCreated datePublished" datetime="2018-06-30T16:06:13+08:00">2018-06-30</time>
+              <time title="创建时间：2018-07-03 23:22:42" itemprop="dateCreated datePublished" datetime="2018-07-03T23:22:42+08:00">2018-07-03</time>
             
 
             
@@ -431,8 +431,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2018/06/30/正则笔记/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2018/06/30/正则笔记/" itemprop="commentsCount"></span>
+                <a href="/2018/07/文字处理-sed/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2018/07/文字处理-sed/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -468,74 +468,60 @@
       
 
       
-        <p>日常开发中，经常需要进行一些文本处理，这通常是十分繁琐而无趣的。学会并利用正则表达式可以快速解决这类文本处理问题，无论是在 Java，Python 等代码中抑或是 shell 环境下。<br>正则中存在很多细小的知识点，十分容易遗忘，着手记录，知识整理还是有所必要。<br><a id="more"></a></p>
-<p>本文以拓展正则进行描述，部分特殊字符和定址方式在标准正则下无效。如需在 shell 环境下使用，需要额外使用‘\’符号，或开启拓展正则的支持，如 grep -e，sed -r 等。</p>
-<h2 id="规则"><a href="#规则" class="headerlink" title="规则"></a>规则</h2><p>正则表达式的规则可以简单理解为：<strong>在给定的范围内，给定的字符重复给定的次数</strong>。</p>
-<h3 id="指定需要匹配的字符"><a href="#指定需要匹配的字符" class="headerlink" title="指定需要匹配的字符"></a>指定需要匹配的字符</h3><p>绝大部分的字符，包括数字字母汉字等，都可以直接输入来描述。</p>
-<h4 id="转义后特殊字符"><a href="#转义后特殊字符" class="headerlink" title="转义后特殊字符"></a>转义后特殊字符</h4><p>以下几个字符由转义符‘\’和某个字符组成，可以表述成新字符，他们有着特殊的含义。</p>
-<ul>
-<li><strong><code>\n</code></strong>  这是一个换行符。</li>
-<li><strong><code>\t</code></strong>  制表符，Tab 键的缩进。</li>
-<li><strong><code>\v</code></strong>  垂直制表符。</li>
-<li><strong><code>\f</code></strong>  分页符，产生一个新页。</li>
-<li><strong><code>\r</code></strong>  这是回车符</li>
-<li><strong><code>\s</code></strong>  这个表达可以表述所有的空白字符，即以上五种字符或者空格。</li>
-<li><strong><code>\cx</code></strong>  当 x 取值英文字符时，这个整体就有了特殊意义，会映射成一个控制字符，如 <code>\cM</code> 等价于 <code>\r</code> 即回车符号。</li>
-<li><strong><code>\ux</code></strong>  可以匹配 Unicode 字符，如 \u00CD。</li>
-<li><strong><code>\nx</code></strong>  在 x 值合法的情况下，可以匹配八进制专一值（在没有顺利取得缓存引用时）</li>
-<li><strong><code>\b</code></strong>  表示字符边界，可以理解为打断单词或着汉字连续的空格/符号之类（其实它并不能匹配到某个字符，仅仅是匹配到了边界）</li>
-<li><strong><code>\d</code></strong>  表示数字，同 <code>[0-9]</code>。</li>
-<li><strong><code>\w</code></strong>  表示任意字类字符，即数字字母和下划线，通常还支持汉字。</li>
-<li><strong><code>\&lt;</code></strong>  匹配单词首，比如 <code>\&lt;wo</code> 可以匹配 wood，word 等。</li>
-<li><strong><code>\&gt;</code></strong>  同理匹配单词尾部。</li>
+        <p>sed 是非常常用的流式处理编辑工具，配合正则表达式可以进行十分效率的文字处理。它通过逐行地将文字读取，暂存进模式空间，通过指定的命令进行处理后，输出至标准输出，直到文件或者说输入的结束。原理十分简单，来学习一下吧。</p>
+<a id="more"></a>
+<h2 id="命令格式"><a href="#命令格式" class="headerlink" title="命令格式"></a>命令格式</h2><p>sed [选项及参数]… ‘操作命令’ 文件…</p>
+<h2 id="常用选项"><a href="#常用选项" class="headerlink" title="常用选项"></a>常用选项</h2><ul>
+<li>-n <strong>静默模式</strong> 取消 sed 默认的输出</li>
+<li>-e <strong>多重编辑</strong> 可以多次使用，携带 sed 命令作为该选项的参数，对于缓冲区的每一行按命令顺序进行处理</li>
+<li>-f 使用 sed 操作的<strong>脚本处理</strong>，跟上脚本文件名做参数。sed 脚本可以保存多条 sed 命令，一行一条，依次执行。</li>
+<li>-r 使用<strong>拓展正则</strong>，类似 grep -e 或者 egrep 的增强，让人少些一点转义符</li>
+<li>-i <strong>原地修改</strong>，该选项会使得 sed 命令直接修改原文件，可以紧跟一个后缀如 -i.bk，同时生成备份</li>
 </ul>
-<h4 id="原生特殊字符"><a href="#原生特殊字符" class="headerlink" title="原生特殊字符"></a>原生特殊字符</h4><p>以下的字符并不需要转移符‘\’，天然的拥有特殊含义（以拓展正则为准）。</p>
-<ul>
-<li><strong><code>$</code></strong>  尾部，表示字符串结尾位置。</li>
-<li><strong><code>^</code></strong>  头部，字符串的开头位置，<strong>但在 <code>[ ]</code> 内使用时表示取反</strong></li>
-<li><strong><code>[ ]</code></strong>  左右中括号，用来表达匹配单个字符时候的可选范围</li>
-<li><strong><code>{ }</code></strong>  左右花括号，用来表述前一表达式的可重复区间</li>
-<li><strong><code>( )</code></strong>  左右小括号，类似数学中的概念，可以描述一个表达式并提高计算优先级，同时会缓存匹配结果。</li>
-<li><strong><code>·</code></strong>  点号，可以用了匹配任意的一个字符，除了 <code>\n</code> 吧。</li>
-<li><strong><code>*</code></strong>  星号，可以匹配前面表达式任意次数。</li>
-<li><strong><code>+</code></strong>  加号，匹配前面表达式一至任意次数.</li>
-<li><strong><code>?</code></strong>  问号，匹配前面表达式 0 ~ 1 次。</li>
-<li><strong><code>\</code></strong>  转移符本身，用来转移其他字符，需要匹配它本身的时候自然需要 <code>\\</code> 的形式。</li>
-<li><strong><code>|</code></strong>  或运算符号，任意匹配前后表达式之一。</li>
-<li><strong><code>[:digit:]</code></strong>  所有数字</li>
-<li><strong><code>[:lower:]</code></strong>  所有小写字母</li>
-<li><strong><code>[:upper:]</code></strong>  所有大写字母</li>
-<li><strong><code>[:alpha:]</code></strong>  所有字母</li>
-<li><strong><code>[:alnum:]</code></strong>  所有字母及数字</li>
-<li><strong><code>[:space:]</code></strong>  所有空白符</li>
-<li><strong><code>[:punct:]</code></strong>  所有标点符号</li>
+<h2 id="命令组成"><a href="#命令组成" class="headerlink" title="命令组成"></a>命令组成</h2><p>sed 命令的组成通常是 ‘行选择具体操作’。sed 在读入行内容之后，如果匹配定址要求就会进行命令操作。我们来两部分分开一看~</p>
+<h3 id="行选择"><a href="#行选择" class="headerlink" title="行选择"></a>行选择</h3><ul>
+<li><strong>num</strong>             选择第 num 行。</li>
+<li><strong>start,end</strong>       选择第 start 行至第 end 行。</li>
+<li><strong>start~step</strong>      从 start 行开始，以 step 为步长选择行。</li>
+<li><strong>/pattern/</strong>       选择含有该正则的内容的行。</li>
+<li><strong>start,/pattern/</strong> 从 start 行开始直到首次成功匹配表达式的一行将被选定，注意 sed 的处理机制，如果表达式最终无法有任何匹配行，将会对 start 行之后的所有行进行选定。</li>
+<li><strong>/pattern/,end</strong>   从首次成功匹配表达式的一行至 end 行将被选定，如果在第 end 行之前如果没有成功匹配将会不有行被选中。</li>
+<li><strong>!</strong>               置于行选择末尾，进行反选，如 <code>10,20!</code> 将排除 10 至 20 行。</li>
 </ul>
-<h3 id="指定匹配字符的候选范围"><a href="#指定匹配字符的候选范围" class="headerlink" title="指定匹配字符的候选范围"></a>指定匹配字符的候选范围</h3><p>匹配一个单字符很简单，但是通常我们需要匹配几个字符中的任意一个，这个时候就需要一个候选范围的描述。<br>除了使用 <code>\w</code> 表示字类字符，<code>\s</code> 来表示空白符。也可以使用 <code>[ ]</code> 方括号来描述范围，来看几个例子：</p>
-<ul>
-<li><code>[abc]</code>  它可以是匹配 a，也可以是 b，也可以是 c。</li>
-<li><code>5[48]k</code>  它可以是 54k，也可以是 58k。</li>
-<li><code>[0-9]\w</code>  它可以使是 0a，3b，33 等等。</li>
+<h3 id="具体操作"><a href="#具体操作" class="headerlink" title="具体操作"></a>具体操作</h3><ul>
+<li><strong>p</strong> 打印缓冲内容，通常配合 -n 选项测试指令正确性。</li>
+<li><strong>q</strong> 提前退出 sed，当到达匹配行或者指定行就退出 sed。</li>
+<li><strong>i\[content]</strong> 行前追加内容，如在第 1 行至第 5 行，每行之后插入‘===’：<code>&#39;1,5i\===&#39;</code>。</li>
+<li><strong>a\[content]</strong> 行后追加内容。</li>
+<li><strong>c\[content]</strong> 替换内容，如果是批量选择，并不是对每行内容进行替换，而是对整体替换成相应内容。</li>
+<li><strong>d</strong> 删除。</li>
+<li><strong>s/pattern/new_chars/[g]</strong> 对选定的行中首次匹配表达式的内容替换成目标字符串，如果末尾使用‘g’，可以对行中所有匹配内容替换。</li>
+<li><strong>y/old-char-set/new-char-set</strong> 对选定行中所有 old-char-set 内的字符替换成相应的新的字符。</li>
+<li><strong>n</strong> 提前读取下一输入行至缓冲区。</li>
+<li><strong>r [file-name]</strong> 行后追加指定文件内容。</li>
+<li><strong>w [file-name]</strong> 将选定行输入至指定文件。</li>
+<li><strong>h</strong> 复制匹配行进入暂存空间。</li>
+<li><strong>G</strong> 配合 h 命令，取出暂存空间内的行，插入至模式空间的末尾。</li>
+<li><strong>x</strong> 配合 h 命令，交换当前匹配行的暂存空间内的行。</li>
 </ul>
-<p>这样一看是不是很容易？来看一些进阶技巧：</p>
+<h3 id="命令叠加"><a href="#命令叠加" class="headerlink" title="命令叠加"></a>命令叠加</h3><p>需要多次使用 sed 操作的时候，可以有这么些办法：</p>
 <ol>
-<li>取反。表述范围的符号可以通过大写来表示取反，<code>\S</code> 表示非空白字符，<code>\B</code> 表示非字符边界，<code>\W</code> 表示非字类字符。对于使用 <code>[ ]</code> 的场合，使用 <code>[^ ]</code> 来完成取反。</li>
-<li><code>[ ]</code> 方括号中间不再能使用上述特殊的字符，比如 <code>[x*]</code>，* 不再匹配任意次 x，这个表达式只能匹配 * 或 x；同理比如：<code>[\s]</code> 表示 \ 或者 s。</li>
-<li><code>[ ]</code> 中可以使用一些特定的范围，比如 0-9，a-z，A-Z。比如式子 [0-9A-Z] 也是合理的，会匹配数字或者大写字母，如需要匹配‘-’，尽量写在最后。</li>
+<li>通过 <code>{命令1;命令2...}</code> 可以使用‘{}’将多个命令整合一块儿，中间使用‘;’分割，类似代码块的表达。其中如果如果多个命令的行定位条件一致，可以将该部分提出，如：<code>&#39;{10p;10p}&#39;</code> 等于 <code>&#39;10{p;p}&#39;</code>。</li>
+<li>通过 -e 选项多次输入 sed 命令。</li>
+<li>将多个 sed 命令逐行写入文件，使用 -f 选项执行 sed。</li>
 </ol>
-<h3 id="指定表达式的重复次数"><a href="#指定表达式的重复次数" class="headerlink" title="指定表达式的重复次数"></a>指定表达式的重复次数</h3><p>在需要重复一个特定的正则表达式的时候，我们可以使用限定符描述重复次数来简化它。</p>
+<h3 id="额外技巧"><a href="#额外技巧" class="headerlink" title="额外技巧"></a>额外技巧</h3><p>sed 命令其实和正则表达式通常配合使用，所以这一些小技巧其实和正则有很密切的关系。比如对于一个简单的替换操作，如 <code>s/abc/xyz/</code> 是十分简单的，但是 sed 支持更复杂的操作，可以用一些特殊意义的操作符号:</p>
 <ul>
-<li><strong><code>{n}</code></strong>  匹配 n 次，如 <code>C{3}</code> 即 CCC。</li>
-<li><strong><code>{n,}</code></strong>  匹配大于等于 n 次。如 <code>C{1,}</code> 等同于 C+</li>
-<li><strong><code>{n,m}</code></strong>  匹配大于等于 n 次，小于等于 m 次，闭区间。</li>
-<li><strong><code>*</code></strong>  等同于 <code>{0,}</code></li>
-<li><strong><code>+</code></strong>  等同于 <code>{1,}</code></li>
-<li><strong><code>?</code></strong>  等同于 <code>{0,1}</code></li>
+<li>&amp; 表示正则匹配成功的原字符串内容，如想要替换所有数字为它的百倍，可以使用 ‘s/[[:digit:]]\+/&amp;00/g’</li>
+<li>\num 获取缓存的匹配中缓存的字符串，num 指定位置（这取决于表达式中使用了多少次小括号‘()’）。<ul>
+<li>如去除数字并字母大写，’s/([[:digit:]]\+\)\|\([[:alpha:]]\+\)/\U\2/gp’</li>
+<li>获取包含一段 ip 的文本中 ip 的前两段地址 ‘s/\([0-9]\+\):\([0-9]\+\):[0-9]\+:[0-9]+/\1 \2/p’</li>
 </ul>
-<h2 id="利用正则匹配的缓存"><a href="#利用正则匹配的缓存" class="headerlink" title="利用正则匹配的缓存"></a>利用正则匹配的缓存</h2><ul>
-<li><strong><code>\num</code></strong>  使用 <code>( )</code> 之后会进行匹配值的缓存，可以紧跟着 <code>\num</code> 指定匹配的子项，比如 <code>(.)\1</code> 可以匹配任意两个相同的字符。或者在 sed，vim 等工具使用替换操作时，可以在新字符串上使用 <code>\num</code> 以期达到精确的匹配但是局部替换的效果。</li>
-<li><strong><code>(?:pattern)</code></strong>  使用该符号会取消匹配值的缓存</li>
-<li><strong><code>(?=pattern)</code></strong>  正向肯定预查，使用该符号会取消匹配值的缓存，同时预查也是不消耗字符的。</li>
-<li><strong><code>(?!pattern)</code></strong>  反向预查，相反于前者</li>
+</li>
+<li>\u 将后方的表达式结果进行首字母大写处理</li>
+<li>\U 将后方的表达式结果进行大写处理</li>
+<li>\l 将后方的表达式结果进行首字母小写处理</li>
+<li>\L 将后方的表达式结果进行小写处理</li>
 </ul>
 
       
@@ -609,8 +595,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/06/30/虚拟机中的锁膨胀/" rel="next" title="虚拟机中的锁膨胀">
-                <i class="fa fa-chevron-left"></i> 虚拟机中的锁膨胀
+              <a href="/2018/07/AQS-浅析/" rel="next" title="AQS 浅析">
+                <i class="fa fa-chevron-left"></i> AQS 浅析
               </a>
             
           </div>
@@ -619,8 +605,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/07/01/Ribbon/" rel="prev" title="Ribbon 摘要">
-                Ribbon 摘要 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/07/Dockerfile-中三个运行指令的差异/" rel="prev" title="Dockerfile 中三个运行指令的差异">
+                Dockerfile 中三个运行指令的差异 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -807,7 +793,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#规则"><span class="nav-number">1.</span> <span class="nav-text">规则</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#指定需要匹配的字符"><span class="nav-number">1.1.</span> <span class="nav-text">指定需要匹配的字符</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#转义后特殊字符"><span class="nav-number">1.1.1.</span> <span class="nav-text">转义后特殊字符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#原生特殊字符"><span class="nav-number">1.1.2.</span> <span class="nav-text">原生特殊字符</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#指定匹配字符的候选范围"><span class="nav-number">1.2.</span> <span class="nav-text">指定匹配字符的候选范围</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#指定表达式的重复次数"><span class="nav-number">1.3.</span> <span class="nav-text">指定表达式的重复次数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#利用正则匹配的缓存"><span class="nav-number">2.</span> <span class="nav-text">利用正则匹配的缓存</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#命令格式"><span class="nav-number">1.</span> <span class="nav-text">命令格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用选项"><span class="nav-number">2.</span> <span class="nav-text">常用选项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#命令组成"><span class="nav-number">3.</span> <span class="nav-text">命令组成</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#行选择"><span class="nav-number">3.1.</span> <span class="nav-text">行选择</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#具体操作"><span class="nav-number">3.2.</span> <span class="nav-text">具体操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#命令叠加"><span class="nav-number">3.3.</span> <span class="nav-text">命令叠加</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#额外技巧"><span class="nav-number">3.4.</span> <span class="nav-text">额外技巧</span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -1008,7 +994,7 @@
       <script type="text/javascript">
       function renderGitment(){
         var gitment = new Gitmint({
-            id: '1530345973000',
+            id: '1530631362000',
             owner: 'Kun3375',
             repo: 'kun3375.github.io',
             

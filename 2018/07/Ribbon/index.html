@@ -112,25 +112,28 @@
 
 
 
-  <meta name="description" content="java.util.concurrent 包中提供了许多易用而有效的工具类，诸如 ReentrantLock，CountDownLatch，Semaphore 等等，给日常的并发编程带来了许多便利。他们都使用了同样的框架来完成基本的同步过程：AbstractQueuedSynchronizer （AQS）来实现基本功能，比如获取资源和释放的步骤。">
-<meta name="keywords" content="Java,并发">
+  <meta name="description" content="主要构成Ribbon 是由 netflix 开源的一个客户端负载均衡组件。从客户端的角度取维护服务间请求的负载均衡，并进行一定的容错处理。自然的它的核心接口就是：com.netflix.loadbalancer.ILoadBalancer。 在配置 Ribbon 之前，了解一下 Ribbon 完成负载均衡的几个重要组成部分：  IRule：负载均衡的策略。 IPing：检测服务存活的策略。 Ser">
+<meta name="keywords" content="Java,SpringCloud,Ribbon">
 <meta property="og:type" content="article">
-<meta property="og:title" content="AQS 浅析">
-<meta property="og:url" content="http://kun3375.com/2018/07/02/AQS-浅析/index.html">
+<meta property="og:title" content="Ribbon 摘要">
+<meta property="og:url" content="http://kun3375.com/2018/07/Ribbon/index.html">
 <meta property="og:site_name" content="码路狂飙">
-<meta property="og:description" content="java.util.concurrent 包中提供了许多易用而有效的工具类，诸如 ReentrantLock，CountDownLatch，Semaphore 等等，给日常的并发编程带来了许多便利。他们都使用了同样的框架来完成基本的同步过程：AbstractQueuedSynchronizer （AQS）来实现基本功能，比如获取资源和释放的步骤。">
+<meta property="og:description" content="主要构成Ribbon 是由 netflix 开源的一个客户端负载均衡组件。从客户端的角度取维护服务间请求的负载均衡，并进行一定的容错处理。自然的它的核心接口就是：com.netflix.loadbalancer.ILoadBalancer。 在配置 Ribbon 之前，了解一下 Ribbon 完成负载均衡的几个重要组成部分：  IRule：负载均衡的策略。 IPing：检测服务存活的策略。 Ser">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-08-04T04:03:23.491Z">
+<meta property="og:image" content="http://kun3375.com/images/ILoadBalancer.png">
+<meta property="og:image" content="http://kun3375.com/images/IRule.png">
+<meta property="og:updated_time" content="2018-08-04T04:03:23.492Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="AQS 浅析">
-<meta name="twitter:description" content="java.util.concurrent 包中提供了许多易用而有效的工具类，诸如 ReentrantLock，CountDownLatch，Semaphore 等等，给日常的并发编程带来了许多便利。他们都使用了同样的框架来完成基本的同步过程：AbstractQueuedSynchronizer （AQS）来实现基本功能，比如获取资源和释放的步骤。">
+<meta name="twitter:title" content="Ribbon 摘要">
+<meta name="twitter:description" content="主要构成Ribbon 是由 netflix 开源的一个客户端负载均衡组件。从客户端的角度取维护服务间请求的负载均衡，并进行一定的容错处理。自然的它的核心接口就是：com.netflix.loadbalancer.ILoadBalancer。 在配置 Ribbon 之前，了解一下 Ribbon 完成负载均衡的几个重要组成部分：  IRule：负载均衡的策略。 IPing：检测服务存活的策略。 Ser">
+<meta name="twitter:image" content="http://kun3375.com/images/ILoadBalancer.png">
 
 
 
 
 
 
-  <link rel="canonical" href="http://kun3375.com/2018/07/02/AQS-浅析/"/>
+  <link rel="canonical" href="http://kun3375.com/2018/07/Ribbon/"/>
 
 
 
@@ -140,7 +143,7 @@
   };
 </script>
 
-  <title>AQS 浅析 | 码路狂飙</title>
+  <title>Ribbon 摘要 | 码路狂飙</title>
   
 
 
@@ -340,7 +343,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://kun3375.com/2018/07/02/AQS-浅析/">
+    <link itemprop="mainEntityOfPage" href="http://kun3375.com/2018/07/Ribbon/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="斯特拉不用电">
@@ -357,7 +360,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">AQS 浅析
+          <h1 class="post-title" itemprop="name headline">Ribbon 摘要
               
             
           </h1>
@@ -382,7 +385,7 @@
                 
               
 
-              <time title="创建时间：2018-07-02 11:27:16" itemprop="dateCreated datePublished" datetime="2018-07-02T11:27:16+08:00">2018-07-02</time>
+              <time title="创建时间：2018-07-01 19:25:07" itemprop="dateCreated datePublished" datetime="2018-07-01T19:25:07+08:00">2018-07-01</time>
             
 
             
@@ -431,8 +434,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2018/07/02/AQS-浅析/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2018/07/02/AQS-浅析/" itemprop="commentsCount"></span>
+                <a href="/2018/07/Ribbon/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2018/07/Ribbon/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -468,51 +471,62 @@
       
 
       
-        <p><code>java.util.concurrent</code> 包中提供了许多易用而有效的工具类，诸如 <strong>ReentrantLock</strong>，<strong>CountDownLatch</strong>，<strong>Semaphore</strong> 等等，给日常的并发编程带来了许多便利。他们都使用了同样的框架来完成基本的同步过程：<strong><em>AbstractQueuedSynchronizer</em></strong> （AQS）来实现基本功能，比如获取资源和释放的步骤。</p>
+        <h2 id="主要构成"><a href="#主要构成" class="headerlink" title="主要构成"></a>主要构成</h2><p>Ribbon 是由 netflix 开源的一个客户端负载均衡组件。从客户端的角度取维护服务间请求的负载均衡，并进行一定的容错处理。<br>自然的它的核心接口就是：<code>com.netflix.loadbalancer.ILoadBalancer</code>。</p>
+<p>在配置 Ribbon 之前，了解一下 Ribbon 完成负载均衡的几个重要组成部分：</p>
+<ul>
+<li><strong><code>IRule</code></strong>：负载均衡的策略。</li>
+<li><strong><code>IPing</code></strong>：检测服务存活的策略。</li>
+<li><strong><code>ServerList&lt;T&gt;</code></strong>：拉取服务实例列表的策略。</li>
+<li><strong><code>ServerListUpdater</code></strong>：更新服务列表的触发策略。</li>
+<li><strong><code>ServerListFilter&lt;T&gt;</code></strong>：服务过滤方案。</li>
+</ul>
 <a id="more"></a>
-<h2 id="简单了解"><a href="#简单了解" class="headerlink" title="简单了解"></a>简单了解</h2><p>戳开 AQS 一览其结构，其实它本身维护了两个概念：</p>
+<p>参考下面的类关系图，可以有一个更好的印象：</p>
+<p><img src="/images/ILoadBalancer.png" alt="ILoadBalancer"></p>
+<h3 id="IRule"><a href="#IRule" class="headerlink" title="IRule"></a>IRule</h3><p>负载均衡策略接口，可能最常需要配置的就是它了，配置也没什么特殊的，就以 Spring 常用的方式即可。通常情况下 Ribbon 原生的几个负载均衡策略应该可以满足生产要求（当然你也可以自定义），来了解一下：</p>
+<p><img src="/images/IRule.png" alt="IRule"></p>
 <ul>
-<li>state：（volatile int）该属性维护了资源的状态，或者是数量。</li>
-<li>CLH queue：一个先进先出的线程等待队列。这并不是一个具体对象，而是通过内部类 Node 来维护的。</li>
+<li><strong><code>AbstractLoadBalancerRule</code></strong> 顶级的抽象类，给予了获得 LoadBalancer 的方法，可以让子类获得负载均衡器的一些信息，定制更具体的算法。</li>
+<li><strong><code>RandomRule</code></strong> 通过 LoadBalancer 获取可用的服务实例，并<strong>随机</strong>挑选。（一直无可实例时有无限循环 bug）</li>
+<li><strong><code>RoundRobinRule</code></strong> 通过 LoadBalancer 获取可用的服务实例，并<strong>轮询</strong>选择。（超过 <em>10</em> 次失败时，打印机警告并返回 null）</li>
+<li><strong><code>RetryRule</code></strong> 默认有一个 RoundRobinRule 的子规则，和 <em>500</em> 毫秒的阈值。<strong>使用子规则</strong>选择实例，执行时间若超过阈值则返回 null。</li>
+<li><strong><code>WeightedResponseTimeRule</code></strong> 继承自 RoundRobinRule。在构造时会启动一个定时任务，默认每 <em>30</em> 秒执行一次，来计算服务实例的权重。在默认的算法下，<strong>响应速度</strong>越快的服务实例权重越大，越容易被选择。</li>
+<li><strong><code>ClientConfigEnabledRoundRobinRule</code></strong> 本身定义了一个 RoundRobinRule 的子规则。本且默认的 choose 方法也是执行 RoundRobinRule 的实现。本身没有特殊用处，这个默认会实现是在其子类的算法无法实现时采用，通常会选择该类作父类继承，实现自定义的规则，以<strong>保证拥有一个默认的轮询规则</strong>。</li>
+<li><strong><code>BestAvaliableRule</code></strong> 通过 LoadBalancerStats 选择<strong>并发请求最小</strong>的实例。</li>
+<li><strong><code>PredicateBasedRule</code></strong> 利用<strong>子类</strong>的 Predicate <strong>过滤</strong>部分服务实例后通过轮询选择。</li>
+<li><strong><code>AvailabilityFilteringRule</code></strong> <strong>轮询</strong>选择一个服务实例，判断是否故障（断路器断开），并发请求是否大于阈值（默认2^32-1，可通过<code>&lt;clientName&gt;.&lt;nameSpace&gt;.ActiveConnectionsLimit</code> 修改）。允许则返回，不允许则再次选择，失败 <em>10</em> 次后执行父类方案。</li>
+<li><strong><code>ZoneAvoidanceRule</code></strong> 使用组合过滤条件执行<strong>过滤</strong>，每次过滤后会判断实例数是否小于最小实例数（默认1），是否大于过滤百分比（默认0），不再过滤后使用<strong>轮询</strong>选择。</li>
 </ul>
-<p>AQS 对于 state 支持两种模式的资源共享形式：</p>
+<h2 id="具体配置"><a href="#具体配置" class="headerlink" title="具体配置"></a>具体配置</h2><p>在项目中是可以配置多个 Ribbon 客户端的，通常来说每个客户端用来访问不同的服务。比如为访问 A 服务的 Ribbon 客户端配置为 A-Client，B 服务为 B-Client。</p>
+<h3 id="通过代码配置"><a href="#通过代码配置" class="headerlink" title="通过代码配置"></a>通过代码配置</h3><p>首先来介绍通过注解配置的方法，像简单的 Sring Bean 配置一样，不过不需要使用 <code>@Configuration</code> 注解了。在配置类上启用 <code>@RibbonClient</code>，给定客户端的名称和配置类，使用 <code>@Bean</code> 来配置具体的组件如 IRule 等。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RibbonClient</span>(name = <span class="string">"A-Client"</span>,configuration = ARibbonConfig.class)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ARibbonConfig</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 服务实例的地址</span></span><br><span class="line">    String listOfServers = <span class="string">"http://127.0.0.1:8081,http://127.0.0.1:8082"</span>;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ServerList&lt;Server&gt; <span class="title">ribbonServerList</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        List&lt;Server&gt; list = Lists.newArrayList();</span><br><span class="line">        <span class="keyword">if</span> (!Strings.isNullOrEmpty(listOfServers)) &#123;</span><br><span class="line">            <span class="keyword">for</span> (String s: listOfServers.split(<span class="string">","</span>)) &#123;</span><br><span class="line">                list.add(<span class="keyword">new</span> Server(s.trim()));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> StaticServerList&lt;Server&gt;(list);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>官方文档上提示了一个<strong><em>坑</em></strong>，不能把加了配置注解的具体的配置类放在 <code>@ComponentScan</code> 路径下，否则先扫描到的一个具体的客户端配置会成为 Ribbon 的全局配置。</p>
+<p>这怎么能忍？当然得有更优雅的解决方式：全局配置的方案。<br>使用 @RibbonClients 注解，一次可以描述多个客户端配置类的位置，同时也可以指定默认配置类，如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SpringCloudApplication</span></span><br><span class="line"><span class="meta">@RibbonClients</span>(value = &#123;</span><br><span class="line">    <span class="meta">@RibbonClient</span>(name = <span class="string">"A-Client"</span>,configuration = ARibbonConfig.class),</span><br><span class="line">    <span class="meta">@RibbonClient</span>(name = <span class="string">"B-Client"</span>,configuration = BRibbonConfig.class)</span><br><span class="line">&#125;, defaultConfiguration = DefaultConfig.class)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DemoServiceApplication</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        SpringApplication.run(DemoServiceApplication.class, args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样配置可以不需要再在配置类上加上注解了，也可以不需要将配置类移出包扫描路径。</p>
+<h3 id="通过配置文件指定"><a href="#通过配置文件指定" class="headerlink" title="通过配置文件指定"></a>通过配置文件指定</h3><p>但是以上这样的代码配置还是稍显复杂，在目前的 SpringCloud 中 Ribbon 的配置可以直接 SpringBoot 的配置文件中写入，使用如下的方式指定要配置的参数：</p>
+<pre><code>&lt;nameSpace&gt;.&lt;key&gt;=&lt;value&gt; 
+</code></pre><p>默认的命名空间是 ribbon，例如定义连接超时时间可以：</p>
+<pre><code>ribbon.connectTimeout=120
+</code></pre><p>而当需要为具体的客户端配置时，可以使用：</p>
+<pre><code>&lt;client&gt;.&lt;nameSpace&gt;.&lt;key&gt;=&lt;value&gt;
+</code></pre><p>比如：</p>
+<pre><code>user-service.ribbon.listOfServers=localhost:8001,localhost:8002
+</code></pre><p>关于 ribbon 所有的参数名称，可以参看 <code>com.netfix.client.config.CommonClientConfigKey&lt;T&gt;</code>。</p>
+<h3 id="与-Eureka-整合后的配置"><a href="#与-Eureka-整合后的配置" class="headerlink" title="与 Eureka 整合后的配置"></a>与 Eureka 整合后的配置</h3><p>在使用 Eureka 的时候，会改变 Ribbon 一些组件的默认实现，如：</p>
 <ul>
-<li>Exclusive-排他式：进程独占形式，如 ReentrantLock，Mutex 的应用。</li>
-<li>Share-共享式：支持多线程访问，典型的应用式 CountDownLatch / Semaphore。</li>
+<li><code>ServerList</code> -&gt; <code>DiscoveryEnabledNIWSServerList</code>：由 Eureka 来维护服务列表</li>
+<li><code>IPing</code> -&gt; <code>NIWSDiscoveryPing</code>：由 Eureka 测试服务存活（原配的 <code>DummyPing</code> 并不会 ping，而是始终返回 true）</li>
 </ul>
-<p>子类实现 AQS 时候只需要实现关于 state 的获取（acquire）和释放（release）方案即可，包括队列的维护，线程的唤醒等工作，大部分都在 AQS 维护了。举个栗子，在使用 CountDownLatch 的时候，我们会初始化一个计数值 n 用于对应 n 个子线程，这个 n 同时也对应了 state 值，每一次 <code>countDown()</code> 的时候，会使得 state CAS 地减 1。在 state 归零的时候会使用 <code>unpark()</code>，主线程 从 <code>await()</code> 函数返回。</p>
-<h2 id="工作流程"><a href="#工作流程" class="headerlink" title="工作流程"></a>工作流程</h2><p>AQS 的 API 同一般的同步工具 API 一样，除了对于资源的 <code>acquire</code> / <code>release</code> 操作，还提供的了 <code>tryAcquire</code> / <code>tryRelease</code> 的非阻塞操作。同时 <code>acquireInterruptibly</code> 支持线程中断。如果需要使用共享式的操作，需要实现对应的 Share 操作方法。</p>
-<h3 id="资源获取"><a href="#资源获取" class="headerlink" title="资源获取"></a>资源获取</h3><p>首先看 <code>acquire</code> 方法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">acquire</span><span class="params">(<span class="keyword">int</span> arg)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!tryAcquire(arg) &amp;&amp; acquireQueued(addWaiter(Node.EXCLUSIVE), arg))</span><br><span class="line">        selfInterrupt();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<ul>
-<li><code>tryAcquire(int)</code>：尝试获取资源</li>
-<li><code>addWaiter(Node)</code>：使线程（Node 对象维护这线程对象）进入等待队列，对于 acquire 方法使用 EXCLUSICE-排他模式。</li>
-<li><code>acquireQueued(Node, int)</code>：在这一步骤中线程会等待，而在线程唤醒后会尝试在该方法内获取资源。</li>
-<li><code>selfInterrupt</code>：由于线程在等待过程中无法响应中断，所以在获取资源并退出队列后补充一个中断。</li>
-</ul>
-<p><code>tryAcquire(int)</code> 方法默认会抛出操作不支持的异常，需要子类的具体实现。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">boolean</span> <span class="title">tryAcquire</span><span class="params">(<span class="keyword">int</span> arg)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> UnsupportedOperationException();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><code>addWaiter(Node, int)</code> 方法会自旋使用 CAS 方式将一个 Node 加入队尾。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> Node <span class="title">addWaiter</span><span class="params">(Node mode)</span> </span>&#123;</span><br><span class="line">    Node node = <span class="keyword">new</span> Node(Thread.currentThread(), mode);</span><br><span class="line">    <span class="comment">// Try the fast path of enq; backup to full enq on failure</span></span><br><span class="line">    Node pred = tail;</span><br><span class="line">    <span class="keyword">if</span> (pred != <span class="keyword">null</span>) &#123;</span><br><span class="line">        node.prev = pred;</span><br><span class="line">        <span class="keyword">if</span> (compareAndSetTail(pred, node)) &#123;</span><br><span class="line">            pred.next = node;</span><br><span class="line">            <span class="keyword">return</span> node;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    enq(node);</span><br><span class="line">    <span class="keyword">return</span> node;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">private</span> Node <span class="title">enq</span><span class="params">(<span class="keyword">final</span> Node node)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">        Node t = tail;</span><br><span class="line">        <span class="keyword">if</span> (t == <span class="keyword">null</span>) &#123; <span class="comment">// Must initialize</span></span><br><span class="line">            <span class="keyword">if</span> (compareAndSetHead(<span class="keyword">new</span> Node()))</span><br><span class="line">                tail = head;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            node.prev = t;</span><br><span class="line">            <span class="keyword">if</span> (compareAndSetTail(t, node)) &#123;</span><br><span class="line">                t.next = node;</span><br><span class="line">                <span class="keyword">return</span> t;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>从上面两个方法可以看出位于队列头部的 Node 其实只是一个标记，在队列第二位置的时候，线程已经可以获取资源并进行相关任务了。</p>
-<p><code>acquireQueued(Node, int)</code> 更关键的一步，在获取资源失败， Node 已经被加入队尾之后，线程需要进入等待状态等待被唤醒。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">acquireQueued</span><span class="params">(<span class="keyword">final</span> Node node, <span class="keyword">int</span> arg)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">boolean</span> failed = <span class="keyword">true</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">boolean</span> interrupted = <span class="keyword">false</span>;</span><br><span class="line">        <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">            <span class="keyword">final</span> Node p = node.predecessor();</span><br><span class="line">            <span class="keyword">if</span> (p == head &amp;&amp; tryAcquire(arg)) &#123;</span><br><span class="line">                setHead(node);</span><br><span class="line">                p.next = <span class="keyword">null</span>; <span class="comment">// help GC</span></span><br><span class="line">                failed = <span class="keyword">false</span>;</span><br><span class="line">                <span class="keyword">return</span> interrupted;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (shouldParkAfterFailedAcquire(p, node) &amp;&amp;</span><br><span class="line">                parkAndCheckInterrupt())</span><br><span class="line">                interrupted = <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (failed)</span><br><span class="line">            cancelAcquire(node);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>shouldParkAfterFailedAcquire(Node, Node) 每个节点是否需要等待需要阻塞取决于前驱节点的状态。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">shouldParkAfterFailedAcquire</span><span class="params">(Node pred, Node node)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> ws = pred.waitStatus;</span><br><span class="line">    <span class="keyword">if</span> (ws == Node.SIGNAL)</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    <span class="keyword">if</span> (ws &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">do</span> &#123;</span><br><span class="line">            node.prev = pred = pred.prev;</span><br><span class="line">        &#125; <span class="keyword">while</span> (pred.waitStatus &gt; <span class="number">0</span>);</span><br><span class="line">        pred.next = node;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        compareAndSetWaitStatus(pred, ws, Node.SIGNAL);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>前驱节点最后会通过该状态值来判断是否需要 unpark 下个线程。在这里，如果前驱节点标识为 SIGNAL，则进入等待；标识为 CANCAL 需要追溯更前的节点状态；如果为其他正常值，则更新为 SIGNAL。</p>
-<p><code>parkAndCheckInterrupt()</code> 使线程进入 WATING，等待 unpark（在 release 中触发，马上就来） 或者 interrupt，被唤醒后回到 <code>acquireQueued</code> 触发中断或者继续检查是否可以获取资源。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">parkAndCheckInterrupt</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    LockSupport.park(<span class="keyword">this</span>);</span><br><span class="line">    <span class="keyword">return</span> Thread.interrupted();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="释放资源并唤醒后置线程"><a href="#释放资源并唤醒后置线程" class="headerlink" title="释放资源并唤醒后置线程"></a>释放资源并唤醒后置线程</h3><p>这是 <code>acquire</code> 方法的反操作，用于资源的释放，当资源成功释放时，唤醒下一个线程（位于头节点之后）。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">release</span><span class="params">(<span class="keyword">int</span> arg)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (tryRelease(arg)) &#123;</span><br><span class="line">        Node h = head;</span><br><span class="line">        <span class="keyword">if</span> (h != <span class="keyword">null</span> &amp;&amp; h.waitStatus != <span class="number">0</span>)</span><br><span class="line">            unparkSuccessor(h);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>通过 <code>tryRelease(int)</code> 方法判断资源是否释放，这个方法同样需要被实现：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">boolean</span> <span class="title">tryRelease</span><span class="params">(<span class="keyword">int</span> arg)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> UnsupportedOperationException();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>而 <code>unparkSuccessor(Node)</code> 方法用来真正唤醒 node.next 中的线程：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">unparkSuccessor</span><span class="params">(Node node)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> ws = node.waitStatus;</span><br><span class="line">    <span class="keyword">if</span> (ws &lt; <span class="number">0</span>)</span><br><span class="line">        compareAndSetWaitStatus(node, ws, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    Node s = node.next;</span><br><span class="line">    <span class="keyword">if</span> (s == <span class="keyword">null</span> || s.waitStatus &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        s = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">for</span> (Node t = tail; t != <span class="keyword">null</span> &amp;&amp; t != node; t = t.prev)</span><br><span class="line">            <span class="keyword">if</span> (t.waitStatus &lt;= <span class="number">0</span>)</span><br><span class="line">                s = t;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (s != <span class="keyword">null</span>)</span><br><span class="line">        LockSupport.unpark(s.thread);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>看到这就能了解整个 AQS 的运作流程了。在 parkAndCheckInterrupt 中进入 WAITING 的线程，在这里被唤醒，它会继续进入 <code>acquireQueued</code> 中的自旋，如果 <code>tryAcquire</code> 顺利获得资源，则将本线程的节点设置为 head 并返回 acquire 方法。so, go on.</p>
-<p>AQS 本身并不复杂，使用时只需要手动实现 <code>tryAcquire</code> 和 <code>tryRealeas</code> 方法。</p>
-<p>而对于 Share-共享式的 acquire / release 流程，区别并不太大，有兴趣的小伙伴可以自行翻阅源码一探究竟。</p>
-<h6 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h6><ol>
-<li><a href="https://mp.weixin.qq.com/s/eyZyzk8ZzjwzZYN4a4H5YA" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/eyZyzk8ZzjwzZYN4a4H5YA</a></li>
-</ol>
+<p>而且针对不同服务不需要显示地配置不一样的客户端名称了，只需要使用</p>
+<pre><code>&lt;serviceName&gt;.&lt;nameSpace&gt;.&lt;key&gt;=&lt;value&gt;
+</code></pre><p>如 user-service：</p>
+<pre><code>user-service.ribbon.ReadTimeout=120
+</code></pre><p>同时由于 SpringCloud Ribbon 默认实现区域亲和策略，zone 的配置也十分简单，只需要加入元数据集中即可，如：</p>
+<pre><code>eureka.instance.metadataMap.zone=huzhou
+</code></pre><p>如果不需要 Eureka 辅助 Ribbon 的自动配置（这不太可能吧），则可以使用：</p>
+<pre><code>ribbon.eureka.enable=false
+</code></pre><p>这时候，记得自己得手动配置 listOfServers 等参数了。</p>
 
       
     </div>
@@ -559,7 +573,9 @@
           
             <a href="/tags/Java/" rel="tag"># Java</a>
           
-            <a href="/tags/并发/" rel="tag"># 并发</a>
+            <a href="/tags/SpringCloud/" rel="tag"># SpringCloud</a>
+          
+            <a href="/tags/Ribbon/" rel="tag"># Ribbon</a>
           
         </div>
       
@@ -587,8 +603,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/07/01/Ribbon/" rel="next" title="Ribbon 摘要">
-                <i class="fa fa-chevron-left"></i> Ribbon 摘要
+              <a href="/2018/06/正则笔记/" rel="next" title="正则笔记">
+                <i class="fa fa-chevron-left"></i> 正则笔记
               </a>
             
           </div>
@@ -597,8 +613,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/07/03/文字处理-sed/" rel="prev" title="文字处理-sed">
-                文字处理-sed <i class="fa fa-chevron-right"></i>
+              <a href="/2018/07/AQS-浅析/" rel="prev" title="AQS 浅析">
+                AQS 浅析 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -785,7 +801,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简单了解"><span class="nav-number">1.</span> <span class="nav-text">简单了解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#工作流程"><span class="nav-number">2.</span> <span class="nav-text">工作流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#资源获取"><span class="nav-number">2.1.</span> <span class="nav-text">资源获取</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#释放资源并唤醒后置线程"><span class="nav-number">2.2.</span> <span class="nav-text">释放资源并唤醒后置线程</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#参考"><span class="nav-number">2.2.0.0.1.</span> <span class="nav-text">参考</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#主要构成"><span class="nav-number">1.</span> <span class="nav-text">主要构成</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#IRule"><span class="nav-number">1.1.</span> <span class="nav-text">IRule</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#具体配置"><span class="nav-number">2.</span> <span class="nav-text">具体配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#通过代码配置"><span class="nav-number">2.1.</span> <span class="nav-text">通过代码配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#通过配置文件指定"><span class="nav-number">2.2.</span> <span class="nav-text">通过配置文件指定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#与-Eureka-整合后的配置"><span class="nav-number">2.3.</span> <span class="nav-text">与 Eureka 整合后的配置</span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -986,7 +1002,7 @@
       <script type="text/javascript">
       function renderGitment(){
         var gitment = new Gitmint({
-            id: '1530502036000',
+            id: '1530444307000',
             owner: 'Kun3375',
             repo: 'kun3375.github.io',
             
