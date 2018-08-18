@@ -4,6 +4,28 @@
 
     
   <url>
+    <loc>http://kun3375.com/2018/08/RocketMQ-Producer-%E6%91%98%E8%A6%81/</loc>
+    <lastmod>2018-08-18T05:31:12.227Z</lastmod>
+    <data>
+        <display>
+        <title>RocketMQ Producer 摘要</title>
+        <pubTime>2018-08-18T05:01:01.000Z</pubTime>
+        
+        <tag>MQ</tag>
+         
+        <tag>RocketMQ</tag>
+         
+         
+           
+             
+              <breadCrumb title="RocketMQ" url="http://kun3375.com/categories/RocketMQ/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://kun3375.com/2018/08/RocketMQ-Consumer-%E6%91%98%E8%A6%81/</loc>
     <lastmod>2018-08-12T15:09:20.934Z</lastmod>
     <data>
@@ -114,30 +136,6 @@
     
     
   <url>
-    <loc>http://kun3375.com/2018/07/Ribbon/</loc>
-    <lastmod>2018-08-04T04:03:23.492Z</lastmod>
-    <data>
-        <display>
-        <title>Ribbon 摘要</title>
-        <pubTime>2018-07-01T11:25:07.000Z</pubTime>
-        
-        <tag>Java</tag>
-         
-        <tag>SpringCloud</tag>
-         
-        <tag>Ribbon</tag>
-         
-         
-           
-             
-              <breadCrumb title="Java" url="http://kun3375.com/categories/Java/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://kun3375.com/2018/07/%E5%AE%9E%E7%8E%B0-MyBatis-%E6%8F%92%E4%BB%B6/</loc>
     <lastmod>2018-08-04T04:03:23.492Z</lastmod>
     <data>
@@ -160,12 +158,12 @@
 
     
   <url>
-    <loc>http://kun3375.com/2018/07/Dockerfile-%E4%B8%AD%E4%B8%89%E4%B8%AA%E8%BF%90%E8%A1%8C%E6%8C%87%E4%BB%A4%E7%9A%84%E5%B7%AE%E5%BC%82/</loc>
+    <loc>http://kun3375.com/2018/07/Docker/</loc>
     <lastmod>2018-08-04T04:03:23.492Z</lastmod>
     <data>
         <display>
-        <title>Dockerfile 中三个运行指令的差异</title>
-        <pubTime>2018-07-07T08:43:37.000Z</pubTime>
+        <title>Docker 挂载与数据存储</title>
+        <pubTime>2018-07-09T13:54:45.000Z</pubTime>
         
         <tag>Docker</tag>
          
@@ -173,6 +171,30 @@
            
              
               <breadCrumb title="Docker" url="http://kun3375.com/categories/Docker/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://kun3375.com/2018/07/Ribbon/</loc>
+    <lastmod>2018-08-04T04:03:23.492Z</lastmod>
+    <data>
+        <display>
+        <title>Ribbon 摘要</title>
+        <pubTime>2018-07-01T11:25:07.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>SpringCloud</tag>
+         
+        <tag>Ribbon</tag>
+         
+         
+           
+             
+              <breadCrumb title="Java" url="http://kun3375.com/categories/Java/"/>
           
         </display>
     </data>
@@ -202,12 +224,12 @@
 
     
   <url>
-    <loc>http://kun3375.com/2018/07/Docker/</loc>
+    <loc>http://kun3375.com/2018/07/Dockerfile-%E4%B8%AD%E4%B8%89%E4%B8%AA%E8%BF%90%E8%A1%8C%E6%8C%87%E4%BB%A4%E7%9A%84%E5%B7%AE%E5%BC%82/</loc>
     <lastmod>2018-08-04T04:03:23.492Z</lastmod>
     <data>
         <display>
-        <title>Docker 挂载与数据存储</title>
-        <pubTime>2018-07-09T13:54:45.000Z</pubTime>
+        <title>Dockerfile 中三个运行指令的差异</title>
+        <pubTime>2018-07-07T08:43:37.000Z</pubTime>
         
         <tag>Docker</tag>
          
