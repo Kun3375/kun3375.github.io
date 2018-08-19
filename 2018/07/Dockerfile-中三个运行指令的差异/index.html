@@ -478,7 +478,7 @@
 <li><code>RUN &lt;command&gt; &lt;option&gt; &lt;param&gt;</code></li>
 <li><code>RUN [&quot;command&quot;, &quot;option&quot;, &quot;param&quot;]</code></li>
 </ul>
-<p>带来一个 Shell 风格的安装 Git 的例子：<br><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">RUN</span> apt-get update &amp;&amp; apt-get install -y git</span><br></pre></td></tr></table></figure></p>
+<p>带来一个 Shell 风格的安装 Git 的例子：<br><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">RUN</span><span class="bash"> apt-get update &amp;&amp; apt-get install -y git</span></span><br></pre></td></tr></table></figure></p>
 <p>这里使用 <strong>&amp;&amp;</strong> 可以使得在同一层镜像层上更新 apt 并下载 git。</p>
 <h2 id="CMD-命令"><a href="#CMD-命令" class="headerlink" title="CMD 命令"></a>CMD 命令</h2><p><code>CMD</code> 命令的格式有三种，前两者都是用来<strong>定义容器的默认行为</strong>，后者用来给 <code>ENTRYPOINT</code> 命令提供<strong>额外的可替换参数</strong>。</p>
 <ol>
@@ -486,7 +486,7 @@
 <li><code>CMD [&quot;command&quot;, &quot;option&quot;, &quot;param&quot;]</code></li>
 <li><code>CMD [&quot;param&quot;...]</code></li>
 </ol>
-<p>先说前两者用作执行默认命令的情况，以一个官方 Nginx 的 Dockerfile 为例：<br><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 前置步骤忽略</span></span><br><span class="line"><span class="keyword">CMD</span> ["nginx", "-g", "daemon off;"]</span><br></pre></td></tr></table></figure></p>
+<p>先说前两者用作执行默认命令的情况，以一个官方 Nginx 的 Dockerfile 为例：<br><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 前置步骤忽略</span></span><br><span class="line"><span class="keyword">CMD</span><span class="bash"> [<span class="string">"nginx"</span>, <span class="string">"-g"</span>, <span class="string">"daemon off;"</span>]</span></span><br></pre></td></tr></table></figure></p>
 <p>该命令使得以该 Nginx 镜像构建的容器，在启动时候默认地自动运行 Nginx。但是既然是定义<strong>默认</strong>行为，那么它是可以在运行容器的时候被更改的，比如像下面这样：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo docker run -p 80:80 nginx <span class="built_in">echo</span> hello-world</span><br></pre></td></tr></table></figure></p>
 <p>那么这个时候容器并不会启动一个 Nginx 服务，而是打印了 hello-world。并且这个容器会随着打印命令的结束而停止。</p>
 <p>需要注意的是，既然 <code>CMD</code> 定义<strong>默认</strong>行为，那么它在 Dockerfile 中只能存在一个（如果定义了多个 <code>CMD</code>，那个最后一个有效）</p>
@@ -670,7 +670,7 @@
                 
                   <a href="/archives">
                 
-                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-count">13</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

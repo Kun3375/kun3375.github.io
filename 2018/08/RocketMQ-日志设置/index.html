@@ -112,24 +112,25 @@
 
 
 
-  <meta name="description" content="代码很酷，留下思考和记录">
-<meta name="keywords" content="Java,Docker,Linux,Shell,Python,MQ,Redis,ES">
-<meta property="og:type" content="website">
-<meta property="og:title" content="码路狂飙">
-<meta property="og:url" content="http://kun3375.com/categories/shell/index.html">
+  <meta name="description" content="日志配置文件位置RocketMQ 日志基于 slf4j 实现，支持 Logback、Log4j。如果需要指定日志的配置文件的位置有三种方式：  环境变量：ROCKETMQ_CLIENT_LOG_CONFIGFILE=&amp;lt;custom-file&amp;gt; 启动参数：rocketmq.client.log.configFile=&amp;lt;customer-file&amp;gt;，作为 JVM 变量，启动时时">
+<meta name="keywords" content="MQ,RocketMQ">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RocketMQ 日志设置">
+<meta property="og:url" content="http://kun3375.com/2018/08/RocketMQ-日志设置/index.html">
 <meta property="og:site_name" content="码路狂飙">
-<meta property="og:description" content="代码很酷，留下思考和记录">
+<meta property="og:description" content="日志配置文件位置RocketMQ 日志基于 slf4j 实现，支持 Logback、Log4j。如果需要指定日志的配置文件的位置有三种方式：  环境变量：ROCKETMQ_CLIENT_LOG_CONFIGFILE=&amp;lt;custom-file&amp;gt; 启动参数：rocketmq.client.log.configFile=&amp;lt;customer-file&amp;gt;，作为 JVM 变量，启动时时">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-08-19T06:27:06.532Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="码路狂飙">
-<meta name="twitter:description" content="代码很酷，留下思考和记录">
+<meta name="twitter:title" content="RocketMQ 日志设置">
+<meta name="twitter:description" content="日志配置文件位置RocketMQ 日志基于 slf4j 实现，支持 Logback、Log4j。如果需要指定日志的配置文件的位置有三种方式：  环境变量：ROCKETMQ_CLIENT_LOG_CONFIGFILE=&amp;lt;custom-file&amp;gt; 启动参数：rocketmq.client.log.configFile=&amp;lt;customer-file&amp;gt;，作为 JVM 变量，启动时时">
 
 
 
 
 
 
-  <link rel="canonical" href="http://kun3375.com/categories/shell/">
+  <link rel="canonical" href="http://kun3375.com/2018/08/RocketMQ-日志设置/">
 
 
 
@@ -139,7 +140,7 @@
   };
 </script>
 
-  <title>分类: shell | 码路狂飙</title>
+  <title>RocketMQ 日志设置 | 码路狂飙</title>
   
 
 
@@ -190,7 +191,7 @@
     
   
 
-  <div class="container sidebar-position-left ">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
@@ -239,7 +240,7 @@
         
         
           
-          <li class="menu-item menu-item-分类 menu-item-active">
+          <li class="menu-item menu-item-分类">
     <a href="/categories/" rel="section">
       <i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
   </li>
@@ -275,25 +276,6 @@
 
   
     
-
-    
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-    
-
-  
-
 
   
 
@@ -340,83 +322,271 @@
           <div id="content" class="content">
             
 
-  
-  
-  
-  <div class="post-block category">
+  <div id="posts" class="posts-expand">
+    
 
-    <div id="posts" class="posts-collapse">
-      <div class="collection-title">
-        <h1>shell<small>分类</small>
-        </h1>
-      </div>
+  
 
-      
-        
+  
+  
+  
+
+  
 
   <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://kun3375.com/2018/08/RocketMQ-日志设置/">
 
-      <h2 class="post-title">
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="斯特拉不用电">
+      <meta itemprop="description" content="代码很酷，留下思考和记录">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="码路狂飙">
+    </span>
+
+    
+      <header class="post-header">
+
         
-            <a class="post-title-link" href="/2018/07/文字处理-sed/" itemprop="url">
-              
-                <span itemprop="name">文字处理-sed</span>
-              
-            </a>
         
-      </h2>
+          <h1 class="post-title" itemprop="name headline">RocketMQ 日志设置
+              
+            
+          </h1>
+        
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2018-07-03T23:22:42+08:00" content="2018-07-03">
-          07-03
-        </time>
-      </div>
+        <div class="post-meta">
+          <span class="post-time">
 
-    </header>
-  </article>
+            
+            
+            
 
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-08-19 14:18:41 / 修改时间：14:27:06" itemprop="dateCreated datePublished" datetime="2018-08-19T14:18:41+08:00">2018-08-19</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/RocketMQ/" itemprop="url" rel="index"><span itemprop="name">RocketMQ</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/08/RocketMQ-日志设置/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2018/08/RocketMQ-日志设置/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-        
+      
 
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/06/正则笔记/" itemprop="url">
-              
-                <span itemprop="name">正则笔记</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2018-06-30T16:06:13+08:00" content="2018-06-30">
-          06-30
-        </time>
-      </div>
-
-    </header>
-  </article>
-
+      
+        <h2 id="日志配置文件位置"><a href="#日志配置文件位置" class="headerlink" title="日志配置文件位置"></a>日志配置文件位置</h2><p>RocketMQ 日志基于 slf4j 实现，支持 Logback、Log4j。如果需要指定日志的配置文件的位置有三种方式：</p>
+<ul>
+<li>环境变量：<br><code>ROCKETMQ_CLIENT_LOG_CONFIGFILE=&lt;custom-file&gt;</code></li>
+<li>启动参数：<br><code>rocketmq.client.log.configFile=&lt;customer-file&gt;</code>，作为 JVM 变量，启动时时需要增加 -D 标识，优先级也比环境变量更高</li>
+<li>作为 Java 实现，日志位置信息是通过 <code>System.getProperty()</code> 或者 <code>System,getenv()</code> 得到的，所以可以在程序入口 <code>System.setProperty(“rocketmq.client.log.configFile”, customer_file)</code> 来配置</li>
+</ul>
+<a id="more"></a>
+<h2 id="日志相关系统变量"><a href="#日志相关系统变量" class="headerlink" title="日志相关系统变量"></a>日志相关系统变量</h2><ul>
+<li><code>rocketmq.client.log.loadconfig</code><br>默认 true，是否加载指定配置文件，当设置为 false 时，RocketMQ 客户端会会使用应用本身的日志配置。这可能反而是最简单的日志配置方式</li>
+<li><code>rocketmq.client.log4j.resource.fileName</code>、<code>rocketmq.client.logback.resource.fileName</code>、 <code>rocketmq.client.log4j2.resource.fileName</code><br>三种日志框架的的配置文件名，默认值分别为 log4j_rocketmq_client.xml、logback_rocketmq_client.xml、log4j2_rocketmq_client.xml</li>
+<li><code>rocketmq.client.log.configFile</code><br>日志配置文件路径，上述。如果使用了自定义的日志配置文件，通常你不再需要设置以下的变量了</li>
+<li><code>rocketmq.client.logRoot</code><br>RocketMQ 日志信息默认存放日志为：$USER_HOME/Logs/rocketmqLogs，通过改变此变量可以变更日志路径</li>
+<li><code>rocketmq.client.logLevel</code><br>日志输出级别，默认 INFO</li>
+<li><code>rocketmq.client.logFileMaxIndex</code><br>滚动窗口的索引最大值，默认 10</li>
+</ul>
 
       
     </div>
 
+    
+
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>码路加油</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="斯特拉不用电 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/MQ/" rel="tag"># MQ</a>
+          
+            <a href="/tags/RocketMQ/" rel="tag"># RocketMQ</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div id="needsharebutton-postbottom">
+            <span class="btn">
+              <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </span>
+          </div>
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/08/RocketMQ-Producer-摘要/" rel="next" title="RocketMQ Producer 摘要">
+                <i class="fa fa-chevron-left"></i> RocketMQ Producer 摘要
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
 
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
           
+
+  
+    <div class="comments" id="comments">
+      
+        <div onclick="showGitment()" id="gitment-display-button">显示评论</div>
+        <div id="gitment-container" style="display:none"></div>
+      
+    </div>
+
+  
+
+
 
         </div>
         
@@ -437,8 +607,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -547,6 +726,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#日志配置文件位置"><span class="nav-number">1.</span> <span class="nav-text">日志配置文件位置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#日志相关系统变量"><span class="nav-number">2.</span> <span class="nav-text">日志相关系统变量</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -699,6 +894,10 @@
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.3.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.3.0"></script>
+
+
 
   
 
@@ -734,6 +933,34 @@
 
     
 
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitmint({
+            id: '1534659521000',
+            owner: 'Kun3375',
+            repo: 'kun3375.github.io',
+            
+            lang: "" || navigator.language || navigator.systemLanguage || navigator.userLanguage,
+            
+            oauth: {
+            
+            
+                client_secret: 'ca42d298b0fda51fd3b4327e6c7d7f676fd0e815',
+            
+                client_id: 'ae3ec12efda7fbbba32f'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      function showGitment(){
+        document.getElementById("gitment-display-button").style.display = "none";
+        document.getElementById("gitment-container").style.display = "block";
+        renderGitment();
+      }
+      
+      </script>
     
 
 
