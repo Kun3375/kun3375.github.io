@@ -4,6 +4,26 @@
 
     
   <url>
+    <loc>http://kun3375.com/2018/09/ES-%E6%93%8D%E4%BD%9C-%E7%B4%A2%E5%BC%95%E7%AE%A1%E7%90%86/</loc>
+    <lastmod>2018-09-24T08:19:46.185Z</lastmod>
+    <data>
+        <display>
+        <title>ES 操作-索引管理</title>
+        <pubTime>2018-09-24T08:16:33.000Z</pubTime>
+        
+        <tag>ElasticSearch</tag>
+         
+         
+           
+             
+              <breadCrumb title="ElasticSearch" url="http://kun3375.com/categories/ElasticSearch/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://kun3375.com/2018/08/RocketMQ-%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B6%88%E6%81%AF%E8%BF%87%E6%BB%A4/</loc>
     <lastmod>2018-08-26T08:32:05.137Z</lastmod>
     <data>
@@ -180,26 +200,6 @@
     
     
   <url>
-    <loc>http://kun3375.com/2018/07/Dockerfile-%E4%B8%AD%E4%B8%89%E4%B8%AA%E8%BF%90%E8%A1%8C%E6%8C%87%E4%BB%A4%E7%9A%84%E5%B7%AE%E5%BC%82/</loc>
-    <lastmod>2018-08-04T04:03:23.492Z</lastmod>
-    <data>
-        <display>
-        <title>Dockerfile 中三个运行指令的差异</title>
-        <pubTime>2018-07-07T08:43:37.000Z</pubTime>
-        
-        <tag>Docker</tag>
-         
-         
-           
-             
-              <breadCrumb title="Docker" url="http://kun3375.com/categories/Docker/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://kun3375.com/2018/07/Ribbon/</loc>
     <lastmod>2018-08-04T04:03:23.492Z</lastmod>
     <data>
@@ -230,6 +230,26 @@
         <display>
         <title>Docker 挂载与数据存储</title>
         <pubTime>2018-07-09T13:54:45.000Z</pubTime>
+        
+        <tag>Docker</tag>
+         
+         
+           
+             
+              <breadCrumb title="Docker" url="http://kun3375.com/categories/Docker/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://kun3375.com/2018/07/Dockerfile-%E4%B8%AD%E4%B8%89%E4%B8%AA%E8%BF%90%E8%A1%8C%E6%8C%87%E4%BB%A4%E7%9A%84%E5%B7%AE%E5%BC%82/</loc>
+    <lastmod>2018-08-04T04:03:23.492Z</lastmod>
+    <data>
+        <display>
+        <title>Dockerfile 中三个运行指令的差异</title>
+        <pubTime>2018-07-07T08:43:37.000Z</pubTime>
         
         <tag>Docker</tag>
          

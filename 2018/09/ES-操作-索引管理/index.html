@@ -112,25 +112,25 @@
 
 
 
-  <meta name="description" content="sed 是非常常用的流式处理编辑工具，配合正则表达式可以进行十分效率的文字处理。它通过逐行地将文字读取，暂存进模式空间，通过指定的命令进行处理后，输出至标准输出，直到文件或者说输入的结束。原理十分简单，来学习一下吧。">
-<meta name="keywords" content="Regex">
+  <meta name="description" content="新建索引新建索引很简单，但是需要注意的是：  ES 中索引名称不能包含大写字母 不能再次 PUT 一个已经存在的索引 ES 默认给索引设置 5 个分片和 1 个副本，该值可以通过 setting 参数域进行修改。其中副本数在索引创建之后支持修改，而分片数无法修改！12345678910PUT /person# 可选项，不附加请求体的情况下统一使用默认值&amp;#123;    &quot;settings&quot;: &amp;">
+<meta name="keywords" content="ElasticSearch">
 <meta property="og:type" content="article">
-<meta property="og:title" content="文字处理-sed">
-<meta property="og:url" content="http://kun3375.com/2018/07/文字处理-sed/index.html">
+<meta property="og:title" content="ES 操作-索引管理">
+<meta property="og:url" content="http://kun3375.com/2018/09/ES-操作-索引管理/index.html">
 <meta property="og:site_name" content="码路狂飙">
-<meta property="og:description" content="sed 是非常常用的流式处理编辑工具，配合正则表达式可以进行十分效率的文字处理。它通过逐行地将文字读取，暂存进模式空间，通过指定的命令进行处理后，输出至标准输出，直到文件或者说输入的结束。原理十分简单，来学习一下吧。">
+<meta property="og:description" content="新建索引新建索引很简单，但是需要注意的是：  ES 中索引名称不能包含大写字母 不能再次 PUT 一个已经存在的索引 ES 默认给索引设置 5 个分片和 1 个副本，该值可以通过 setting 参数域进行修改。其中副本数在索引创建之后支持修改，而分片数无法修改！12345678910PUT /person# 可选项，不附加请求体的情况下统一使用默认值&amp;#123;    &quot;settings&quot;: &amp;">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-08-04T04:03:23.493Z">
+<meta property="og:updated_time" content="2018-09-24T08:19:46.185Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="文字处理-sed">
-<meta name="twitter:description" content="sed 是非常常用的流式处理编辑工具，配合正则表达式可以进行十分效率的文字处理。它通过逐行地将文字读取，暂存进模式空间，通过指定的命令进行处理后，输出至标准输出，直到文件或者说输入的结束。原理十分简单，来学习一下吧。">
+<meta name="twitter:title" content="ES 操作-索引管理">
+<meta name="twitter:description" content="新建索引新建索引很简单，但是需要注意的是：  ES 中索引名称不能包含大写字母 不能再次 PUT 一个已经存在的索引 ES 默认给索引设置 5 个分片和 1 个副本，该值可以通过 setting 参数域进行修改。其中副本数在索引创建之后支持修改，而分片数无法修改！12345678910PUT /person# 可选项，不附加请求体的情况下统一使用默认值&amp;#123;    &quot;settings&quot;: &amp;">
 
 
 
 
 
 
-  <link rel="canonical" href="http://kun3375.com/2018/07/文字处理-sed/">
+  <link rel="canonical" href="http://kun3375.com/2018/09/ES-操作-索引管理/">
 
 
 
@@ -140,7 +140,7 @@
   };
 </script>
 
-  <title>文字处理-sed | 码路狂飙</title>
+  <title>ES 操作-索引管理 | 码路狂飙</title>
   
 
 
@@ -338,7 +338,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://kun3375.com/2018/07/文字处理-sed/">
+    <link itemprop="mainEntityOfPage" href="http://kun3375.com/2018/09/ES-操作-索引管理/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="斯特拉不用电">
@@ -355,7 +355,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">文字处理-sed
+          <h1 class="post-title" itemprop="name headline">ES 操作-索引管理
               
             
           </h1>
@@ -380,24 +380,12 @@
                 
               
 
-              <time title="创建时间：2018-07-03 23:22:42" itemprop="dateCreated datePublished" datetime="2018-07-03T23:22:42+08:00">2018-07-03</time>
+              <time title="创建时间：2018-09-24 16:16:33 / 修改时间：16:19:46" itemprop="dateCreated datePublished" datetime="2018-09-24T16:16:33+08:00">2018-09-24</time>
             
 
             
               
 
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2018-08-04 12:03:23" itemprop="dateModified" datetime="2018-08-04T12:03:23+08:00">2018-08-04</time>
               
             
           </span>
@@ -414,7 +402,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/shell/" itemprop="url" rel="index"><span itemprop="name">shell</span></a></span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/ElasticSearch/" itemprop="url" rel="index"><span itemprop="name">ElasticSearch</span></a></span>
 
                 
                 
@@ -429,8 +417,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2018/07/文字处理-sed/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2018/07/文字处理-sed/" itemprop="commentsCount"></span>
+                <a href="/2018/09/ES-操作-索引管理/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2018/09/ES-操作-索引管理/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -465,60 +453,54 @@
       
 
       
-        <p>sed 是非常常用的流式处理编辑工具，配合正则表达式可以进行十分效率的文字处理。它通过逐行地将文字读取，暂存进模式空间，通过指定的命令进行处理后，输出至标准输出，直到文件或者说输入的结束。原理十分简单，来学习一下吧。</p>
-<a id="more"></a>
-<h2 id="命令格式"><a href="#命令格式" class="headerlink" title="命令格式"></a>命令格式</h2><p>sed [选项及参数]… ‘操作命令’ 文件…</p>
-<h2 id="常用选项"><a href="#常用选项" class="headerlink" title="常用选项"></a>常用选项</h2><ul>
-<li>-n <strong>静默模式</strong> 取消 sed 默认的输出</li>
-<li>-e <strong>多重编辑</strong> 可以多次使用，携带 sed 命令作为该选项的参数，对于缓冲区的每一行按命令顺序进行处理</li>
-<li>-f 使用 sed 操作的<strong>脚本处理</strong>，跟上脚本文件名做参数。sed 脚本可以保存多条 sed 命令，一行一条，依次执行。</li>
-<li>-r 使用<strong>拓展正则</strong>，类似 grep -e 或者 egrep 的增强，让人少些一点转义符</li>
-<li>-i <strong>原地修改</strong>，该选项会使得 sed 命令直接修改原文件，可以紧跟一个后缀如 -i.bk，同时生成备份</li>
-</ul>
-<h2 id="命令组成"><a href="#命令组成" class="headerlink" title="命令组成"></a>命令组成</h2><p>sed 命令的组成通常是 ‘行选择具体操作’。sed 在读入行内容之后，如果匹配定址要求就会进行命令操作。我们来两部分分开一看~</p>
-<h3 id="行选择"><a href="#行选择" class="headerlink" title="行选择"></a>行选择</h3><ul>
-<li><strong>num</strong>             选择第 num 行。</li>
-<li><strong>start,end</strong>       选择第 start 行至第 end 行。</li>
-<li><strong>start~step</strong>      从 start 行开始，以 step 为步长选择行。</li>
-<li><strong>/pattern/</strong>       选择含有该正则的内容的行。</li>
-<li><strong>start,/pattern/</strong> 从 start 行开始直到首次成功匹配表达式的一行将被选定，注意 sed 的处理机制，如果表达式最终无法有任何匹配行，将会对 start 行之后的所有行进行选定。</li>
-<li><strong>/pattern/,end</strong>   从首次成功匹配表达式的一行至 end 行将被选定，如果在第 end 行之前如果没有成功匹配将会不有行被选中。</li>
-<li><strong>!</strong>               置于行选择末尾，进行反选，如 <code>10,20!</code> 将排除 10 至 20 行。</li>
-</ul>
-<h3 id="具体操作"><a href="#具体操作" class="headerlink" title="具体操作"></a>具体操作</h3><ul>
-<li><strong>p</strong> 打印缓冲内容，通常配合 -n 选项测试指令正确性。</li>
-<li><strong>q</strong> 提前退出 sed，当到达匹配行或者指定行就退出 sed。</li>
-<li><strong>i\[content]</strong> 行前追加内容，如在第 1 行至第 5 行，每行之后插入‘===’：<code>&#39;1,5i\===&#39;</code>。</li>
-<li><strong>a\[content]</strong> 行后追加内容。</li>
-<li><strong>c\[content]</strong> 替换内容，如果是批量选择，并不是对每行内容进行替换，而是对整体替换成相应内容。</li>
-<li><strong>d</strong> 删除。</li>
-<li><strong>s/pattern/new_chars/[g]</strong> 对选定的行中首次匹配表达式的内容替换成目标字符串，如果末尾使用‘g’，可以对行中所有匹配内容替换。</li>
-<li><strong>y/old-char-set/new-char-set</strong> 对选定行中所有 old-char-set 内的字符替换成相应的新的字符。</li>
-<li><strong>n</strong> 提前读取下一输入行至缓冲区。</li>
-<li><strong>r [file-name]</strong> 行后追加指定文件内容。</li>
-<li><strong>w [file-name]</strong> 将选定行输入至指定文件。</li>
-<li><strong>h</strong> 复制匹配行进入暂存空间。</li>
-<li><strong>G</strong> 配合 h 命令，取出暂存空间内的行，插入至模式空间的末尾。</li>
-<li><strong>x</strong> 配合 h 命令，交换当前匹配行的暂存空间内的行。</li>
-</ul>
-<h3 id="命令叠加"><a href="#命令叠加" class="headerlink" title="命令叠加"></a>命令叠加</h3><p>需要多次使用 sed 操作的时候，可以有这么些办法：</p>
-<ol>
-<li>通过 <code>{命令1;命令2...}</code> 可以使用‘{}’将多个命令整合一块儿，中间使用‘;’分割，类似代码块的表达。其中如果如果多个命令的行定位条件一致，可以将该部分提出，如：<code>&#39;{10p;10p}&#39;</code> 等于 <code>&#39;10{p;p}&#39;</code>。</li>
-<li>通过 -e 选项多次输入 sed 命令。</li>
-<li>将多个 sed 命令逐行写入文件，使用 -f 选项执行 sed。</li>
-</ol>
-<h3 id="额外技巧"><a href="#额外技巧" class="headerlink" title="额外技巧"></a>额外技巧</h3><p>sed 命令其实和正则表达式通常配合使用，所以这一些小技巧其实和正则有很密切的关系。比如对于一个简单的替换操作，如 <code>s/abc/xyz/</code> 是十分简单的，但是 sed 支持更复杂的操作，可以用一些特殊意义的操作符号:</p>
+        <h4 id="新建索引"><a href="#新建索引" class="headerlink" title="新建索引"></a>新建索引</h4><p>新建索引很简单，但是需要注意的是：</p>
 <ul>
-<li>&amp; 表示正则匹配成功的原字符串内容，如想要替换所有数字为它的百倍，可以使用 ‘s/[[:digit:]]\+/&amp;00/g’</li>
-<li>\num 获取缓存的匹配中缓存的字符串，num 指定位置（这取决于表达式中使用了多少次小括号‘()’）。<ul>
-<li>如去除数字并字母大写，’s/([[:digit:]]\+\)\|\([[:alpha:]]\+\)/\U\2/gp’</li>
-<li>获取包含一段 ip 的文本中 ip 的前两段地址 ‘s/\([0-9]\+\):\([0-9]\+\):[0-9]\+:[0-9]+/\1 \2/p’</li>
-</ul>
+<li>ES 中索引名称不能包含大写字母</li>
+<li>不能再次 PUT 一个已经存在的索引</li>
+<li>ES 默认给索引设置 5 个分片和 1 个副本，该值可以通过 setting 参数域进行修改。其中副本数在索引创建之后支持修改，而分片数无法修改！<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">PUT /person</span><br><span class="line"><span class="comment"># 可选项，不附加请求体的情况下统一使用默认值</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">"settings"</span>: &#123;</span><br><span class="line">        <span class="comment"># 分片数量</span></span><br><span class="line">        <span class="string">"number_of_shards"</span>: 3,</span><br><span class="line">        <span class="comment"># 副本数量</span></span><br><span class="line">        <span class="string">"number_of_replicas"</span>: 1</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </li>
-<li>\u 将后方的表达式结果进行首字母大写处理</li>
-<li>\U 将后方的表达式结果进行大写处理</li>
-<li>\l 将后方的表达式结果进行首字母小写处理</li>
-<li>\L 将后方的表达式结果进行小写处理</li>
+</ul>
+<h4 id="更新索引"><a href="#更新索引" class="headerlink" title="更新索引"></a>更新索引</h4><p>对某属性设置相应的值即可。如果设置为 <code>null</code> 可以将其恢复成默认值<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">PUT /person/_settings</span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">"number_of_replicas"</span>: 2</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h5 id="索引设置"><a href="#索引设置" class="headerlink" title="索引设置"></a>索引设置</h5><p>部分设置的含义在后文涉及</p>
+<ul>
+<li><p>静态设置<br>这部分的设置只有在索引创建或者关闭时支持修改（分片数量只能在创建索引时设置）  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 主分片数，默认为5.只能在创建索引时设置，不能修改</span></span><br><span class="line">index.number_of_shards</span><br><span class="line"><span class="comment"># 是否应在索引打开前检查分片是否损坏，当检查到分片损坏将禁止分片被打开</span></span><br><span class="line"><span class="comment">#   false //默认值</span></span><br><span class="line"><span class="comment">#   checksum //检查物理损坏</span></span><br><span class="line"><span class="comment">#   true //检查物理和逻辑损坏，这将消耗大量内存和CPU</span></span><br><span class="line"><span class="comment">#   fix //检查物理和逻辑损坏。有损坏的分片将被集群自动删除，这可能导致数据丢失</span></span><br><span class="line">index.shard.check_on_startup</span><br><span class="line"><span class="comment"># 自定义路由值可以转发的目的分片数。默认为 1，只能在索引创建时设置。此值必须小于index.number_of_shards</span></span><br><span class="line">index.routing_partition_size</span><br><span class="line"><span class="comment"># 数据压缩方式，默认使用LZ4，也可以设置为 best_compression，它使用 DEFLATE 方式以牺牲字段存储性能为代价来获得更高的压缩比例</span></span><br><span class="line">index.codec</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>动态设置<br>这部分配置支持直接修改</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 每个主分片的副本数，默认为 1</span></span><br><span class="line">index.number_of_replicas</span><br><span class="line"><span class="comment"># 基于可用节点的数量自动分配副本数量，默认为 false（即禁用此功能）</span></span><br><span class="line">index.auto_expand_replicas</span><br><span class="line"><span class="comment"># 执行刷新操作的频率，这使得索引的最近更改可以被搜索。默认为 1s。可以设置为 -1 以禁用刷新。</span></span><br><span class="line">index.refresh_interval</span><br><span class="line"><span class="comment"># 用于索引搜索的 from + size 的最大值，默认为 10000</span></span><br><span class="line">index.max_result_window</span><br><span class="line"><span class="comment"># 在搜索此索引中 rescore 的 window_size 的最大值</span></span><br><span class="line">index.max_rescore_window</span><br><span class="line"><span class="comment"># 设置为 true 使索引和索引元数据为只读，默认 false 为允许写入和元数据更改</span></span><br><span class="line">index.blocks.read_only</span><br><span class="line"><span class="comment"># 设置为 true 可禁用对索引的读取操作，默认 false</span></span><br><span class="line">index.blocks.read</span><br><span class="line"><span class="comment"># 设置为 true 可禁用对索引的写入操作，默认 false</span></span><br><span class="line">index.blocks.write</span><br><span class="line"><span class="comment"># 设置为 true 可禁用索引元数据的读取和写入，默认 false</span></span><br><span class="line">index.blocks.metadata</span><br><span class="line"><span class="comment"># 索引的每个分片上可用的最大刷新侦听器数</span></span><br><span class="line">index.max_refresh_listeners</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="查询索引"><a href="#查询索引" class="headerlink" title="查询索引"></a>查询索引</h4><p>关于查询也是简单的，通过 GET 请求和 _setting API 可以获得索引的配置信息。而 _cat API 可以以摘要的形式展示所有索引的开关状态，健康状态，分片数，副本数以及一些其他信息<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查询单个索引设置</span></span><br><span class="line">GET /person/_settings</span><br><span class="line"><span class="comment"># 查询多个索引设置</span></span><br><span class="line">GET /person,animal/_settings</span><br><span class="line"><span class="comment"># 按通配符查询索引设置</span></span><br><span class="line">GET /p*/_settings</span><br><span class="line"><span class="comment"># 查询所有索引设置</span></span><br><span class="line">GET /_all/settings</span><br><span class="line"><span class="comment"># 使用 _cat API 来展示所有索引的综合信息</span></span><br><span class="line">GET /_cat/indices</span><br></pre></td></tr></table></figure></p>
+<h4 id="删除索引"><a href="#删除索引" class="headerlink" title="删除索引"></a>删除索引</h4><p>删除是最简单，当然如果指定的索引名称不存在会响应 404<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DELETE /person</span><br></pre></td></tr></table></figure></p>
+<h4 id="索引开关"><a href="#索引开关" class="headerlink" title="索引开关"></a>索引开关</h4><p>可以关闭一些暂时不用的索引来减少系统资源的开销，关闭后将无法进行读写<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">POST person/_close</span><br></pre></td></tr></table></figure></p>
+<p>相对的，打开操作：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">POST person/_open</span><br></pre></td></tr></table></figure></p>
+<p>这里依然支持同时操作多个索引，以及通配符和 _all 关键字的处理：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">POST /person,animal/_close</span><br></pre></td></tr></table></figure></p>
+<p>如果同时指定的索引中存在不存在的索引，会显示抛出错误。这可以通过一个简单参数 <code>ignore_unavailable=true</code> 来忽略<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">POST /person,animal/_close?ignore_unavailable=<span class="literal">true</span></span><br></pre></td></tr></table></figure></p>
+<h4 id="索引复制"><a href="#索引复制" class="headerlink" title="索引复制"></a>索引复制</h4><p>通过 _reindex API 可以将一个索引的内容复制至另一个索引，这同时可以指定过滤条件，已筛选需要的 type 以及 doc。<br>需要注意的是，由于这不会同时复制索引的配置信息，所以在操作的时候需要提前建立好新索引<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">POST /_reindex</span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">"source"</span>: &#123;</span><br><span class="line">        <span class="string">"index"</span>: <span class="string">"person"</span>,</span><br><span class="line">        <span class="comment"># 可选项，用于过滤类型 type</span></span><br><span class="line">        <span class="string">"type"</span>: <span class="string">"student"</span></span><br><span class="line">        <span class="comment"># 可选项，用于过滤文档 doc</span></span><br><span class="line">        <span class="string">"query"</span>: &#123;</span><br><span class="line">            <span class="string">"term"</span>: &#123; <span class="string">"sex"</span>: <span class="string">"male"</span> &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="string">"dest"</span>: &#123;</span><br><span class="line">        <span class="string">"index"</span>: <span class="string">"person_new"</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="索引收缩"><a href="#索引收缩" class="headerlink" title="索引收缩"></a>索引收缩</h4><p>分片数量在索引初始化之后便无法修改。_shrink API 可以将一个索引收缩成一个分片数量更少的索引。当然，这是有要求的：</p>
+<ul>
+<li>收缩后索引的分片数必须是收缩前索引的分片数的因子，如 8 -&gt; 4，或者 15 -&gt; 5。这意味着如果源索引的分片数如果是质数，那么很尴尬，只能收缩成 1 个分片的新索引</li>
+<li>收缩前，索引的每个分片需要都存在于同一节点上（可以指定路由实现）</li>
+<li>索引必须为只读状态</li>
+</ul>
+<p>后两者条件可以通过以下指令实现：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">PUT /person/_settings</span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">"index.routing.allocation.require._name"</span>: <span class="string">"shrink_node_name"</span>,</span><br><span class="line">    <span class="string">"index.block.write"</span>: <span class="literal">true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>接下来便可以实际进行索引的收缩了，ES 完成的流程包括这几个步骤：</p>
+<ol>
+<li>创建一个配置与源索引相同但是分片数减少的新索引</li>
+<li>源索引硬链接至新索引（文件系统不支持的情况下会进行复制）</li>
+<li>打开新的索引</li>
+</ol>
+<p>_shrink 的一个例子如下：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">POST /person/_shrink/person_new</span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">"settings"</span>: &#123;</span><br><span class="line">        <span class="string">"index.number_of_replicas"</span>: 0,</span><br><span class="line">        <span class="string">"index.number_of_shards"</span>: 1,</span><br><span class="line">        <span class="string">"index.codec"</span>: <span class="string">"best_compression"</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="comment"># 就如同新建索引一样，可以同时设置别名</span></span><br><span class="line">    <span class="string">"aliases"</span>: &#123;</span><br><span class="line">        <span class="string">"pn"</span>: &#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="索引别名"><a href="#索引别名" class="headerlink" title="索引别名"></a>索引别名</h4><p>通过 _aliases API 可以选择为索引设置别名，这就像软连接一样<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">POST /_aliases</span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">"actions"</span>: [&#123;</span><br><span class="line">        <span class="comment"># 新增索引，可以一次操作多个索引，并合并书写</span></span><br><span class="line">        <span class="string">"add"</span>: &#123;</span><br><span class="line">            <span class="string">"indices"</span>: [<span class="string">"animal"</span>, <span class="string">"plant"</span>],</span><br><span class="line">            <span class="string">"alias"</span>: <span class="string">"living_thing"</span></span><br><span class="line">        &#125;&#125;, &#123;</span><br><span class="line">         <span class="comment"># 删除索引，也可以一次操作多个索引，支持通配符</span></span><br><span class="line">        <span class="string">"remove"</span>: &#123;</span><br><span class="line">            <span class="string">"index"</span>: <span class="string">"person"</span>,</span><br><span class="line">            <span class="string">"alias"</span>: <span class="string">"person_alias"</span></span><br><span class="line">        &#125;&#125;, &#123;</span><br><span class="line">        <span class="string">"remove"</span>: &#123;</span><br><span class="line">            <span class="string">"index"</span>: <span class="string">"school"</span>,</span><br><span class="line">            <span class="string">"alias"</span>: <span class="string">"school_alias"</span></span><br><span class="line">        &#125;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在通常使用时，别名基本和原索引名用法一样。但是如果别名和索引不是一对一关系的时候，无法通过别名索引文档或者通过 ID 来查询</p>
+<p>关于索引别名的查询也十分简单：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 如果想知道某索引（如 person）的别名</span></span><br><span class="line">GET /person/_aliases</span><br><span class="line"><span class="comment"># 获取所有别名</span></span><br><span class="line">GET /_aliases</span><br><span class="line"><span class="comment"># 使用 _cat API 获取所有索引摘要</span></span><br><span class="line">GET /_cat/aliases</span><br></pre></td></tr></table></figure></p>
+<h3 id="补充-Restful-语义"><a href="#补充-Restful-语义" class="headerlink" title="补充 Restful 语义"></a>补充 Restful 语义</h3><p>在 ES 操作中，以下几个请求方式是最常用的，补充一下以下请求代表的语义：</p>
+<ul>
+<li><code>GET</code>：获取资源信息</li>
+<li><code>DELETE</code>：删除指定的资源标识符下的资源</li>
+<li><code>POST</code>：提交一个新的资源，不具备幂等性</li>
+<li><code>PUT</code>：新增或更新一个资源标识符下资源，操作具有幂等性</li>
+<li><code>HEAD</code>：获取该次请求的响应头信息</li>
 </ul>
 
       
@@ -564,7 +546,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Regex/" rel="tag"># Regex</a>
+            <a href="/tags/ElasticSearch/" rel="tag"># ElasticSearch</a>
           
         </div>
       
@@ -592,8 +574,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/07/AQS-浅析/" rel="next" title="AQS 浅析">
-                <i class="fa fa-chevron-left"></i> AQS 浅析
+              <a href="/2018/08/RocketMQ-服务端消息过滤/" rel="next" title="RocketMQ 服务端消息过滤">
+                <i class="fa fa-chevron-left"></i> RocketMQ 服务端消息过滤
               </a>
             
           </div>
@@ -601,10 +583,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/07/Dockerfile-中三个运行指令的差异/" rel="prev" title="Dockerfile 中三个运行指令的差异">
-                Dockerfile 中三个运行指令的差异 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -794,7 +772,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#命令格式"><span class="nav-number">1.</span> <span class="nav-text">命令格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用选项"><span class="nav-number">2.</span> <span class="nav-text">常用选项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#命令组成"><span class="nav-number">3.</span> <span class="nav-text">命令组成</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#行选择"><span class="nav-number">3.1.</span> <span class="nav-text">行选择</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#具体操作"><span class="nav-number">3.2.</span> <span class="nav-text">具体操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#命令叠加"><span class="nav-number">3.3.</span> <span class="nav-text">命令叠加</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#额外技巧"><span class="nav-number">3.4.</span> <span class="nav-text">额外技巧</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#新建索引"><span class="nav-number">1.</span> <span class="nav-text">新建索引</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#更新索引"><span class="nav-number">2.</span> <span class="nav-text">更新索引</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#索引设置"><span class="nav-number">2.1.</span> <span class="nav-text">索引设置</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#查询索引"><span class="nav-number">3.</span> <span class="nav-text">查询索引</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#删除索引"><span class="nav-number">4.</span> <span class="nav-text">删除索引</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#索引开关"><span class="nav-number">5.</span> <span class="nav-text">索引开关</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#索引复制"><span class="nav-number">6.</span> <span class="nav-text">索引复制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#索引收缩"><span class="nav-number">7.</span> <span class="nav-text">索引收缩</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#索引别名"><span class="nav-number">8.</span> <span class="nav-text">索引别名</span></a></li></ol><li class="nav-item nav-level-3"><a class="nav-link" href="#补充-Restful-语义"><span class="nav-number"></span> <span class="nav-text">补充 Restful 语义</span></a></li></div>
             
 
           </div>
@@ -995,7 +973,7 @@
       <script type="text/javascript">
       function renderGitment(){
         var gitment = new Gitmint({
-            id: '1530631362000',
+            id: '1537776993000',
             owner: 'Kun3375',
             repo: 'kun3375.github.io',
             
