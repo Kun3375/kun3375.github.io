@@ -112,25 +112,25 @@
 
 
 
-  <meta name="description" content="在描述 Dockerfile 的时候，对于 RUN，CMD，ENTRYPOINT 三个命令，用法十分相似，功能也差不多，容易让人混用。其实一般来说，三个命令都能完成需要的操作，而差异点常常被一些使用者忽略。这里简单说一下，三个命令的不同之处。">
-<meta name="keywords" content="Docker">
+  <meta name="description" content="初始化仓库 1234# 初始化一个 git 仓库并且建立工作目录git init# 初始化一个干净的仓库，使用 bare 选项不带有工作目录，使用 shared 选项，提供组可写的权限git init --bare --shared  克隆仓库 12# 在未指定协议的时候优先会采用 sshgit clone [地址]  暂存文件将文件提交至暂存区（进入 staged 状态） 123git add">
+<meta name="keywords" content="Git">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Dockerfile 中三个运行指令的差异">
-<meta property="og:url" content="http://kun3375.com/2018/07/Dockerfile-中三个运行指令的差异/index.html">
+<meta property="og:title" content="Git 命令笔记">
+<meta property="og:url" content="http://kun3375.com/2018/10/Git-命令笔记/index.html">
 <meta property="og:site_name" content="码路狂飙">
-<meta property="og:description" content="在描述 Dockerfile 的时候，对于 RUN，CMD，ENTRYPOINT 三个命令，用法十分相似，功能也差不多，容易让人混用。其实一般来说，三个命令都能完成需要的操作，而差异点常常被一些使用者忽略。这里简单说一下，三个命令的不同之处。">
+<meta property="og:description" content="初始化仓库 1234# 初始化一个 git 仓库并且建立工作目录git init# 初始化一个干净的仓库，使用 bare 选项不带有工作目录，使用 shared 选项，提供组可写的权限git init --bare --shared  克隆仓库 12# 在未指定协议的时候优先会采用 sshgit clone [地址]  暂存文件将文件提交至暂存区（进入 staged 状态） 123git add">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-08-04T04:03:23.492Z">
+<meta property="og:updated_time" content="2018-10-06T08:28:00.943Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Dockerfile 中三个运行指令的差异">
-<meta name="twitter:description" content="在描述 Dockerfile 的时候，对于 RUN，CMD，ENTRYPOINT 三个命令，用法十分相似，功能也差不多，容易让人混用。其实一般来说，三个命令都能完成需要的操作，而差异点常常被一些使用者忽略。这里简单说一下，三个命令的不同之处。">
+<meta name="twitter:title" content="Git 命令笔记">
+<meta name="twitter:description" content="初始化仓库 1234# 初始化一个 git 仓库并且建立工作目录git init# 初始化一个干净的仓库，使用 bare 选项不带有工作目录，使用 shared 选项，提供组可写的权限git init --bare --shared  克隆仓库 12# 在未指定协议的时候优先会采用 sshgit clone [地址]  暂存文件将文件提交至暂存区（进入 staged 状态） 123git add">
 
 
 
 
 
 
-  <link rel="canonical" href="http://kun3375.com/2018/07/Dockerfile-中三个运行指令的差异/">
+  <link rel="canonical" href="http://kun3375.com/2018/10/Git-命令笔记/">
 
 
 
@@ -140,7 +140,7 @@
   };
 </script>
 
-  <title>Dockerfile 中三个运行指令的差异 | 码路狂飙</title>
+  <title>Git 命令笔记 | 码路狂飙</title>
   
 
 
@@ -338,7 +338,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://kun3375.com/2018/07/Dockerfile-中三个运行指令的差异/">
+    <link itemprop="mainEntityOfPage" href="http://kun3375.com/2018/10/Git-命令笔记/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="斯特拉不用电">
@@ -355,7 +355,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Dockerfile 中三个运行指令的差异
+          <h1 class="post-title" itemprop="name headline">Git 命令笔记
               
             
           </h1>
@@ -380,24 +380,12 @@
                 
               
 
-              <time title="创建时间：2018-07-07 16:43:37" itemprop="dateCreated datePublished" datetime="2018-07-07T16:43:37+08:00">2018-07-07</time>
+              <time title="创建时间：2018-10-06 16:24:59 / 修改时间：16:28:00" itemprop="dateCreated datePublished" datetime="2018-10-06T16:24:59+08:00">2018-10-06</time>
             
 
             
               
 
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2018-08-04 12:03:23" itemprop="dateModified" datetime="2018-08-04T12:03:23+08:00">2018-08-04</time>
               
             
           </span>
@@ -414,7 +402,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Docker/" itemprop="url" rel="index"><span itemprop="name">Docker</span></a></span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Git/" itemprop="url" rel="index"><span itemprop="name">Git</span></a></span>
 
                 
                 
@@ -429,8 +417,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2018/07/Dockerfile-中三个运行指令的差异/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2018/07/Dockerfile-中三个运行指令的差异/" itemprop="commentsCount"></span>
+                <a href="/2018/10/Git-命令笔记/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2018/10/Git-命令笔记/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -465,45 +453,74 @@
       
 
       
-        <p>在描述 Dockerfile 的时候，对于 <code>RUN</code>，<code>CMD</code>，<code>ENTRYPOINT</code> 三个命令，用法十分相似，功能也差不多，容易让人混用。其实一般来说，三个命令都能完成需要的操作，而差异点常常被一些使用者忽略。这里简单说一下，三个命令的不同之处。</p>
-<a id="more"></a>
-<h2 id="命令格式"><a href="#命令格式" class="headerlink" title="命令格式"></a>命令格式</h2><p>首先看一下 Dockerfile 中如何执行命令。<br>在 Dockerfile 中，命令（instruction）一般有两种写法，分别是：</p>
+        <ul>
+<li><p>初始化仓库</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 初始化一个 git 仓库并且建立工作目录</span></span><br><span class="line">git init</span><br><span class="line"><span class="comment"># 初始化一个干净的仓库，使用 bare 选项不带有工作目录，使用 shared 选项，提供组可写的权限</span></span><br><span class="line">git init --bare --shared</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>克隆仓库</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 在未指定协议的时候优先会采用 ssh</span></span><br><span class="line">git <span class="built_in">clone</span> [地址]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>暂存文件<br>将文件提交至暂存区（进入 staged 状态）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git add [路径]</span><br><span class="line"><span class="comment"># 只暂存所有已经跟踪的文件，这通常可以减少多余文件的提交</span></span><br><span class="line">git add -u</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看当前工作区以及暂存区的文件状态</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 该命令会展示所有文件的状态，包括它是否已经修改，是否被跟踪，是否被暂存</span></span><br><span class="line">git status</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看工作区和暂存区文件差异</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看工作区和暂存区快照间的差异（文件与上一次 add 时的差异）</span></span><br><span class="line">git diff</span><br><span class="line"><span class="comment"># 查看工作区和上次提交时的差异（文件与上一次 commit 时的差异）</span></span><br><span class="line">git diff --staged</span><br><span class="line">git diff --cached</span><br><span class="line"><span class="comment"># 可以携带版本号，可以指定文件名产看，版本间指定文件的差异</span></span><br><span class="line"><span class="comment"># 第二版本号省略时默认为当前版本，文件路径省略时默认所有文件</span></span><br><span class="line">git diff [版本号] [版本号]</span><br><span class="line">git diff [版本号] [版本号] -- [文件路径]</span><br><span class="line"><span class="comment"># 查看在之前祖先基础上的差异需要在源版本号前添加'...'，如：</span></span><br><span class="line">git diff master...feature</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>提交更新</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 在暂存区准备妥当之后，把暂存区内容提交</span></span><br><span class="line">git commit</span><br><span class="line"><span class="comment"># 在提交时会要求输入提交备注，可以直接在命令行键入</span></span><br><span class="line">git commit -m [提交备注]</span><br><span class="line"><span class="comment"># 偶尔跳过暂存步骤，将工作区全部的修改直接提交</span></span><br><span class="line">git commit -a</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>文件删除</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 删除动作会将文件删除，并且在完成动作时修改暂存区</span></span><br><span class="line">git rm [路径]</span><br><span class="line"><span class="comment"># 如果该文件已经被本次修改后暂存（staged）需要强制删除</span></span><br><span class="line">git rm -f [路径]</span><br><span class="line"><span class="comment"># 从仓库中删除而不删除工作区文件，即放弃跟踪</span></span><br><span class="line">git rm --cached [路径]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>文件移动</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 如同文件删除，移动命令会在移动后对暂存区修改</span></span><br><span class="line">git mv [源路径] [目标路径]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看提交历史</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看历史时会展示历次提交的哈希值、作者、时间以及提交备注</span></span><br><span class="line">git <span class="built_in">log</span></span><br><span class="line"><span class="comment"># 使用 p 选项展示内容差异</span></span><br><span class="line">git <span class="built_in">log</span> -p</span><br><span class="line"><span class="comment"># 可以指定展示条目数量</span></span><br><span class="line">git <span class="built_in">log</span> -[N: int]</span><br><span class="line"><span class="comment"># 展示增删改行数统计</span></span><br><span class="line">git <span class="built_in">log</span> --<span class="built_in">stat</span></span><br><span class="line"><span class="comment"># 按单词维度检测修改内容，需要同时指定显示的上下行数</span></span><br><span class="line">git <span class="built_in">log</span> --word-diff -U[N: int]</span><br><span class="line"><span class="comment"># 支持图形化展示</span></span><br><span class="line">git <span class="built_in">log</span> --graph</span><br><span class="line"><span class="comment"># 支持格式化记录的显示</span></span><br><span class="line">git <span class="built_in">log</span> --pretty=[FormatMode]</span><br><span class="line"><span class="comment"># FormatMode 常用形式</span></span><br><span class="line"><span class="comment"># oneline 单行显示，仅显示提交的哈希值和备注</span></span><br><span class="line"><span class="comment"># fuller 完整显示，包括作者，创建时间，提交者，提交时间，提交备注等</span></span><br><span class="line"><span class="comment"># format:[格式字符串] 按指定格式输出，具体占位符含义查看手册</span></span><br><span class="line"><span class="comment"># 查看在 A 分支上而不在 B 分支上的提交，有多种写法</span></span><br><span class="line">git <span class="built_in">log</span> B..A</span><br><span class="line">git <span class="built_in">log</span> ^B A</span><br><span class="line">git <span class="built_in">log</span> A --not B</span><br><span class="line"><span class="comment"># 查看在多个分支上仅不在 B 分支上的提交</span></span><br><span class="line">git <span class="built_in">log</span> A C --not B</span><br><span class="line">git <span class="built_in">log</span> A C ^B</span><br><span class="line"><span class="comment"># 查看在 A 或 B 上，但不同时存在于 A 和 B 上的提交，使用 left-right 选项区分提交所在分支位置</span></span><br><span class="line">git <span class="built_in">log</span> --left-right A...B</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>文件修改</p>
 <ul>
-<li><strong>Shell</strong> 格式：<code>INSTRUCTION &lt;command&gt; &lt;option&gt; &lt;param&gt;</code></li>
-<li><strong>Exec</strong> 格式：<code>INSTRUCTION [&quot;command&quot;, &quot;option&quot;, &quot;param&quot;]</code></li>
+<li><p>提交修改</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 如果遗漏部分提交，可以重新更新暂存区后使用 amend 选项修改之前次的提交，比如如下操作</span></span><br><span class="line">git commit -a -m <span class="string">'first commit'</span></span><br><span class="line">touch a.txt</span><br><span class="line">git add a.txt</span><br><span class="line">git commit --amend -m <span class="string">'first commit with a.txt'</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>撤销暂存区快照</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 取消暂存状态的修改</span></span><br><span class="line">git reset HEAD [路径]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>撤销工作区修改</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 这会使工作区的内容还原至上一次提交时的状态，慎用</span></span><br><span class="line">git checkout -- [路径]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>还原代码至指定的版本（也可以向上）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># mixed 默认选项，回退 HEAD 并还原暂存区，所有修改保留在工作区</span></span><br><span class="line"><span class="comment"># soft 选项，仅回退 HEAD，保留暂存区和工作区的改动</span></span><br><span class="line"><span class="comment"># hard 选项，将回退 HEAD 并还原暂存区和工作区内容，彻底的回退</span></span><br><span class="line">git reset [--soft/hard/mixed] [版本号]</span><br></pre></td></tr></table></figure>
+</li>
 </ul>
-<p>两个格式基本没有差异，除了可读性之外，对于 Shell 格式的命令，Docker 会自动使用 /bin/bash -c 来进行解析，可以是解析命令中的变量比如 <code>$JAVA_HOME</code>。而如果使用 Exec 格式执行时需要解析环境变量，需要进行修改，比如：<code>CMD [&quot;/bin/bash&quot;, &quot;-c&quot;, &quot;echo&quot;, &quot;java home is $JAVA_HOME&quot;]</code>。<br>对于 <code>RUN</code>，<code>CMD</code>，<code>ENTRYPOINT</code> 三者同样遵守此规则。</p>
-<h2 id="RUN-命令"><a href="#RUN-命令" class="headerlink" title="RUN 命令"></a>RUN 命令</h2><p><code>RUN</code> 命令在 Dockerfile 中<strong>可以多次使用</strong>，所以通常被用来在构建容器时执行一些必须的前置命令，比如安装软件等。它的出现频率远高于其他两个执行命令。格式：</p>
-<ul>
-<li><code>RUN &lt;command&gt; &lt;option&gt; &lt;param&gt;</code></li>
-<li><code>RUN [&quot;command&quot;, &quot;option&quot;, &quot;param&quot;]</code></li>
+</li>
+<li><p>远程仓库</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 远程仓库列表，默认仅显示仓库名称，v 选项列出具体地址</span></span><br><span class="line">git remote -v</span><br><span class="line"><span class="comment"># 添加远程仓库</span></span><br><span class="line">git remote add [远端名称] [远端仓库地址]</span><br><span class="line"><span class="comment"># 展示远端具体信息，包括未跟踪的分支、提交的信息等</span></span><br><span class="line">git remote show [远端名称]</span><br><span class="line"><span class="comment"># 重命名远程名称</span></span><br><span class="line">git remote rename [源远程名称] [新远程名称]</span><br><span class="line"><span class="comment"># 删除关联的远程仓库</span></span><br><span class="line">git remote rm [远程名称]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>标签处理</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 展示所有标签，</span></span><br><span class="line">git tag</span><br><span class="line"><span class="comment"># 使用 l 选项过滤标签，可以使用通配符</span></span><br><span class="line">git tag -l <span class="string">'v1.*'</span></span><br><span class="line"><span class="comment"># 创建轻量级标签，如果版本哈希值省略，则为当前版本打标签</span></span><br><span class="line">git tag [标签名称] [版本哈希值或分支名或标签名]</span><br><span class="line"><span class="comment"># 创建携带附注的标签，使用 m 选项可以直接输入标签备注</span></span><br><span class="line">git tag -a [标签名称] -m [标签备注]</span><br><span class="line"><span class="comment"># 使用 GPG 签名创建标签</span></span><br><span class="line">git tag -s [标签名称]</span><br><span class="line"><span class="comment"># 验证标签，仅对于签名的标签</span></span><br><span class="line">git tag -v [标签名称]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>分支处理</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看所有分支，默认展示本地分支，使用 r 选项展示远端分支，a 选项全部展示</span></span><br><span class="line">git branch -a</span><br><span class="line"><span class="comment"># 新建分支，如果版本哈希值省略，默认在当前版本新建分支</span></span><br><span class="line">git branch [分支名称] [版本哈希值或分支名或标签名]</span><br><span class="line"><span class="comment"># 新建分支后并不会直接切换至该分支，需要进行切换</span></span><br><span class="line">git checkout [分支名称]</span><br><span class="line"><span class="comment"># 新建并检出一个分支</span></span><br><span class="line">git checkout -b [新分支名称] [版本哈希值或分支名或标签名]</span><br><span class="line"><span class="comment"># 使用 track 选项简化上述命令，直接新建同名分支并跟踪远端分支</span></span><br><span class="line">git checkout --track [远程名]/[分支名称]</span><br><span class="line"><span class="comment"># 使用 d 选项删除分支</span></span><br><span class="line">git branch -d [分支名称]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>拉取和推送</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 大部分时候，远程名称可以省略，默认使用 origin</span></span><br><span class="line"><span class="comment"># 拉取远程仓库的数据（这不会直接进行合并</span></span><br><span class="line">git fetch [远程名称]</span><br><span class="line"><span class="comment"># 向远端推送数据，远程分支名称省略时推送至已关联的远程分支上，本地分支名称和远程分支名称一起省略时可以推送当前分支至远程对应分支上</span></span><br><span class="line">git push [远程名称] [本地分支名称]:[远程分支名称]</span><br><span class="line"><span class="comment"># 删除远程分支</span></span><br><span class="line">git push [远程名称] :[远程分支名称]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>变基操作</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 可以将某一些特性在指定的基分支上重演，省略特性分支时默认为当前分支</span></span><br><span class="line">git rebase [基分支] [特性分支]</span><br><span class="line"><span class="comment"># 有时候需要变基的特性分支和并不直接基于基分支，在需要跳过中间分支的情况下需要使用 onto 选项</span></span><br><span class="line">git rebase --onto [基分支] [跳过分支] [特性分支]</span><br><span class="line"><span class="comment"># 变基过程中可能遇到冲突，git 会自动停下等待处理</span></span><br><span class="line"><span class="comment"># 冲突处理完成后继续</span></span><br><span class="line">git rebase --<span class="built_in">continue</span></span><br><span class="line"><span class="comment"># 放弃处理冲突，放弃变基</span></span><br><span class="line">git rebase --abort</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使用补丁</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用 diff 创建一个简单的补丁，diff 的输出就是一个标准的 patch 内容，例子如下：</span></span><br><span class="line">git diff master &gt;&gt; [补丁路径]</span><br><span class="line"><span class="comment"># 打上补丁，之后需要手动提交</span></span><br><span class="line">git apply [补丁路径]</span><br><span class="line"><span class="comment"># 添加补丁前最好测试是否存在冲突</span></span><br><span class="line">git apply --check [补丁路径]</span><br><span class="line"><span class="comment"># 使用 git format-patch 创建补丁，该补丁已邮件方式存在，并包含提交者信息，可以添加额外的描述，通常使用 M 选项检测重命名</span></span><br><span class="line">git format-patch [比较的版本号]</span><br><span class="line">git format-patch HEAD^^</span><br><span class="line"><span class="comment"># 使用 format-patch 创建的补丁需要使用 am 指定来确认</span></span><br><span class="line">git am [补丁路径]</span><br><span class="line"><span class="comment"># 如同变基操作一样，在遇到冲突或者无法快速合并时候，git 会停下让你解决冲突或者放弃</span></span><br><span class="line"><span class="comment"># 冲突解决完成，继续</span></span><br><span class="line">git am --[<span class="built_in">continue</span>/resolved/r]</span><br><span class="line"><span class="comment"># 放弃并还原</span></span><br><span class="line">git am --abort</span><br><span class="line"><span class="comment"># 跳过该补丁</span></span><br><span class="line">git am --skip</span><br><span class="line"><span class="comment"># 在存在公共祖先的时候，git 可以更智能地合并</span></span><br><span class="line">git am -3 [补丁路径]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>发布</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 发布前准备，需要打上一个标注标签（使用 a 或 s 选项）</span></span><br><span class="line"><span class="comment"># 查看内部版本号，通常用来做归档压缩包的名称</span></span><br><span class="line">git describe [分支或标签名称]</span><br><span class="line"><span class="comment"># 进行归档，可以使用 prefix 增加根目录，使用 format 指定格式</span></span><br><span class="line">git archive [分支或标签名称] --prefix=<span class="string">'[增加的根目录名称/]'</span> --format=[zip/tar/tar.gz/...]</span><br><span class="line"><span class="comment"># 上述命令仅输出二进制内容，需要将其输入至归档文件，如</span></span><br><span class="line">git archive master --prefix=<span class="string">'project/'</span> --format=zip &gt; `git describe master`.zip</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>储藏内容<br>git 可以帮助储藏一份临时性的改动便于之后恢复</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 将已跟踪的文件的改动进行储藏</span></span><br><span class="line">git stash</span><br><span class="line">git stash push [描述]</span><br><span class="line"><span class="comment"># 查看储藏栈内所有的储藏记录</span></span><br><span class="line">git stash list</span><br><span class="line"><span class="comment"># 将储藏内容还原至工作区和暂存区，名称省略时使用栈顶记录</span></span><br><span class="line">git stash apply [stash@&#123;N&#125;]</span><br><span class="line"><span class="comment"># 删除储藏栈中的记录</span></span><br><span class="line">git stash drop stash@&#123;N&#125;</span><br><span class="line"><span class="comment"># 清除全部储藏站中的记录</span></span><br><span class="line">git stash clear</span><br><span class="line"><span class="comment"># 将储藏内容还原，并立即移除记录</span></span><br><span class="line">git stash pop stash@&#123;N&#125;</span><br><span class="line"><span class="comment"># 还原应用的储藏内容，通过 show -p 选项展示 diff patch 内容，并使用 apply -R 来撤销应用</span></span><br><span class="line">git stash show -p [stash@&#123;N&#125;] | git apply -R</span><br><span class="line"><span class="comment"># 直接从储藏中新开分支来避开冲突解决，使用栈顶记录时可省略储藏名称，完成时会自动移除储藏栈记录</span></span><br><span class="line">git stash branch [新分支名称] [stash@&#123;N&#125;]</span><br></pre></td></tr></table></figure></li>
 </ul>
-<p>带来一个 Shell 风格的安装 Git 的例子：<br><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">RUN</span><span class="bash"> apt-get update &amp;&amp; apt-get install -y git</span></span><br></pre></td></tr></table></figure></p>
-<p>这里使用 <strong>&amp;&amp;</strong> 可以使得在同一层镜像层上更新 apt 并下载 git。</p>
-<h2 id="CMD-命令"><a href="#CMD-命令" class="headerlink" title="CMD 命令"></a>CMD 命令</h2><p><code>CMD</code> 命令的格式有三种，前两者都是用来<strong>定义容器的默认行为</strong>，后者用来给 <code>ENTRYPOINT</code> 命令提供<strong>额外的可替换参数</strong>。</p>
-<ol>
-<li><code>CMD &lt;command&gt; &lt;option&gt; &lt;param&gt;</code></li>
-<li><code>CMD [&quot;command&quot;, &quot;option&quot;, &quot;param&quot;]</code></li>
-<li><code>CMD [&quot;param&quot;...]</code></li>
-</ol>
-<p>先说前两者用作执行默认命令的情况，以一个官方 Nginx 的 Dockerfile 为例：<br><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 前置步骤忽略</span></span><br><span class="line"><span class="keyword">CMD</span><span class="bash"> [<span class="string">"nginx"</span>, <span class="string">"-g"</span>, <span class="string">"daemon off;"</span>]</span></span><br></pre></td></tr></table></figure></p>
-<p>该命令使得以该 Nginx 镜像构建的容器，在启动时候默认地自动运行 Nginx。但是既然是定义<strong>默认</strong>行为，那么它是可以在运行容器的时候被更改的，比如像下面这样：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo docker run -p 80:80 nginx <span class="built_in">echo</span> hello-world</span><br></pre></td></tr></table></figure></p>
-<p>那么这个时候容器并不会启动一个 Nginx 服务，而是打印了 hello-world。并且这个容器会随着打印命令的结束而停止。</p>
-<p>需要注意的是，既然 <code>CMD</code> 定义<strong>默认</strong>行为，那么它在 Dockerfile 中只能存在一个（如果定义了多个 <code>CMD</code>，那个最后一个有效）</p>
-<p>那么如何使用 <code>CMD</code> 为 <code>ENTRYPOINT</code> 提供额外参数呢？先看一下 <code>ENTRYPOINT</code> 的用法。</p>
-<h2 id="ENTRYPOINT-命令"><a href="#ENTRYPOINT-命令" class="headerlink" title="ENTRYPOINT 命令"></a>ENTRYPOINT 命令</h2><p><code>ENTRYPOINT</code> 通常用来<strong>定义容器启动时候的行为</strong>，有点类似于 <code>CMD</code>，但是它不会被启动命令中的参数覆盖。<br>上一节中 Nginx 的例子，如果将 <code>CMD</code> 改成 <code>ENTRYPOINT</code>，那么我们的 hello-world 方案便行不通了。</p>
-<p><code>ENTRYPOINT</code> 同样支持两种格式的写法，并且是存在差异的（后文描述）：</p>
-<ol>
-<li><code>ENTRYPOINT &lt;command&gt; &lt;option&gt; &lt;param&gt;</code></li>
-<li><code>ENTRYPOINT [&quot;command&quot;, &quot;option&quot;, &quot;param&quot;]</code></li>
-</ol>
-<p>使用 Exec 风格的写法支持使用 <code>CMD</code> 拓展<strong>可变参数</strong>和<strong>动态替换</strong>参数，而使用 Shell 风格时<strong>不支持</strong>。假如我们在 Dockerfile 中：<br><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 前置步骤忽略</span></span><br><span class="line"><span class="keyword">ENTRYPOINT</span><span class="bash"> redis-cli -h 127.0.0.1</span></span><br></pre></td></tr></table></figure></p>
-<p>那么这个由此构建的容器在运行时<strong>只能</strong>将 redi 连接到容器本身的 redis-server 上。<br>修改这个 Dockerfile：<br><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 前置步骤忽略</span></span><br><span class="line"><span class="keyword">ENTRYPOINT</span><span class="bash"> [<span class="string">"redis-cli"</span>]</span></span><br><span class="line"><span class="bash">CMD [<span class="string">"-h"</span>, <span class="string">"127.0.0.1"</span>]</span></span><br></pre></td></tr></table></figure></p>
-<p>这时候，如果按默认的启动方式，容器的 redis-cli 会自动连接 127.0.0.1，即以下命令此时是等价的：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker run my-redis-image</span><br><span class="line">docker run my-redis-image -h 127.0.0.1</span><br></pre></td></tr></table></figure></p>
-<p>但是由于 Dockfile 中使用了 Exec 格式的 <code>ENTRYPOINT</code>，我们已经可以修改它的目标地址了，甚至可以增加额外的参数：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run my-redis-image -h server.address -a redis_password</span><br></pre></td></tr></table></figure></p>
-<p>其中 <code>-h server.address</code> 替换了 <code>CMD [&quot;-h&quot;, &quot;127.0.0.1&quot;]</code>，而 <code>-a redis_password</code> 则是由于使用了 Exec 格式可以增加参数。</p>
-<hr>
-<p>关于 <code>RUN</code>，<code>CMD</code>，<code>ENTRYPOINT</code> 的差异已经描述完了，有没有都牢记于心呢~</p>
 
       
     </div>
@@ -548,7 +565,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Docker/" rel="tag"># Docker</a>
+            <a href="/tags/Git/" rel="tag"># Git</a>
           
         </div>
       
@@ -576,8 +593,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/07/文字处理-sed/" rel="next" title="文字处理-sed">
-                <i class="fa fa-chevron-left"></i> 文字处理-sed
+              <a href="/2018/09/ES-操作-索引管理/" rel="next" title="ES 操作-索引管理">
+                <i class="fa fa-chevron-left"></i> ES 操作-索引管理
               </a>
             
           </div>
@@ -585,10 +602,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/07/Docker/" rel="prev" title="Docker 挂载与数据存储">
-                Docker 挂载与数据存储 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -645,17 +658,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview-wrap sidebar-panel">
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -772,22 +776,6 @@
         </div>
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#命令格式"><span class="nav-number">1.</span> <span class="nav-text">命令格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RUN-命令"><span class="nav-number">2.</span> <span class="nav-text">RUN 命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CMD-命令"><span class="nav-number">3.</span> <span class="nav-text">CMD 命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ENTRYPOINT-命令"><span class="nav-number">4.</span> <span class="nav-text">ENTRYPOINT 命令</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       
@@ -983,7 +971,7 @@
       <script type="text/javascript">
       function renderGitment(){
         var gitment = new Gitmint({
-            id: '1530953017000',
+            id: '1538814299000',
             owner: 'Kun3375',
             repo: 'kun3375.github.io',
             
