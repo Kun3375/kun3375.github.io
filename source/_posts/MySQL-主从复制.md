@@ -120,7 +120,7 @@ mysqldump -uUSERNAME -pPASSWORD --routines --single-transaction --master-data=2 
 - --single-transaction 开启单一事务备份。不在备份执行时进行锁表，而仅仅在开始时获取 master status 时候锁表（它依然隐含了以下几个短暂的动作）：
     1. FLUSH TABLES WITH READ LOCK
     2. SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ
-    3. START TRANSACTION
+    3. START TRANSACTION WITH CONSISTENT SNAPSHOT
     4. SHOW VARIABLES LIKE 'gtid\_mode'
     5. SHOW MASTER STATUS
     6. UNLOCK TABLES
