@@ -120,7 +120,7 @@
 <meta property="og:site_name" content="码路狂飙">
 <meta property="og:description" content="最近工作也比较忙，很久没有写新的日记了。开始重新整理一下知识点，先找一个有意思点开始吧。 复制原理这个原理其实十分简单，只要搜索一下，那些搜索引擎就会给出图示和合理的答案：  主库开启二进制日志（或者叫主机日志）bin-log。这会使得数据库在更新时记录下它的操作动作。 从机开启 slave 模式，使用一个 IO 线程去请求 master 的数据，记录在中继日志 relay-log 中；maste">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-01-19T05:04:39.284Z">
+<meta property="og:updated_time" content="2019-01-19T05:28:07.305Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="MySQL 主从复制">
 <meta name="twitter:description" content="最近工作也比较忙，很久没有写新的日记了。开始重新整理一下知识点，先找一个有意思点开始吧。 复制原理这个原理其实十分简单，只要搜索一下，那些搜索引擎就会给出图示和合理的答案：  主库开启二进制日志（或者叫主机日志）bin-log。这会使得数据库在更新时记录下它的操作动作。 从机开启 slave 模式，使用一个 IO 线程去请求 master 的数据，记录在中继日志 relay-log 中；maste">
@@ -380,7 +380,7 @@
                 
               
 
-              <time title="创建时间：2019-01-19 12:56:33 / 修改时间：13:04:39" itemprop="dateCreated datePublished" datetime="2019-01-19T12:56:33+08:00">2019-01-19</time>
+              <time title="创建时间：2019-01-19 12:56:33 / 修改时间：13:28:07" itemprop="dateCreated datePublished" datetime="2019-01-19T12:56:33+08:00">2019-01-19</time>
             
 
             
@@ -509,7 +509,7 @@
 <li>–single-transaction 开启单一事务备份。不在备份执行时进行锁表，而仅仅在开始时获取 master status 时候锁表（它依然隐含了以下几个短暂的动作）：<ol>
 <li>FLUSH TABLES WITH READ LOCK</li>
 <li>SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ</li>
-<li>START TRANSACTION</li>
+<li>START TRANSACTION WITH CONSISTENT SNAPSHOT</li>
 <li>SHOW VARIABLES LIKE ‘gtid_mode’</li>
 <li>SHOW MASTER STATUS</li>
 <li>UNLOCK TABLES</li>
