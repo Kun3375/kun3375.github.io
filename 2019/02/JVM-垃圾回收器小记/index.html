@@ -112,24 +112,25 @@
 
 
 
-  <meta name="description" content="代码很酷，留下思考和记录">
-<meta name="keywords" content="Java,Docker,Linux,Shell,Python,MQ,Redis,ES">
-<meta property="og:type" content="website">
-<meta property="og:title" content="码路狂飙">
-<meta property="og:url" content="http://kun3375.com/categories/MySQL/index.html">
+  <meta name="description" content="能力各异的垃圾回收器SerialSerial 收集器是一个新生代串行垃圾回收器，单线程执行，使用复制算法，整个流程会 STW。在单核环境下可能会不存在线程切换的问题而有略高的效率。也是之前 client 模式下的默认垃圾回收器。 ParNewParNew 收集器是一个新生代并行垃圾回收器，多线程执行，使用复制算法，整个流程会 STW。除了使用多个线程进行垃圾回收之外，其余和 Serial 一致。">
+<meta name="keywords" content="Java,JVM">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JVM 垃圾回收器小记">
+<meta property="og:url" content="http://kun3375.com/2019/02/JVM-垃圾回收器小记/index.html">
 <meta property="og:site_name" content="码路狂飙">
-<meta property="og:description" content="代码很酷，留下思考和记录">
+<meta property="og:description" content="能力各异的垃圾回收器SerialSerial 收集器是一个新生代串行垃圾回收器，单线程执行，使用复制算法，整个流程会 STW。在单核环境下可能会不存在线程切换的问题而有略高的效率。也是之前 client 模式下的默认垃圾回收器。 ParNewParNew 收集器是一个新生代并行垃圾回收器，多线程执行，使用复制算法，整个流程会 STW。除了使用多个线程进行垃圾回收之外，其余和 Serial 一致。">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-02-03T17:03:35.909Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="码路狂飙">
-<meta name="twitter:description" content="代码很酷，留下思考和记录">
+<meta name="twitter:title" content="JVM 垃圾回收器小记">
+<meta name="twitter:description" content="能力各异的垃圾回收器SerialSerial 收集器是一个新生代串行垃圾回收器，单线程执行，使用复制算法，整个流程会 STW。在单核环境下可能会不存在线程切换的问题而有略高的效率。也是之前 client 模式下的默认垃圾回收器。 ParNewParNew 收集器是一个新生代并行垃圾回收器，多线程执行，使用复制算法，整个流程会 STW。除了使用多个线程进行垃圾回收之外，其余和 Serial 一致。">
 
 
 
 
 
 
-  <link rel="canonical" href="http://kun3375.com/categories/MySQL/">
+  <link rel="canonical" href="http://kun3375.com/2019/02/JVM-垃圾回收器小记/">
 
 
 
@@ -139,7 +140,7 @@
   };
 </script>
 
-  <title>分类: MySQL | 码路狂飙</title>
+  <title>JVM 垃圾回收器小记 | 码路狂飙</title>
   
 
 
@@ -190,7 +191,7 @@
     
   
 
-  <div class="container sidebar-position-left ">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
@@ -239,7 +240,7 @@
         
         
           
-          <li class="menu-item menu-item-分类 menu-item-active">
+          <li class="menu-item menu-item-分类">
     <a href="/categories/" rel="section">
       <i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
   </li>
@@ -275,25 +276,6 @@
 
   
     
-
-    
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-    
-
-  
-
 
   
 
@@ -340,57 +322,460 @@
           <div id="content" class="content">
             
 
-  
-  
-  
-  <div class="post-block category">
+  <div id="posts" class="posts-expand">
+    
 
-    <div id="posts" class="posts-collapse">
-      <div class="collection-title">
-        <h1>MySQL<small>分类</small>
-        </h1>
-      </div>
+  
 
-      
-        
+  
+  
+  
+
+  
 
   <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://kun3375.com/2019/02/JVM-垃圾回收器小记/">
 
-      <h2 class="post-title">
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="斯特拉不用电">
+      <meta itemprop="description" content="代码很酷，留下思考和记录">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="码路狂飙">
+    </span>
+
+    
+      <header class="post-header">
+
         
-            <a class="post-title-link" href="/2019/01/MySQL-主从复制/" itemprop="url">
-              
-                <span itemprop="name">MySQL 主从复制</span>
-              
-            </a>
         
-      </h2>
+          <h1 class="post-title" itemprop="name headline">JVM 垃圾回收器小记
+              
+            
+          </h1>
+        
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-01-19T12:56:33+08:00" content="2019-01-19">
-          01-19
-        </time>
-      </div>
+        <div class="post-meta">
+          <span class="post-time">
 
-    </header>
-  </article>
+            
+            
+            
 
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-02-04 00:57:43 / 修改时间：01:03:35" itemprop="dateCreated datePublished" datetime="2019-02-04T00:57:43+08:00">2019-02-04</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/02/JVM-垃圾回收器小记/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2019/02/JVM-垃圾回收器小记/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="能力各异的垃圾回收器"><a href="#能力各异的垃圾回收器" class="headerlink" title="能力各异的垃圾回收器"></a>能力各异的垃圾回收器</h3><h4 id="Serial"><a href="#Serial" class="headerlink" title="Serial"></a>Serial</h4><p>Serial 收集器是一个新生代串行垃圾回收器，单线程执行，使用复制算法，整个流程会 STW。在单核环境下可能会不存在线程切换的问题而有略高的效率。也是之前 client 模式下的默认垃圾回收器。</p>
+<h4 id="ParNew"><a href="#ParNew" class="headerlink" title="ParNew"></a>ParNew</h4><p>ParNew 收集器是一个新生代并行垃圾回收器，多线程执行，使用复制算法，整个流程会 STW。除了使用多个线程进行垃圾回收之外，其余和 Serial 一致。<br><a id="more"></a></p>
+<h4 id="Parallel-Scavenge"><a href="#Parallel-Scavenge" class="headerlink" title="Parallel Scavenge"></a>Parallel Scavenge</h4><p>Parallel Scavenge 收集器是一个新生代并行垃圾回收器，多线程执行，使用复制算法，整个流程会 STW。其设计的初衷是为了提高系统吞吐量（应用程序时间占比）。相对后文中的 CMS 尽管缩短了用户线程的停顿时间但是两次扫描会拉长整个垃圾回收的时间。</p>
+<h4 id="Serial-Old"><a href="#Serial-Old" class="headerlink" title="Serial Old"></a>Serial Old</h4><p>Serial Old 是一个老年代串行垃圾回收器，使用单线程的标记整理算法。类似 Serial 的老年代版本，常用于 client 模式。</p>
+<h4 id="Parallel-Old"><a href="#Parallel-Old" class="headerlink" title="Parallel Old"></a>Parallel Old</h4><p>Parallel Old 是一个老年代并行垃圾回收器，使用多线程执行标记整理算法。</p>
+<h4 id="Concurrent-Mark-Sweep"><a href="#Concurrent-Mark-Sweep" class="headerlink" title="Concurrent Mark Sweep"></a>Concurrent Mark Sweep</h4><p>Concurrent Mark Sweep 垃圾收集器，简称 CMS，一个近乎并发执行的垃圾回收器，其设计的初衷就是尽可能地缩短用户线程的停顿时间。它分为 4 个阶段：</p>
+<ol>
+<li>初始标记（Initial Mark）标记所有 GC Roots 关联的对象，速度十分快。</li>
+<li>并发标记（Concurrent Mark）沿 GC Roots 搜索对象，判断是否存活。</li>
+<li>重新标记（Remark）标记并发阶段出现的对象。</li>
+<li>并发清除（Concurrent Sweep）对垃圾对象清理。</li>
+</ol>
+<p>在初始标记和重新标记阶段仍然需要暂停用户线程（STW），但是速度很短，所以一般视 CMS 为一个并发回收器。尽管 CMS 停顿时间少，但是它依然有着显著的缺点：</p>
+<ol>
+<li>吞吐量降低。并发标记和清理会会和用户线程抢占 CPU 资源，而且这两个阶段持续的时间会相对较长。</li>
+<li>无法处理浮动垃圾。由于 CMS 线程和用户线程并行工作，所以期间产生的一些垃圾会无法回收，直到下一次 GC。同时 CMS 模式下需要在老年代预留一定的空间，而不能等到近乎填满之后才启动。如果 Concurrent Mode Failure，那么会触发一次 SerialOld FullGC。</li>
+<li>产生内存碎片。这是由于 CMS 使用标记清除算法的原因。最后严重的堆碎片化可能因为无法容纳一个大对象而被迫提前进行一个 FullGC。对此，可以控制 JVM 在一定次数的 CMS GC 之后进行一次碎片整理。</li>
+</ol>
+<h4 id="Garbage-First"><a href="#Garbage-First" class="headerlink" title="Garbage First"></a>Garbage First</h4><p>Garbage First 简称 G1，是 JDK7 后引入的一个分代收集器，在 JDK9 已是默认选项。<br>感觉有必要关于 G1 新开笔记，待更。</p>
+<h3 id="相关参数和注意"><a href="#相关参数和注意" class="headerlink" title="相关参数和注意"></a>相关参数和注意</h3><table>
+<thead>
+<tr>
+<th style="text-align:center">参数</th>
+<th style="text-align:center">效果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><strong>通用参数</strong></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center"><code>-XX:+PrintCommandLineFlags</code></td>
+<td style="text-align:center">打印当前 JVM 定制的参数，可查看使用的垃圾回收器</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>-XX:+PrintGC</code> <code>-XX:+PrintGCDetails</code></td>
+<td style="text-align:center">打印 GC 日志，精简 or 详细</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>-XX:+PrintGCApplicationStoppedTime</code></td>
+<td style="text-align:center">打印 GC 时暂停的时间</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>-XX:+PrintGCApplicationConcurrentTime</code></td>
+<td style="text-align:center">打印 GC 间应用运行的时间</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>-XX:+PrintGCTimeStamps</code></td>
+<td style="text-align:center">打印 GC 阶段触发的时间戳</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>-XX:+PrintHeapAtGC</code></td>
+<td style="text-align:center">在 GC 时打印堆详情</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>-XX:+DisableExplicitGC</code></td>
+<td style="text-align:center">禁用程序中显式的提示 FullGC 触发：System.gc()，有 OOM 风险，许多框架使用永久区内存，只能通过 FullGC 调用 sun.misc.Cleaner 进行回收</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>回收器选择</strong></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center"><code>-XX:+UseSerialGC</code></td>
+<td style="text-align:center">使用串行垃圾回收器，Serial+SerialOld(MSC)</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>-XX:+UseParallelGC</code></td>
+<td style="text-align:center">Young 使用并行回收器(Parallel Scavenge)，Old 默认串行回收，可以搭配 ParOld 而无法搭配 CMS</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>-XX:+UseParNewGC</code></td>
+<td style="text-align:center">Young 使用并行回收器(Parrallel New), 可以搭配 CMS 使用</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>-XX:+UseParallelOldGC</code></td>
+<td style="text-align:center">Old 使用并行回收器（Parallel Old），一般搭配 ParScvg 提高系统吞吐量</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>-XX:+UseConcMarkSweepGC</code></td>
+<td style="text-align:center">Old 使用并行回收器（CMS），默认 Young 使用 ParNew，备用 SerialOld 进行 FullGC</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>-XX:+UseG1GC</code></td>
+<td style="text-align:center">使用 G1 回收器</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>ParallelYoungGC 配置</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><code>-XX:ParallelGCThreads</code></td>
+<td style="text-align:center">配置 Young 区的并行收集线程数，默认 <code>(ncpus &lt;= 8) ? ncpus : 3 + ((ncpus * 5) / 8)</code></td>
+</tr>
+<tr>
+<td style="text-align:center">Parallel Scavenge 涉及配置</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>-XX:GCTimeLimit</code></td>
+<td style="text-align:center">设置 GC 时间上限，默认 98，超出后抛出 OOM</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>-XX:GCHeapFreeLimit</code></td>
+<td style="text-align:center">设置非 GC 中的时间阈值，默认 2，低于该值会抛出 OOM</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>-XX:MaxGCPauseMillis</code></td>
+<td style="text-align:center">设置年轻代回收停顿的最大毫秒数，如果在 GC 时超过该阈值，JVM 会尝试调整堆空间的配比，处理优先级高</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>-XX:GCTimeRatio</code></td>
+<td style="text-align:center">配置 GC 时间的比重 1/(1 + N)，如果过长 JVM 会调整堆空间的配比，处理优先级低于 MaxGCPauseMillis，但是高于其他空间配置</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>-XX:+UseAdaptiveSizePolicy</code></td>
+<td style="text-align:center">开启堆空间自适应调整，推荐在 Parallel Scavenge 下启用，如果需要手动调整堆空间配比，请使用 <code>-</code> 停用</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>CMS 相关配置</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><code>-XX:ParallelCMSThreads</code></td>
+<td style="text-align:center">设置 CMS 的回收线程数量，默认 <code>(ParallelGCThreads + 3)/4)</code></td>
+</tr>
+<tr>
+<td style="text-align:center"><code>-XX:+CMSParallelInitialMarkEnabled</code></td>
+<td style="text-align:center">使 CMS 的初始化标记阶段并行进行，1.8 已并行处理，该选项针对 1.5~1.7</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>-XX:ParallelCMSThreads</code></td>
+<td style="text-align:center">设置 CMS 回收线程数量，默认为 (Young 并行回收线程 ParallelGCThreads + 3)/4</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>-XX:CMSWaitDuration</code></td>
+<td style="text-align:center">设置 CMS 扫描线程的间隔时间，默认 2000 ms</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>-XX:CMSInitiatingOccupancyFraction</code></td>
+<td style="text-align:center">设置 CMS <strong>首次</strong>触发回收的堆占用百分比，1.7 之后默认 92，后续的回收触发比例由 JVM 自行控制</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>-XX:+UseCMSInitiatingOccupancyOnly</code></td>
+<td style="text-align:center">设置每次 CMS 触发的堆占用比例都沿用 CMSInitiatingOccupancyFraction 设定值</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>-XX:+CMSScavengeBeforeRemark</code></td>
+<td style="text-align:center">设置 CMS 启动前进行一次 YoungGC，以减轻重新标记阶段时候的工作量，减少暂停时间，需要斟酌</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>-XX:+UseCMSCompactAtFullCollection</code></td>
+<td style="text-align:center">允许在内存不够时进行碎片整理，碎片整理时无法并发，仅 CMS 启用时有效，默认开启</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>-XX:+CMSFullGCsBeforeCompaction</code></td>
+<td style="text-align:center">多少次 FullGC 之后进行碎片压缩，默认 0，每次进行压缩</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>-XX:+CMSClassUnloadingEnabled</code></td>
+<td style="text-align:center">针对 1.6~1.7，允许 CMS 清理永久区，对不再使用的类进行清理，需要斟酌，代替更早之前的 CMSPermGenSweepingEnabled</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>-XX:+CMSInitatingPermOccupancyFraction</code></td>
+<td style="text-align:center">针对 1.7 及之前，针对永久区控制触发 CMS 的阈值，效果同 CMSInitiatingOccupancyFraction</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>-XX:+ExplicitGCInvokesConcurrent</code> <code>-XX:+ExplicitGCInvokesConcurrentAndUnloadsClasses</code></td>
+<td style="text-align:center">使用 CMS 来执行 FullGC，DisableExplicitGC 的 OOM 风险可以使使用该命令来避免</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>G1 相关配置</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><code>-XX:+UseStringDeduplication</code></td>
+<td style="text-align:center">优化字符串空间，去除冗余字符串</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>-XX:StringDeduplicationAgeThreshold</code></td>
+<td style="text-align:center">字符串去重会针对年龄大的字符串对象，而该值则控制这个年龄阈值，默认 3</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>-XX:+PrintStringDeduplicationStatistics</code></td>
+<td style="text-align:center">打印 StringDeduplication 的触发情况</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>关于 GC 日志记录</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><code>-Xloggc:&lt;FilePath&gt;</code></td>
+<td style="text-align:center">记录 GC 日志，设定日志目录。如果需要虚拟机全部日志信息需要使用 <code>XX:+LogVMOutput</code> 以及 <code>-XX:LogFile=&lt;FilePath&gt;</code></td>
+</tr>
+<tr>
+<td style="text-align:center"><code>-XX:+UseGCLogFileRotation</code></td>
+<td style="text-align:center">开启 GC 日志的滚动</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>-XX:NumberOfGCLogFiles=&lt;N&gt;</code></td>
+<td style="text-align:center">设置 GC 滚动日志的文件个数，N &gt;= 1</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>-XX:GCLogFileSize=N</code></td>
+<td style="text-align:center">设置 GC 每个滚动日志的文件大小，N &gt;= 8KB</td>
+</tr>
+</tbody>
+</table>
 
       
     </div>
 
+    
+
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>码路加油</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="斯特拉不用电 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/JVM/" rel="tag"># JVM</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div id="needsharebutton-postbottom">
+            <span class="btn">
+              <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </span>
+          </div>
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/MySQL-主从复制/" rel="next" title="MySQL 主从复制">
+                <i class="fa fa-chevron-left"></i> MySQL 主从复制
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
 
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
           
+
+  
+    <div class="comments" id="comments">
+      
+        <div onclick="showGitment()" id="gitment-display-button">显示评论</div>
+        <div id="gitment-container" style="display:none"></div>
+      
+    </div>
+
+  
+
+
 
         </div>
         
@@ -411,8 +796,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -533,6 +927,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#能力各异的垃圾回收器"><span class="nav-number">1.</span> <span class="nav-text">能力各异的垃圾回收器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Serial"><span class="nav-number">1.1.</span> <span class="nav-text">Serial</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ParNew"><span class="nav-number">1.2.</span> <span class="nav-text">ParNew</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Parallel-Scavenge"><span class="nav-number">1.3.</span> <span class="nav-text">Parallel Scavenge</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Serial-Old"><span class="nav-number">1.4.</span> <span class="nav-text">Serial Old</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Parallel-Old"><span class="nav-number">1.5.</span> <span class="nav-text">Parallel Old</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Concurrent-Mark-Sweep"><span class="nav-number">1.6.</span> <span class="nav-text">Concurrent Mark Sweep</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Garbage-First"><span class="nav-number">1.7.</span> <span class="nav-text">Garbage First</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#相关参数和注意"><span class="nav-number">2.</span> <span class="nav-text">相关参数和注意</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -685,6 +1095,10 @@
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.3.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.3.0"></script>
+
+
 
   
 
@@ -720,6 +1134,34 @@
 
     
 
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitmint({
+            id: '1549213063000',
+            owner: 'Kun3375',
+            repo: 'kun3375.github.io',
+            
+            lang: "" || navigator.language || navigator.systemLanguage || navigator.userLanguage,
+            
+            oauth: {
+            
+            
+                client_secret: 'ca42d298b0fda51fd3b4327e6c7d7f676fd0e815',
+            
+                client_id: 'ae3ec12efda7fbbba32f'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      function showGitment(){
+        document.getElementById("gitment-display-button").style.display = "none";
+        document.getElementById("gitment-container").style.display = "block";
+        renderGitment();
+      }
+      
+      </script>
     
 
 
