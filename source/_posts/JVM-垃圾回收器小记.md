@@ -66,7 +66,7 @@ Garbage First 简称 G1，是 JDK7 后引入的一个分代收集器，在 JDK9 
 |`-XX:+UseParallelOldGC`|Old 使用并行回收器（Parallel Old），一般搭配 ParScvg 提高系统吞吐量|
 |`-XX:+UseConcMarkSweepGC`|Old 使用并行回收器（CMS），默认 Young 使用 ParNew，备用 SerialOld 进行 FullGC|
 |`-XX:+UseG1GC`|使用 G1 回收器|
-|**ParallelYoungGC 配置**|
+|**ParallelYoungGC 配置**||
 |`-XX:ParallelGCThreads`|配置 Young 区的并行收集线程数，默认 `(ncpus <= 8) ? ncpus : 3 + ((ncpus * 5) / 8)`|
 |Parallel Scavenge 涉及配置|
 |`-XX:GCTimeLimit`|设置 GC 时间上限，默认 98，超出后抛出 OOM|
@@ -74,7 +74,7 @@ Garbage First 简称 G1，是 JDK7 后引入的一个分代收集器，在 JDK9 
 |`-XX:MaxGCPauseMillis`|设置年轻代回收停顿的最大毫秒数，如果在 GC 时超过该阈值，JVM 会尝试调整堆空间的配比，处理优先级高|
 |`-XX:GCTimeRatio`|配置 GC 时间的比重 1/(1 + N)，如果过长 JVM 会调整堆空间的配比，处理优先级低于 MaxGCPauseMillis，但是高于其他空间配置|
 |`-XX:+UseAdaptiveSizePolicy`|开启堆空间自适应调整，推荐在 Parallel Scavenge 下启用，如果需要手动调整堆空间配比，请使用 `-` 停用|
-|**CMS 相关配置**|
+|**CMS 相关配置**||
 |`-XX:ParallelCMSThreads`|设置 CMS 的回收线程数量，默认 `(ParallelGCThreads + 3)/4) `|
 |`-XX:+CMSParallelInitialMarkEnabled`|使 CMS 的初始化标记阶段并行进行，1.8 已并行处理，该选项针对 1.5~1.7 |
 |`-XX:ParallelCMSThreads`|设置 CMS 回收线程数量，默认为 (Young 并行回收线程 ParallelGCThreads + 3)/4|
@@ -87,11 +87,11 @@ Garbage First 简称 G1，是 JDK7 后引入的一个分代收集器，在 JDK9 
 |`-XX:+CMSClassUnloadingEnabled`|针对 1.6~1.7，允许 CMS 清理永久区，对不再使用的类进行清理，需要斟酌，代替更早之前的 CMSPermGenSweepingEnabled|
 |`-XX:+CMSInitatingPermOccupancyFraction`|针对 1.7 及之前，针对永久区控制触发 CMS 的阈值，效果同 CMSInitiatingOccupancyFraction |
 |`-XX:+ExplicitGCInvokesConcurrent` `-XX:+ExplicitGCInvokesConcurrentAndUnloadsClasses`|使用 CMS 来执行 FullGC，DisableExplicitGC 的 OOM 风险可以使使用该命令来避免|
-|**G1 相关配置**|
+|**G1 相关配置**||
 |`-XX:+UseStringDeduplication`|优化字符串空间，去除冗余字符串|
 |`-XX:StringDeduplicationAgeThreshold`|字符串去重会针对年龄大的字符串对象，而该值则控制这个年龄阈值，默认 3|
 |`-XX:+PrintStringDeduplicationStatistics`|打印 StringDeduplication 的触发情况|
-|**关于 GC 日志记录**|
+|**关于 GC 日志记录**
 |`-Xloggc:<FilePath>`|记录 GC 日志，设定日志目录。如果需要虚拟机全部日志信息需要使用 `XX:+LogVMOutput` 以及 `-XX:LogFile=<FilePath>`|
 |`-XX:+UseGCLogFileRotation`|开启 GC 日志的滚动|
 |`-XX:NumberOfGCLogFiles=<N>`|设置 GC 滚动日志的文件个数，N >= 1|
