@@ -338,6 +338,181 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://kun3375.com/2019/04/SpringKafkaConsumer-增效/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="斯特拉不用电">
+      <meta itemprop="description" content="代码很酷，留下思考和记录">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="码路狂飙">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/04/SpringKafkaConsumer-增效/" itemprop="url">
+                  SpringKafkaListener 增效
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-04-28 19:17:14" itemprop="dateCreated datePublished" datetime="2019-04-28T19:17:14+08:00">2019-04-28</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-04-29 02:30:06" itemprop="dateModified" datetime="2019-04-29T02:30:06+08:00">2019-04-29</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>通过 spring-kafka 的集成，我们可以通过注解 <code>@KafkaListener</code> 以及 <code>spring.kafka.consumer</code> 相关配置轻松的管理 kafka 消费。但是消费速度往往仍然不够理想，需要进一步调整。</p>
+<p>在 kafka 的实现中，某个 topic 的 partition 即分区的数量，基本上决定在这个 topic 下的最大并发程度。因为客户端的数量是受限于 partition 数量的。对于一定数量的 partition 而言，客户端数量如果更少，将有部分客户端会被分配上多个分区；如果客户端数量更多，超过 partition 数量的客户端将会无法消费，这是由 kafka 本身的负载均衡策略决定的。<br>尽管我们可以动态地调整 partition，但是对于基于 Key 的消息，并需要有序消费时，由于 kafka 通过 Key 进行 hash 分片，更改 partition 数量将无法保证有序性。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/04/SpringKafkaConsumer-增效/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://kun3375.com/2019/02/JVM-垃圾回收器小记/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1866,173 +2041,6 @@ ES 默认给索引设置 5 个分片和 1 个副本，该值可以通过 setting
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://kun3375.com/2018/08/RocketMQ-Producer-摘要/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="斯特拉不用电">
-      <meta itemprop="description" content="代码很酷，留下思考和记录">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="码路狂飙">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/08/RocketMQ-Producer-摘要/" itemprop="url">
-                  RocketMQ Producer 摘要
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-08-18 13:01:01 / 修改时间：13:31:12" itemprop="dateCreated datePublished" datetime="2018-08-18T13:01:01+08:00">2018-08-18</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/RocketMQ/" itemprop="url" rel="index"><span itemprop="name">RocketMQ</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-          上一篇介绍完了 RocketMQ 消费者的默认实现，现在来瞅一瞅生产者的用法。
-设置必要的属性同样的，是 DefaultMQProducer，新建实例之后，在使用生产者发送消息之前，需要初始化几个属性：
-
-InstanceName 实例名称这是为了当一个 JVM 上启动了多个生产者时，区分不同的生产
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/08/RocketMQ-Producer-摘要/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2080,7 +2088,7 @@ InstanceName 实例名称这是为了当一个 JVM 上启动了多个生产者�
                 
                   <a href="/archives">
                 
-                    <span class="site-state-item-count">21</span>
+                    <span class="site-state-item-count">22</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -2146,7 +2154,9 @@ InstanceName 实例名称这是为了当一个 JVM 上启动了多个生产者�
                     
                       
                     
-                    <span class="site-state-item-count">13</span>
+                      
+                    
+                    <span class="site-state-item-count">14</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
