@@ -112,24 +112,25 @@
 
 
 
-  <meta name="description" content="代码很酷，留下思考和记录">
-<meta name="keywords" content="Java,Docker,Linux,Shell,Python,MQ,Redis,ES">
-<meta property="og:type" content="website">
-<meta property="og:title" content="码路狂飙">
-<meta property="og:url" content="http://kun3375.com/archives/2019/04/index.html">
+  <meta name="description" content="基本概念Region不同于之前的垃圾回收按照连续的物理内存空间进行划分产生 Yong、Tenured、MetaSpace 区域并使用分代垃圾回收处理。G1 将整个堆空间切分成若干个小型的区域 Region 来存放对象，每个 Region 可以单独作为 Yong、Tenured 或者 Humongous（大对象分配区域），这使得不同代的内存区域在物理上是可以割裂的。 Humongous 区域特性：">
+<meta name="keywords" content="Java,JVM">
+<meta property="og:type" content="article">
+<meta property="og:title" content="G1GC 解读">
+<meta property="og:url" content="http://kun3375.com/2019/06/G1GC-解读/index.html">
 <meta property="og:site_name" content="码路狂飙">
-<meta property="og:description" content="代码很酷，留下思考和记录">
+<meta property="og:description" content="基本概念Region不同于之前的垃圾回收按照连续的物理内存空间进行划分产生 Yong、Tenured、MetaSpace 区域并使用分代垃圾回收处理。G1 将整个堆空间切分成若干个小型的区域 Region 来存放对象，每个 Region 可以单独作为 Yong、Tenured 或者 Humongous（大对象分配区域），这使得不同代的内存区域在物理上是可以割裂的。 Humongous 区域特性：">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-06-24T12:04:23.380Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="码路狂飙">
-<meta name="twitter:description" content="代码很酷，留下思考和记录">
+<meta name="twitter:title" content="G1GC 解读">
+<meta name="twitter:description" content="基本概念Region不同于之前的垃圾回收按照连续的物理内存空间进行划分产生 Yong、Tenured、MetaSpace 区域并使用分代垃圾回收处理。G1 将整个堆空间切分成若干个小型的区域 Region 来存放对象，每个 Region 可以单独作为 Yong、Tenured 或者 Humongous（大对象分配区域），这使得不同代的内存区域在物理上是可以割裂的。 Humongous 区域特性：">
 
 
 
 
 
 
-  <link rel="canonical" href="http://kun3375.com/archives/2019/04/">
+  <link rel="canonical" href="http://kun3375.com/2019/06/G1GC-解读/">
 
 
 
@@ -139,7 +140,7 @@
   };
 </script>
 
-  <title>归档 | 码路狂飙</title>
+  <title>G1GC 解读 | 码路狂飙</title>
   
 
 
@@ -190,7 +191,7 @@
     
   
 
-  <div class="container sidebar-position-left page-archive">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
@@ -255,7 +256,7 @@
         
         
           
-          <li class="menu-item menu-item-归档 menu-item-active">
+          <li class="menu-item menu-item-归档">
     <a href="/archives/" rel="section">
       <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
   </li>
@@ -275,25 +276,6 @@
 
   
     
-
-    
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-    
-
-  
-
 
   
 
@@ -340,78 +322,303 @@
           <div id="content" class="content">
             
 
+  <div id="posts" class="posts-expand">
+    
+
+  
+
   
   
   
-  <div class="post-block archive">
-    <div id="posts" class="posts-collapse">
-      <span class="archive-move-on"></span>
 
-      
-      <span class="archive-page-counter">
-        
-        
-        
-          
-        
-        嗯..! 目前共计 23 篇日志。 继续努力。
-      </span>
-      
-
-      
-
-        
-        
-        
-
-        
-          
-          <div class="collection-title">
-            <h1 class="archive-year" id="archive-year-2019">2019</h1>
-          </div>
-        
-        
-
-        
+  
 
   <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://kun3375.com/2019/06/G1GC-解读/">
 
-      <h2 class="post-title">
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="斯特拉不用电">
+      <meta itemprop="description" content="代码很酷，留下思考和记录">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="码路狂飙">
+    </span>
+
+    
+      <header class="post-header">
+
         
-            <a class="post-title-link" href="/2019/04/SpringKafkaConsumer-增效/" itemprop="url">
-              
-                <span itemprop="name">SpringKafkaListener 增效</span>
-              
-            </a>
         
-      </h2>
+          <h1 class="post-title" itemprop="name headline">G1GC 解读
+              
+            
+          </h1>
+        
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-04-28T19:17:14+08:00" content="2019-04-28">
-          04-28
-        </time>
-      </div>
+        <div class="post-meta">
+          <span class="post-time">
 
-    </header>
-  </article>
+            
+            
+            
 
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
 
+              
+                
+              
+
+              <time title="创建时间：2019-06-24 18:42:37 / 修改时间：20:04:23" itemprop="dateCreated datePublished" datetime="2019-06-24T18:42:37+08:00">2019-06-24</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/06/G1GC-解读/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2019/06/G1GC-解读/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
+      
 
+      
+        <h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><h3 id="Region"><a href="#Region" class="headerlink" title="Region"></a>Region</h3><p>不同于之前的垃圾回收按照连续的物理内存空间进行划分产生 Yong、Tenured、MetaSpace 区域并使用分代垃圾回收处理。G1 将整个堆空间切分成若干个小型的区域 Region 来存放对象，每个 Region 可以单独作为 <em>Yong</em>、<em>Tenured</em> 或者 <em>Humongous</em>（大对象分配区域），这使得不同代的内存区域在物理上是可以割裂的。</p>
+<pre><code>Humongous 区域特性：
+- 一块 Humongous 区域不止占用一个 Region 基本大小，因为那些大于等于 Region 基本大小一半的对象都会被分配到 Humongous 区域。
+- Humongous 大对象直接作为 Tenured，在 GCM Cleanup 阶段或者 FullGC 时候被回收。
+- 大对象分配前会检查 InitiatingHeapOccupancyPercent 数值和 MarkingThreshold，超过则启动 GCM，避免 FullGC 和分配失败的可能。
+</code></pre><a id="more"></a>
+<h3 id="Card-Table"><a href="#Card-Table" class="headerlink" title="Card Table"></a>Card Table</h3><p>卡表，这个概念也适用于 CMS GC 并发垃圾回收。堆区空间会被划分成一个个 512 Byte 的卡，并维护一个卡表，保存一个标识位来标识对应卡区是否可能持有有年轻代的引用。目的是减少在 YongGC 时候对于整个 Tenured 区域的扫描。如果可能存在 Yong 区的引用则称为 <strong>Dirty Card</strong>（<strong>脏卡</strong>）。</p>
+<h3 id="Remembered-Set"><a href="#Remembered-Set" class="headerlink" title="Remembered Set"></a>Remembered Set</h3><p>简称 RSet，基于 Card Table 概念实现。对于 Region 而言，Card Table 记录了是否引用 Young 区对象，而 RSet 则是记录了其他 Card 引用本 Region 的信息。RSet 是一个哈希表，键为引用本 Region 的其他 Region 的起始地址，值为引用了对应 Region 中对应 Card 的集合。</p>
+<ul>
+<li>效益：G1 回收部分 Region，YongGC 时候可以通过 RSet 找到跨代引用的 Tenured Region，MixedGC 时候可以通过全部 YongRegion 和 Tenured RSet 得到，不用全堆扫描。</li>
+<li>维护：write barrier：写入屏障，即时编译生成的机器码中对于所有引用的更新都会生成额外的逻辑，来记录 Card Table 和 RSet 的改变。</li>
+</ul>
+<h3 id="Collection-Set"><a href="#Collection-Set" class="headerlink" title="Collection Set"></a>Collection Set</h3><p>简称 CSet，所有需要被回收的对象。</p>
+<h3 id="Pause-Prediction-Model"><a href="#Pause-Prediction-Model" class="headerlink" title="Pause Prediction Model"></a>Pause Prediction Model</h3><p>停顿预测模型。G1 是响应时间优先的算法，和 CMS 不同，它可以设置用于期望停顿时间，通过 MaxGCPauseMillis（这是一个软要求 ）设定。G1 根据历史回收数据和 MaxGCPauseMillis 来判断需要回收的 Region 数量。其以衰减标准偏差为理论基础实现，具体数学内容不展开。</p>
+<h2 id="标记方案"><a href="#标记方案" class="headerlink" title="标记方案"></a>标记方案</h2><p><strong>Global Concurrent Marking</strong>：这个并发标记步骤不是像 CMS GC 一样作为一个必要的步骤。它为 MixedGC 提供对象标记服务，通常伴随着 YoungGC（下述） 发生，总共四个阶段：</p>
+<ul>
+<li>初始标记（Initial Mark，STW）。它标记了从 GC Root 开始直接可达的对象（Root Scan）。</li>
+<li>复用了 YoungGC 的 Root Trace，为了不会有额外的 STW（Root Trace 会 STW）。</li>
+<li>并发标记（Concurrent Marking）。这个阶段从 GC Root 开始对堆中的对象标记，标记线程与应用程序线程并行执行，并且收集各个 Region 的存活对象信息。</li>
+<li>最终标记（Remark，STW）。标记那些在并发标记阶段发生变化的对象，将被回收。 </li>
+<li>清除垃圾（Cleanup）。清除空 Region（没有存活对象的），加入到 FeeList。</li>
+</ul>
+<h2 id="回收方案"><a href="#回收方案" class="headerlink" title="回收方案"></a>回收方案</h2><ul>
+<li><strong>YoungGC</strong><br>也就是 MinorGC，指定所有的年轻代 Region 进行回收。通过控制年轻代 Region 个数（内存大小）来控制 YoungGC 的消耗时间。</li>
+<li><strong>MixedGC</strong><br>其实 MixedGC 是作为 YoungGC 的升级，和 YoungGC 的区别在于使用了不同的 CSet，在 MixedGC 过程会包含若干 Tenured Region。在老年代对象占用堆区的内存达到阈值 <code>InitiatingHeapOccupancyPercent</code> 时会触发标记，并在标记结束时切换成 MixedGC。纳入每次 MixedGC 中除了 Yong Region，Tenured Region 数量会由期望停顿时间 <code>MaxGCPauseMillis</code> 估算出来。剩余的 Tenured Region 的部分会在下一次 MixedGC 中被回收。一次标记后 MixedGC 的最大次数由 <code>G1MixedGCCountTarget</code> 控制。</li>
+<li><strong>SerialOldGC</strong><br>根据 MixedGC 的执行行为可以了解到，如果垃圾产生的速度超过 MixedGC 速度，JVM 有必要采取额外的措施进行垃圾回收了，会使用一次 SerialGC 进行完全回收（FullGC）。还会触发 FullGC 的 MetaSpace 的使用。（关于 MetaSpace 推荐文章 <a href="http://lovestblog.cn/blog/2016/10/29/metaspace/，精简细致，不再搬运" rel="external nofollow noopener noreferrer" target="_blank">MetaSpace解读</a> 了解</li>
+</ul>
+<h2 id="重要参数"><a href="#重要参数" class="headerlink" title="重要参数"></a>重要参数</h2><ul>
+<li>-XX:G1HeapWastePercent：允许浪费的堆空间阈值。在 Global Concurrent Marking 结束之后，我们可以知道老年代 Region 中有多少空间要被回收，在每次 YGC 之后和再次发生 MixedGC 之前，会检查垃圾占比是否达到此参数，只有达到了，下次才会发生 MixedGC。</li>
+<li>-XX:G1MixedGCLiveThresholdPercent：老年代 Region 中的存活对象的占比，只有在此参数之下，才会被选入 CSet，默认 65%。</li>
+<li>-XX:G1MixedGCCountTarget：一次 Global Concurrent Marking 之后，最多执行 MixedGC 的次数。</li>
+<li>-XX:G1OldCSetRegionThresholdPercent：一次 MixedGC 中能被选入 CSet 的最多老年代 Region 数量，默认堆的 10%。</li>
+<li>-XX:G1HeapRegionSize：设置Region大小，并非最终值，默认会自动计算出一个合适值。</li>
+<li>-XX:MaxGCPauseMillis：设置G1收集过程目标时间，默认值200ms，软限制。</li>
+<li>-XX:G1NewSizePercent：新生代最小值，默认值5%。</li>
+<li>-XX:G1MaxNewSizePercent：新生代最大值，默认值60%。</li>
+<li>-XX:ParallelGCThreads：STW期间，并行GC线程数。可以不进行指定，默认会使用 CPU 支持的线程数（如果线程数小于等于 8），或者按 8 + 线程数 * 调整值 5/8 或 5/16（线程数大于 8）。</li>
+<li>-XX:ConcGCThreads：并发标记阶段，并行执行的线程数，为 ParallelGCThreads/4。</li>
+<li>-XX:InitiatingHeapOccupancyPercent：设置触发标记周期的 Java 非年轻代堆占用率阈值。默认值是 45%。</li>
+<li>-XX:G1ReservePercent=10：空闲空间预留内存百分比。</li>
+</ul>
+<p>参考</p>
+<ul>
+<li><a href="https://liuzhengyang.github.io/2017/06/07/garbage-first-collector/" rel="external nofollow noopener noreferrer" target="_blank">https://liuzhengyang.github.io/2017/06/07/garbage-first-collector/</a></li>
+<li><a href="https://tech.meituan.com/2016/09/23/g1.html" rel="external nofollow noopener noreferrer" target="_blank">https://tech.meituan.com/2016/09/23/g1.html</a></li>
+<li><a href="https://www.oracle.com/technetwork/cn/articles/java/g1gc-1984535-zhs.html" rel="external nofollow noopener noreferrer" target="_blank">https://www.oracle.com/technetwork/cn/articles/java/g1gc-1984535-zhs.html</a></li>
+</ul>
+
+      
     </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>码路加油</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="斯特拉不用电 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/JVM/" rel="tag"># JVM</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div id="needsharebutton-postbottom">
+            <span class="btn">
+              <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </span>
+          </div>
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/04/SpringKafkaConsumer-增效/" rel="next" title="SpringKafkaListener 增效">
+                <i class="fa fa-chevron-left"></i> SpringKafkaListener 增效
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
 
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
           
+
+  
+    <div class="comments" id="comments">
+      
+        <div onclick="showGitment()" id="gitment-display-button">显示评论</div>
+        <div id="gitment-container" style="display:none"></div>
+      
+    </div>
+
+  
+
+
 
         </div>
         
@@ -432,8 +639,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -556,6 +772,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#基本概念"><span class="nav-number">1.</span> <span class="nav-text">基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Region"><span class="nav-number">1.1.</span> <span class="nav-text">Region</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Card-Table"><span class="nav-number">1.2.</span> <span class="nav-text">Card Table</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Remembered-Set"><span class="nav-number">1.3.</span> <span class="nav-text">Remembered Set</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Collection-Set"><span class="nav-number">1.4.</span> <span class="nav-text">Collection Set</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Pause-Prediction-Model"><span class="nav-number">1.5.</span> <span class="nav-text">Pause Prediction Model</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#标记方案"><span class="nav-number">2.</span> <span class="nav-text">标记方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#回收方案"><span class="nav-number">3.</span> <span class="nav-text">回收方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#重要参数"><span class="nav-number">4.</span> <span class="nav-text">重要参数</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -708,6 +940,10 @@
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.3.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.3.0"></script>
+
+
 
   
 
@@ -743,6 +979,34 @@
 
     
 
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitmint({
+            id: '1561372957000',
+            owner: 'Kun3375',
+            repo: 'kun3375.github.io',
+            
+            lang: "" || navigator.language || navigator.systemLanguage || navigator.userLanguage,
+            
+            oauth: {
+            
+            
+                client_secret: 'ca42d298b0fda51fd3b4327e6c7d7f676fd0e815',
+            
+                client_id: 'ae3ec12efda7fbbba32f'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      function showGitment(){
+        document.getElementById("gitment-display-button").style.display = "none";
+        document.getElementById("gitment-container").style.display = "block";
+        renderGitment();
+      }
+      
+      </script>
     
 
 
