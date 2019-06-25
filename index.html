@@ -384,12 +384,24 @@
                 
               
 
-              <time title="创建时间：2019-06-24 18:42:37 / 修改时间：20:04:23" itemprop="dateCreated datePublished" datetime="2019-06-24T18:42:37+08:00">2019-06-24</time>
+              <time title="创建时间：2019-06-24 18:42:37" itemprop="dateCreated datePublished" datetime="2019-06-24T18:42:37+08:00">2019-06-24</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-06-25 10:39:17" itemprop="dateModified" datetime="2019-06-25T10:39:17+08:00">2019-06-25</time>
               
             
           </span>
@@ -441,12 +453,8 @@
 
       
         
-          <h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><h3 id="Region"><a href="#Region" class="headerlink" title="Region"></a>Region</h3><p>不同于之前的垃圾回收按照连续的物理内存空间进行划分产生 Yong、Tenured、MetaSpace 区域并使用分代垃圾回收处理。G1 将整个堆空间切分成若干个小型的区域 Region 来存放对象，每个 Region 可以单独作为 <em>Yong</em>、<em>Tenured</em> 或者 <em>Humongous</em>（大对象分配区域），这使得不同代的内存区域在物理上是可以割裂的。</p>
-<pre><code>Humongous 区域特性：
-- 一块 Humongous 区域不止占用一个 Region 基本大小，因为那些大于等于 Region 基本大小一半的对象都会被分配到 Humongous 区域。
-- Humongous 大对象直接作为 Tenured，在 GCM Cleanup 阶段或者 FullGC 时候被回收。
-- 大对象分配前会检查 InitiatingHeapOccupancyPercent 数值和 MarkingThreshold，超过则启动 GCM，避免 FullGC 和分配失败的可能。
-</code></pre>
+          <p>之前对 G1 之前的垃圾回收器进行了整理<a href="http://kun3375.com/2019/02/JVM-垃圾回收器小记/">《JVM 垃圾回收器小记》</a>，但是留下了 G1 的坑长久未填，现在把相关的概念、配置参数以及 G1 的流程进行了整理。</p>
+<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><h3 id="Region"><a href="#Region" class="headerlink" title="Region"></a>Region</h3><p>不同于之前的垃圾回收按照连续的物理内存空间进行划分产生 Yong、Tenured、MetaSpace 区域并使用分代垃圾回收处理。G1 将整个堆空间切分成若干个小型的区域 Region 来存放对象，每个 Region 可以单独作为 <em>Yong</em>、<em>Tenured</em> 或者 <em>Humongous</em>（大对象分配区域），这使得不同代的内存区域在物理上是可以割裂的。</p>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2019/06/G1GC-解读/#more" rel="contents">
