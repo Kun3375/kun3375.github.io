@@ -68,14 +68,13 @@ Garbage First 简称 G1，是 JDK7 后引入的一个分代收集器，在 JDK9 
 |`-XX:+UseG1GC`|使用 G1 回收器|
 |**ParallelYoungGC 配置**||
 |`-XX:ParallelGCThreads`|配置 Young 区的并行收集线程数，默认 `(ncpus <= 8) ? ncpus : 3 + ((ncpus * 5) / 8)`|
-|Parallel Scavenge 涉及配置|
+|**Parallel Scavenge 涉及配置**||
 |`-XX:GCTimeLimit`|设置 GC 时间上限，默认 98，超出后抛出 OOM|
 |`-XX:GCHeapFreeLimit`|设置非 GC 中的时间阈值，默认 2，低于该值会抛出 OOM|
 |`-XX:MaxGCPauseMillis`|设置年轻代回收停顿的最大毫秒数，如果在 GC 时超过该阈值，JVM 会尝试调整堆空间的配比，处理优先级高|
 |`-XX:GCTimeRatio`|配置 GC 时间的比重 1/(1 + N)，如果过长 JVM 会调整堆空间的配比，处理优先级低于 MaxGCPauseMillis，但是高于其他空间配置|
 |`-XX:+UseAdaptiveSizePolicy`|开启堆空间自适应调整，推荐在 Parallel Scavenge 下启用，如果需要手动调整堆空间配比，请使用 `-` 停用|
 |**CMS 相关配置**||
-|`-XX:ParallelCMSThreads`|设置 CMS 的回收线程数量，默认 `(ParallelGCThreads + 3)/4) `|
 |`-XX:+CMSParallelInitialMarkEnabled`|使 CMS 的初始化标记阶段并行进行，1.8 已并行处理，该选项针对 1.5~1.7 |
 |`-XX:ParallelCMSThreads`|设置 CMS 回收线程数量，默认为 (Young 并行回收线程 ParallelGCThreads + 3)/4|
 |`-XX:CMSWaitDuration`|设置 CMS 扫描线程的间隔时间，默认 2000 ms|
