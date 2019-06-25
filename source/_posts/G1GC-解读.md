@@ -9,17 +9,19 @@ author: 斯特拉不用电
 comments: true
 ---
 
+之前对 G1 之前的垃圾回收器进行了整理[《JVM 垃圾回收器小记》](http://kun3375.com/2019/02/JVM-垃圾回收器小记/)，但是留下了 G1 的坑长久未填，现在把相关的概念、配置参数以及 G1 的流程进行了整理。
+
 ## 基本概念 ##
 
 ### Region ###
 不同于之前的垃圾回收按照连续的物理内存空间进行划分产生 Yong、Tenured、MetaSpace 区域并使用分代垃圾回收处理。G1 将整个堆空间切分成若干个小型的区域 Region 来存放对象，每个 Region 可以单独作为 *Yong*、*Tenured* 或者 *Humongous*（大对象分配区域），这使得不同代的内存区域在物理上是可以割裂的。
 
+<!-- more -->
+
     Humongous 区域特性：
     - 一块 Humongous 区域不止占用一个 Region 基本大小，因为那些大于等于 Region 基本大小一半的对象都会被分配到 Humongous 区域。
     - Humongous 大对象直接作为 Tenured，在 GCM Cleanup 阶段或者 FullGC 时候被回收。
     - 大对象分配前会检查 InitiatingHeapOccupancyPercent 数值和 MarkingThreshold，超过则启动 GCM，避免 FullGC 和分配失败的可能。
-
-<!-- more -->
 
 ### Card Table ###
 卡表，这个概念也适用于 CMS GC 并发垃圾回收。堆区空间会被划分成一个个 512 Byte 的卡，并维护一个卡表，保存一个标识位来标识对应卡区是否可能持有有年轻代的引用。目的是减少在 YongGC 时候对于整个 Tenured 区域的扫描。如果可能存在 Yong 区的引用则称为 **Dirty Card**（**脏卡**）。
@@ -35,14 +37,17 @@ comments: true
 ### Pause Prediction Model ###
 停顿预测模型。G1 是响应时间优先的算法，和 CMS 不同，它可以设置用于期望停顿时间，通过 MaxGCPauseMillis（这是一个软要求 ）设定。G1 根据历史回收数据和 MaxGCPauseMillis 来判断需要回收的 Region 数量。其以衰减标准偏差为理论基础实现，具体数学内容不展开。
 
+### Float Garbage ###
+由于 G1 基于启动时的存活对象的快照（Snapshot At The Begining，SATB）所有在收集过程中产生的对象会被视为存活对象，无法识别垃圾。这部分对象只会在下一次 GC 时候被清理，被称为 Float Garbage。
+
 ## 标记方案 ##
 
-**Global Concurrent Marking**：这个并发标记步骤不是像 CMS GC 一样作为一个必要的步骤。它为 MixedGC 提供对象标记服务，通常伴随着 YoungGC（下述） 发生，总共四个阶段：
-- 初始标记（Initial Mark，STW）。它标记了从 GC Root 开始直接可达的对象（Root Scan）。
-- 复用了 YoungGC 的 Root Trace，为了不会有额外的 STW（Root Trace 会 STW）。
-- 并发标记（Concurrent Marking）。这个阶段从 GC Root 开始对堆中的对象标记，标记线程与应用程序线程并行执行，并且收集各个 Region 的存活对象信息。
+**Global Concurrent Marking**：并发标记本身为 MixedGC 提供对象标记服务，但是它的发生是随着 YoungGC 而开始的，总共几个阶段：
+- 初始标记（Initial Mark，STW）。它标记了从 GC Root 开始直接可达的对象（Root Trace），因为需要暂停所有应用线程（STW）代价较大，它会复用 YoungGC 的 Root Trace。
+- 根区域扫描（Root Region Scan）标记了从 GC Roots 开始可达的老年代对象。
+- 并发标记（Concurrent Marking）。这个阶段从 GC Root 开始对堆中的对象标记，标记线程与应用程序线程并行执行，并且收集各个 Region 的存活对象信息，这个步骤可以被新的 YoungGC 打断。
 - 最终标记（Remark，STW）。标记那些在并发标记阶段发生变化的对象，将被回收。 
-- 清除垃圾（Cleanup）。清除空 Region（没有存活对象的），加入到 FeeList。
+- 清除垃圾（Cleanup）。执行最后的清理工作，清除空 Region（没有存活对象的），并把存活对象进行移动，减少 Region 的碎片化。
 
 ## 回收方案 ##
 
@@ -51,7 +56,7 @@ comments: true
 - **MixedGC**
 其实 MixedGC 是作为 YoungGC 的升级，和 YoungGC 的区别在于使用了不同的 CSet，在 MixedGC 过程会包含若干 Tenured Region。在老年代对象占用堆区的内存达到阈值 `InitiatingHeapOccupancyPercent` 时会触发标记，并在标记结束时切换成 MixedGC。纳入每次 MixedGC 中除了 Yong Region，Tenured Region 数量会由期望停顿时间 `MaxGCPauseMillis` 估算出来。剩余的 Tenured Region 的部分会在下一次 MixedGC 中被回收。一次标记后 MixedGC 的最大次数由 `G1MixedGCCountTarget` 控制。
 - **SerialOldGC**
-根据 MixedGC 的执行行为可以了解到，如果垃圾产生的速度超过 MixedGC 速度，JVM 有必要采取额外的措施进行垃圾回收了，会使用一次 SerialGC 进行完全回收（FullGC）。还会触发 FullGC 的 MetaSpace 的使用。（关于 MetaSpace 推荐文章 [MetaSpace解读](http://lovestblog.cn/blog/2016/10/29/metaspace/，精简细致，不再搬运) 了解
+根据 MixedGC 的执行行为可以了解到，如果垃圾产生的速度超过 MixedGC 速度，JVM 有必要采取额外的措施进行垃圾回收了，会使用一次 SerialGC 进行完全回收（FullGC）。还会触发 FullGC 的 MetaSpace 的使用。（关于 MetaSpace 推荐文章 [《MetaSpace解读》](http://lovestblog.cn/blog/2016/10/29/metaspace/，精简细致，不再搬运) 了解
 
 ## 重要参数 ##
 - -XX:G1HeapWastePercent：允许浪费的堆空间阈值。在 Global Concurrent Marking 结束之后，我们可以知道老年代 Region 中有多少空间要被回收，在每次 YGC 之后和再次发生 MixedGC 之前，会检查垃圾占比是否达到此参数，只有达到了，下次才会发生 MixedGC。
