@@ -14,7 +14,7 @@ comments: true
 这个原理其实十分简单，只要搜索一下，那些搜索引擎就会给出图示和合理的答案：
 1. 主库开启二进制日志（或者叫主机日志）bin-log。这会使得数据库在更新时记录下它的操作动作。
 2. 从机开启 slave 模式，使用一个 IO 线程去请求 master 的数据，记录在中继日志 relay-log 中；master 方面有一个 dump 线程配合传输这份数据。
-3. 从机的另一个 SQL 线程读取中级日志内容并解析后执行相应的操作。
+3. 从机的另一个 SQL 线程读取中继日志内容并解析后执行相应的操作。
 
 ### 复制方案
 
@@ -31,9 +31,9 @@ comments: true
 用来指定 bin-log 生成的路径和名称前缀，其实以上就是默认值和数据文件在一起，最后生成的 bin-log 是 */var/lib/mysql/binlog.xxxxxx*。
 - `binlog-format=mixed`  
 指定二进制信息的形式，有三种选项：
-    - **row** 拷贝命令结果
+    - **row** 拷贝命令结果，这种方式会记录原始和改动后的记录行，比较占用空间，但是可以方便地回溯同时避免很多数据上的问题（待展开），一般会使用该格式
     - **statement** 拷贝命令，随机函数等命令无法精准复制
-    - **mixed** 推荐，默认拷贝命令，不佳时拷贝结果  
+    - **mixed** 默认拷贝命令，不佳时拷贝结果  
 - `binlog-ignore-db=mysql`  
 指定需要忽略的库，不记录 bin-log。多个写多次。  
 - `binlog-do-db=db_business`  
@@ -61,7 +61,7 @@ comments: true
 - `binlog-ignore-db=mysql`  
 拒绝不复制的数据库。
 - `relay_log=/var/lib/mysql/2-relay-bin`  
-可选，指定中继日志位置。，启动 slave 模式必然会产生中继日志，默认在 */数据目录/${host}-relay-bin.xxxxxx*  
+可选，指定中继日志位置。启动 slave 模式必然会产生中继日志，默认在 */数据目录/${host}-relay-bin.xxxxxx*  
 - `read-only=1`  
 从机只读，不要修改数据。
 
@@ -76,7 +76,7 @@ comments: true
 
 #### 搭建全新主从数据库环境
 
-先来说说搭建一个全新的主从架构。
+先来说说搭建一个全新的主从架构。一种是是基于 bin-log position 的复制方案，另一种方案是使用 GTID 策略。先说说第一种方案：
 
 主机创建数据同步用户并授权，尽量指定 ip，少给与权限尤其是 **super** 权限，super 权限用户可以无视 read-only...
 ``` mysql
@@ -107,6 +107,25 @@ show slave status;
 stop slave;
 reset slave;
 ```
+
+#### 使用 GTID 来搭建主从关系 ####
+
+##### 关于 GTID #####
+
+之所以引入 GTID 是因为在使用 bin-log position 方案进行主备复制时如果遇到错误需要通过重新定位 bin-log 位置，使用 *sql_slave_skip_counter* 或者 *slave_skip_errors* 来跳过错误语句，比较麻烦。  
+来看看 GTID 是什么：GTID：Global Transaction Identifier，它在事务提交时候生成并且唯一，格式为 `server_uuid:txn_no`，其中 *sever_uuid* 是实例启动时候生成的，*txn_no* 是每次事务提交时候自增的整数。  
+GTID 生成策略有两种，不同的策略会影响事务的执行成功与否，这可以被 session 变量 **gtid_next** 所控制，有两个选项：
+- `gtid_next=automatic` 默认的自动增长方式，记录 bin-log 时候会自动记录 GTID 信息，并把该值记录在实例的 GTID 集合之中。
+- `gtid_next=<gtid>` 显式指定一个固定值，如果该值不存在 GTID 集合之中，那么下一次提交的事务会使用该值；如果已存在，下一个事务将被忽略。
+
+##### GTID 模式指定主机 #####
+
+如果打算使用 GTID 进行主从备份可以参考下面语句，不需要再指定 log 和 position 了：
+``` mysql
+change master to master_host='mysql-master', master_port=3306, master_user='user_slave', master_password='Kun3375', master_auto_position=1
+```
+
+和使用 position 方式从指定位置开始读取 bin-log 不同，在从机指定了主机之后，会发送本机的 GTID 集合给主机，主机比对出本机和从机的 GTID 差集，如果差集中的 GTID 事务日志已经不存在了会产生错误；如果正常，主机会寻找第一个从机没有的 GTID 位置进行读取
 
 #### 为既有服务器增加从机
 
