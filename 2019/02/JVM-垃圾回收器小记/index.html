@@ -120,7 +120,7 @@
 <meta property="og:site_name" content="码路狂飙">
 <meta property="og:description" content="能力各异的垃圾回收器SerialSerial 收集器是一个新生代串行垃圾回收器，单线程执行，使用复制算法，整个流程会 STW。在单核环境下可能会不存在线程切换的问题而有略高的效率。也是之前 client 模式下的默认垃圾回收器。 ParNewParNew 收集器是一个新生代并行垃圾回收器，多线程执行，使用复制算法，整个流程会 STW。除了使用多个线程进行垃圾回收之外，其余和 Serial 一致。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-02-05T12:59:46.627Z">
+<meta property="og:updated_time" content="2019-06-25T09:10:28.004Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="JVM 垃圾回收器小记">
 <meta name="twitter:description" content="能力各异的垃圾回收器SerialSerial 收集器是一个新生代串行垃圾回收器，单线程执行，使用复制算法，整个流程会 STW。在单核环境下可能会不存在线程切换的问题而有略高的效率。也是之前 client 模式下的默认垃圾回收器。 ParNewParNew 收集器是一个新生代并行垃圾回收器，多线程执行，使用复制算法，整个流程会 STW。除了使用多个线程进行垃圾回收之外，其余和 Serial 一致。">
@@ -397,7 +397,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-02-05 20:59:46" itemprop="dateModified" datetime="2019-02-05T20:59:46+08:00">2019-02-05</time>
+                <time title="修改时间：2019-06-25 17:10:28" itemprop="dateModified" datetime="2019-06-25T17:10:28+08:00">2019-06-25</time>
               
             
           </span>
@@ -561,7 +561,8 @@
 <td style="text-align:center">配置 Young 区的并行收集线程数，默认 <code>(ncpus &lt;= 8) ? ncpus : 3 + ((ncpus * 5) / 8)</code></td>
 </tr>
 <tr>
-<td style="text-align:center">Parallel Scavenge 涉及配置</td>
+<td style="text-align:center"><strong>Parallel Scavenge 涉及配置</strong></td>
+<td style="text-align:center"></td>
 </tr>
 <tr>
 <td style="text-align:center"><code>-XX:GCTimeLimit</code></td>
@@ -586,10 +587,6 @@
 <tr>
 <td style="text-align:center"><strong>CMS 相关配置</strong></td>
 <td style="text-align:center"></td>
-</tr>
-<tr>
-<td style="text-align:center"><code>-XX:ParallelCMSThreads</code></td>
-<td style="text-align:center">设置 CMS 的回收线程数量，默认 <code>(ParallelGCThreads + 3)/4)</code></td>
 </tr>
 <tr>
 <td style="text-align:center"><code>-XX:+CMSParallelInitialMarkEnabled</code></td>
