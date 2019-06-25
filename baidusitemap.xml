@@ -4,6 +4,26 @@
 
     
   <url>
+    <loc>http://kun3375.com/2019/01/MySQL-%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6/</loc>
+    <lastmod>2019-06-25T08:59:14.108Z</lastmod>
+    <data>
+        <display>
+        <title>MySQL 主从复制</title>
+        <pubTime>2019-01-19T04:56:33.000Z</pubTime>
+        
+        <tag>MySQL</tag>
+         
+         
+           
+             
+              <breadCrumb title="MySQL" url="http://kun3375.com/categories/MySQL/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://kun3375.com/2019/06/G1GC-%E8%A7%A3%E8%AF%BB/</loc>
     <lastmod>2019-06-25T02:39:17.035Z</lastmod>
     <data>
@@ -65,26 +85,6 @@
            
              
               <breadCrumb title="Java" url="http://kun3375.com/categories/Java/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://kun3375.com/2019/01/MySQL-%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6/</loc>
-    <lastmod>2019-01-19T05:28:07.305Z</lastmod>
-    <data>
-        <display>
-        <title>MySQL 主从复制</title>
-        <pubTime>2019-01-19T04:56:33.000Z</pubTime>
-        
-        <tag>MySQL</tag>
-         
-         
-           
-             
-              <breadCrumb title="MySQL" url="http://kun3375.com/categories/MySQL/"/>
           
         </display>
     </data>
