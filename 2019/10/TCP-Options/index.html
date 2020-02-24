@@ -112,19 +112,19 @@
 
 
 
-  <meta name="description" content="TCP OptionsTCP 报头通常包含 20 字节信息。但是同时可以携带额外的选项用来说明额外的信息（下图 Options）。  每一组选项包含 1 个字节的类型标识，1 个字节的长度声明，n 个字节的具体数据，最大不超过 40 字节。    Kind Length Value     1 Byte 1 Byte (Length - 2) Bytes    以下是典型的几个选项说明：    K">
-<meta name="keywords" content="TCP">
+  <meta name="description" content="TCP OptionsTCP 报头通常包含 20 字节信息。但是同时可以携带额外的选项用来说明额外的信息（下图 Options）。  每一组选项包含 1 个字节的类型标识，1 个字节的长度声明，n 个字节的具体数据，最大不超过 40 字节。    Kind Length Value    1 Byte 1 Byte (Length - 2) Bytes   以下是典型的几个选项说明：    Kin">
 <meta property="og:type" content="article">
 <meta property="og:title" content="TCP 头部选项的理解">
 <meta property="og:url" content="http://kun3375.com/2019/10/TCP-Options/index.html">
 <meta property="og:site_name" content="码路狂飙">
-<meta property="og:description" content="TCP OptionsTCP 报头通常包含 20 字节信息。但是同时可以携带额外的选项用来说明额外的信息（下图 Options）。  每一组选项包含 1 个字节的类型标识，1 个字节的长度声明，n 个字节的具体数据，最大不超过 40 字节。    Kind Length Value     1 Byte 1 Byte (Length - 2) Bytes    以下是典型的几个选项说明：    K">
-<meta property="og:locale" content="zh-CN">
+<meta property="og:description" content="TCP OptionsTCP 报头通常包含 20 字节信息。但是同时可以携带额外的选项用来说明额外的信息（下图 Options）。  每一组选项包含 1 个字节的类型标识，1 个字节的长度声明，n 个字节的具体数据，最大不超过 40 字节。    Kind Length Value    1 Byte 1 Byte (Length - 2) Bytes   以下是典型的几个选项说明：    Kin">
+<meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://i.loli.net/2019/10/28/naEFGM8OSbKwreY.png">
-<meta property="og:updated_time" content="2019-10-28T04:04:49.427Z">
+<meta property="article:published_time" content="2019-10-28T03:52:10.000Z">
+<meta property="article:modified_time" content="2019-10-28T04:04:49.427Z">
+<meta property="article:author" content="斯特拉不用电">
+<meta property="article:tag" content="TCP">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="TCP 头部选项的理解">
-<meta name="twitter:description" content="TCP OptionsTCP 报头通常包含 20 字节信息。但是同时可以携带额外的选项用来说明额外的信息（下图 Options）。  每一组选项包含 1 个字节的类型标识，1 个字节的长度声明，n 个字节的具体数据，最大不超过 40 字节。    Kind Length Value     1 Byte 1 Byte (Length - 2) Bytes    以下是典型的几个选项说明：    K">
 <meta name="twitter:image" content="https://i.loli.net/2019/10/28/naEFGM8OSbKwreY.png">
 
 
@@ -180,7 +180,7 @@
   </style>
 </noscript>
 
-</head>
+<meta name="generator" content="Hexo 4.2.0"></head>
 
 <body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
 
@@ -461,110 +461,106 @@
 <table>
 <thead>
 <tr>
-<th style="text-align:center">Kind</th>
-<th style="text-align:center">Length</th>
-<th style="text-align:center">Value</th>
+<th align="center">Kind</th>
+<th align="center">Length</th>
+<th align="center">Value</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td style="text-align:center">1 Byte</td>
-<td style="text-align:center">1 Byte</td>
-<td style="text-align:center">(Length - 2) Bytes</td>
+<tbody><tr>
+<td align="center">1 Byte</td>
+<td align="center">1 Byte</td>
+<td align="center">(Length - 2) Bytes</td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
 <p>以下是典型的几个选项说明：</p>
 <table>
 <thead>
 <tr>
-<th style="text-align:left">Kind</th>
-<th style="text-align:left">Length</th>
-<th style="text-align:left">Name</th>
-<th style="text-align:left">Reference</th>
-<th style="text-align:left">Desc</th>
+<th align="left">Kind</th>
+<th align="left">Length</th>
+<th align="left">Name</th>
+<th align="left">Reference</th>
+<th align="left">Desc</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td style="text-align:left">0</td>
-<td style="text-align:left">1</td>
-<td style="text-align:left">EOL</td>
-<td style="text-align:left">RFC 793</td>
-<td style="text-align:left">选项列表结束标识</td>
+<tbody><tr>
+<td align="left">0</td>
+<td align="left">1</td>
+<td align="left">EOL</td>
+<td align="left">RFC 793</td>
+<td align="left">选项列表结束标识</td>
 </tr>
 <tr>
-<td style="text-align:left">1</td>
-<td style="text-align:left">1</td>
-<td style="text-align:left">NOP</td>
-<td style="text-align:left">RFC 793</td>
-<td style="text-align:left">用于作为填充</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">NOP</td>
+<td align="left">RFC 793</td>
+<td align="left">用于作为填充</td>
 </tr>
 <tr>
-<td style="text-align:left">2</td>
-<td style="text-align:left">4</td>
-<td style="text-align:left">MSS</td>
-<td style="text-align:left">RFC 793</td>
-<td style="text-align:left">最大报文长度</td>
+<td align="left">2</td>
+<td align="left">4</td>
+<td align="left">MSS</td>
+<td align="left">RFC 793</td>
+<td align="left">最大报文长度</td>
 </tr>
 <tr>
-<td style="text-align:left">3</td>
-<td style="text-align:left">3</td>
-<td style="text-align:left">WSOPT</td>
-<td style="text-align:left">RFC 1323</td>
-<td style="text-align:left">窗口扩大系数</td>
+<td align="left">3</td>
+<td align="left">3</td>
+<td align="left">WSOPT</td>
+<td align="left">RFC 1323</td>
+<td align="left">窗口扩大系数</td>
 </tr>
 <tr>
-<td style="text-align:left">4</td>
-<td style="text-align:left">2</td>
-<td style="text-align:left">SACK-Permitted</td>
-<td style="text-align:left">RFC 2018</td>
-<td style="text-align:left">标识支持SACK</td>
+<td align="left">4</td>
+<td align="left">2</td>
+<td align="left">SACK-Permitted</td>
+<td align="left">RFC 2018</td>
+<td align="left">标识支持SACK</td>
 </tr>
 <tr>
-<td style="text-align:left">5</td>
-<td style="text-align:left">可变</td>
-<td style="text-align:left">SACK</td>
-<td style="text-align:left">RFC 2018</td>
-<td style="text-align:left">SACK Block</td>
+<td align="left">5</td>
+<td align="left">可变</td>
+<td align="left">SACK</td>
+<td align="left">RFC 2018</td>
+<td align="left">SACK Block</td>
 </tr>
 <tr>
-<td style="text-align:left">8</td>
-<td style="text-align:left">10</td>
-<td style="text-align:left">TSPOT</td>
-<td style="text-align:left">RFC 1323</td>
-<td style="text-align:left">Timestamps</td>
+<td align="left">8</td>
+<td align="left">10</td>
+<td align="left">TSPOT</td>
+<td align="left">RFC 1323</td>
+<td align="left">Timestamps</td>
 </tr>
 <tr>
-<td style="text-align:left">19</td>
-<td style="text-align:left">18</td>
-<td style="text-align:left">TCP-MD5</td>
-<td style="text-align:left">RFC 2385</td>
-<td style="text-align:left">MD5认证</td>
+<td align="left">19</td>
+<td align="left">18</td>
+<td align="left">TCP-MD5</td>
+<td align="left">RFC 2385</td>
+<td align="left">MD5认证</td>
 </tr>
 <tr>
-<td style="text-align:left">28</td>
-<td style="text-align:left">4</td>
-<td style="text-align:left">UTO</td>
-<td style="text-align:left">RFC 5482</td>
-<td style="text-align:left">User Timeout</td>
+<td align="left">28</td>
+<td align="left">4</td>
+<td align="left">UTO</td>
+<td align="left">RFC 5482</td>
+<td align="left">User Timeout</td>
 </tr>
 <tr>
-<td style="text-align:left">29</td>
-<td style="text-align:left">可变</td>
-<td style="text-align:left">TCP-AO</td>
-<td style="text-align:left">RFC 5925</td>
-<td style="text-align:left">算法认证</td>
+<td align="left">29</td>
+<td align="left">可变</td>
+<td align="left">TCP-AO</td>
+<td align="left">RFC 5925</td>
+<td align="left">算法认证</td>
 </tr>
 <tr>
-<td style="text-align:left">253/254</td>
-<td style="text-align:left">可变</td>
-<td style="text-align:left">Experimental</td>
-<td style="text-align:left">RFC 4727</td>
-<td style="text-align:left">实验性保留</td>
+<td align="left">253/254</td>
+<td align="left">可变</td>
+<td align="left">Experimental</td>
+<td align="left">RFC 4727</td>
+<td align="left">实验性保留</td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
 <h5 id="End-of-Option-List"><a href="#End-of-Option-List" class="headerlink" title="End of Option List"></a>End of Option List</h5><p>列表结束标识，简称 <strong>EOL</strong>，仅包含 Kind 标识，1 个字节。用于隔开报头和报文数据。</p>
 <h5 id="NO-Operation"><a href="#NO-Operation" class="headerlink" title="NO-Operation"></a>NO-Operation</h5><p>无操作 <strong>NOP</strong>。该选项仅包含 Kind 标识 1 个字节，用来进行对齐填充。因为报头长度需要满足 32bits(4Bytes) 倍数。 </p>
 <h5 id="Maximum-Segment-Size"><a href="#Maximum-Segment-Size" class="headerlink" title="Maximum Segment Size"></a>Maximum Segment Size</h5><p>最大报文长度声明，简称 <strong>MSS</strong>。不仅仅是通知对端需要发送小于该值的报文，且不会接受报文长度大于该值的数据报。这个选项只会出现在 SYN 包中，如果在握手时该选项不存在，那么会使用默认值 536Bytes，最大值为 2^16-1 = 65535，长度 2 个字节。在一般的 ipv4 网络上，以太网 MTU = 1500Bytes, MSS 典型值 = 1500 - 20(ip header）- 20(tcp header) = 1460。</p>
@@ -577,7 +573,7 @@
 <p>–</p>
 <p>以下回顾说明几个头部选项涉及到的概念。</p>
 <h4 id="拓展：滑动窗口"><a href="#拓展：滑动窗口" class="headerlink" title="拓展：滑动窗口"></a>拓展：滑动窗口</h4><p>在 TCP 头部有个<strong>窗口大小</strong>，形容了接收端的处理能力，这是为了更好地协调双发通信的节奏，就是控制了 TCP 通信的流量。这个部分占头部的 16bits，也就是发送端可以声明的最大缓冲区大小 65535Bytes（当然现在一般是不够了）。</p>
-<h5 id="接收窗口-amp-拥塞窗口"><a href="#接收窗口-amp-拥塞窗口" class="headerlink" title="接收窗口 &amp; 拥塞窗口"></a>接收窗口 &amp; 拥塞窗口</h5><p>发送端缓存了一批数据，这批数据通过接受端返回的窗口大小可以区分为 <em>已被确认</em>、<em>已发送未被确认</em>、<em>可发送</em>、<em>不可发送</em> 四个类型。抛开 <em>已被确认</em> 的数据部分，<em>已发送未被确认</em>、<em>可发送</em> 数据的范围大小由接收端的<strong>接收窗口</strong>和本方的<strong>拥塞窗口</strong>的最小大小限制，一般称这部分是<strong>发送窗口</strong>。通过减去 <em>已发送未被确认</em> 的数据得到，这一部分可以继续发送，称为<strong>可用窗口</strong>。余下的一部分缓存数据由于接收端处理能力不够（窗口大小不够）暂时不能发送。<br><strong>接收窗口 RWND</strong>：描述了接收方当前的剩余处理能力，按字节大小计算。<br><strong>拥塞窗口 CWND</strong>：描述了发送方考虑网络状况，对自己限流的情况，按可传输的 MSS 段来计算。</p>
+<h5 id="接收窗口-amp-拥塞窗口"><a href="#接收窗口-amp-拥塞窗口" class="headerlink" title="接收窗口 &amp; 拥塞窗口"></a>接收窗口 &amp; 拥塞窗口</h5><p>发送端缓存了一批数据，这批数据通过接受端返回的窗口大小可以区分为 <em>已被确认<em>、</em>已发送未被确认<em>、</em>可发送<em>、</em>不可发送</em> 四个类型。抛开 <em>已被确认</em> 的数据部分，<em>已发送未被确认<em>、</em>可发送</em> 数据的范围大小由接收端的<strong>接收窗口</strong>和本方的<strong>拥塞窗口</strong>的最小大小限制，一般称这部分是<strong>发送窗口</strong>。通过减去 <em>已发送未被确认</em> 的数据得到，这一部分可以继续发送，称为<strong>可用窗口</strong>。余下的一部分缓存数据由于接收端处理能力不够（窗口大小不够）暂时不能发送。<br><strong>接收窗口 RWND</strong>：描述了接收方当前的剩余处理能力，按字节大小计算。<br><strong>拥塞窗口 CWND</strong>：描述了发送方考虑网络状况，对自己限流的情况，按可传输的 MSS 段来计算。</p>
 <p>假设场景：</p>
 <ol>
 <li>接受端缓冲区大小为 1000，在握手 ACK 时通知了对方。</li>
@@ -606,101 +602,97 @@
 <table>
 <thead>
 <tr>
-<th style="text-align:left">发送方</th>
-<th style="text-align:left">假设状态</th>
-<th style="text-align:left">接收方返回信息</th>
+<th align="left">发送方</th>
+<th align="left">假设状态</th>
+<th align="left">接收方返回信息</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td style="text-align:left">1-100</td>
-<td style="text-align:left">received</td>
-<td style="text-align:left">ACK=101</td>
+<tbody><tr>
+<td align="left">1-100</td>
+<td align="left">received</td>
+<td align="left">ACK=101</td>
 </tr>
 <tr>
-<td style="text-align:left">101-200</td>
-<td style="text-align:left">miss</td>
-<td style="text-align:left"></td>
+<td align="left">101-200</td>
+<td align="left">miss</td>
+<td align="left"></td>
 </tr>
 <tr>
-<td style="text-align:left">201-300</td>
-<td style="text-align:left">received</td>
-<td style="text-align:left">ACK=101</td>
+<td align="left">201-300</td>
+<td align="left">received</td>
+<td align="left">ACK=101</td>
 </tr>
 <tr>
-<td style="text-align:left">301-400</td>
-<td style="text-align:left">received</td>
-<td style="text-align:left">ACK=101</td>
+<td align="left">301-400</td>
+<td align="left">received</td>
+<td align="left">ACK=101</td>
 </tr>
 <tr>
-<td style="text-align:left">401-500</td>
-<td style="text-align:left">received</td>
-<td style="text-align:left">ACK=101</td>
+<td align="left">401-500</td>
+<td align="left">received</td>
+<td align="left">ACK=101</td>
 </tr>
 <tr>
-<td style="text-align:left">101-200</td>
-<td style="text-align:left">retry</td>
-<td style="text-align:left">ACK=501</td>
+<td align="left">101-200</td>
+<td align="left">retry</td>
+<td align="left">ACK=501</td>
 </tr>
 <tr>
-<td style="text-align:left">201-300</td>
-<td style="text-align:left">maybe retry</td>
-<td style="text-align:left">ACK=501</td>
+<td align="left">201-300</td>
+<td align="left">maybe retry</td>
+<td align="left">ACK=501</td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
 <p>通常情况，包的重发会等待超时时间，并且会在不成时不短翻倍。再开启 SACK 之后，会通过连续收到三个相同的 ACK 来判断数据报丢失来出触发重发。SACK <strong>包含多个已收到的连续字节区间信息</strong>以提示发送方重发数据。这可以提高重发的效率，并且只需要重发丢失区间的信息即可:</p>
 <table>
 <thead>
 <tr>
-<th style="text-align:left">发送方</th>
-<th style="text-align:left">假设状态</th>
-<th style="text-align:left">接收方返回信息</th>
+<th align="left">发送方</th>
+<th align="left">假设状态</th>
+<th align="left">接收方返回信息</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td style="text-align:left">1-100</td>
-<td style="text-align:left">received</td>
-<td style="text-align:left">ACK=101</td>
+<tbody><tr>
+<td align="left">1-100</td>
+<td align="left">received</td>
+<td align="left">ACK=101</td>
 </tr>
 <tr>
-<td style="text-align:left">101-200</td>
-<td style="text-align:left">miss</td>
-<td style="text-align:left"></td>
+<td align="left">101-200</td>
+<td align="left">miss</td>
+<td align="left"></td>
 </tr>
 <tr>
-<td style="text-align:left">201-300</td>
-<td style="text-align:left">miss</td>
-<td style="text-align:left"></td>
+<td align="left">201-300</td>
+<td align="left">miss</td>
+<td align="left"></td>
 </tr>
 <tr>
-<td style="text-align:left">301-400</td>
-<td style="text-align:left">received</td>
-<td style="text-align:left">ACK=101,SACK=&lt;301,401&gt;</td>
+<td align="left">301-400</td>
+<td align="left">received</td>
+<td align="left">ACK=101,SACK=&lt;301,401&gt;</td>
 </tr>
 <tr>
-<td style="text-align:left">401-500</td>
-<td style="text-align:left">received</td>
-<td style="text-align:left">ACK=101,SACK=&lt;301,501&gt;</td>
+<td align="left">401-500</td>
+<td align="left">received</td>
+<td align="left">ACK=101,SACK=&lt;301,501&gt;</td>
 </tr>
 <tr>
-<td style="text-align:left">501-600</td>
-<td style="text-align:left">received</td>
-<td style="text-align:left">ACK=101,SACK=&lt;301,601&gt;</td>
+<td align="left">501-600</td>
+<td align="left">received</td>
+<td align="left">ACK=101,SACK=&lt;301,601&gt;</td>
 </tr>
 <tr>
-<td style="text-align:left">101-200</td>
-<td style="text-align:left">fast retransmission</td>
-<td style="text-align:left">ACK=201,SACK=&lt;301,601&gt;</td>
+<td align="left">101-200</td>
+<td align="left">fast retransmission</td>
+<td align="left">ACK=201,SACK=&lt;301,601&gt;</td>
 </tr>
 <tr>
-<td style="text-align:left">201-300</td>
-<td style="text-align:left">fast retransmission</td>
-<td style="text-align:left">ACK=601</td>
+<td align="left">201-300</td>
+<td align="left">fast retransmission</td>
+<td align="left">ACK=601</td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
 <p>可能由于网络延迟或者 ACK 回复丢失，导致 ACK 号大于 SACK 区间（D-SACK）并不需要针对区间重发。</p>
 
       
@@ -774,7 +766,7 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/06/G1GC-解读/" rel="next" title="G1GC 解读">
+              <a href="/2019/06/G1GC-%E8%A7%A3%E8%AF%BB/" rel="next" title="G1GC 解读">
                 <i class="fa fa-chevron-left"></i> G1GC 解读
               </a>
             
@@ -784,7 +776,7 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/10/网络配置参数和调优的一些总结/" rel="prev" title="网络配置参数和调优的一些总结">
+              <a href="/2019/10/%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE%E5%8F%82%E6%95%B0%E5%92%8C%E8%B0%83%E4%BC%98%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%BB%E7%BB%93/" rel="prev" title="网络配置参数和调优的一些总结">
                 网络配置参数和调优的一些总结 <i class="fa fa-chevron-right"></i>
               </a>
             
@@ -1026,7 +1018,7 @@
 
 
 
-  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io" rel="external nofollow noopener noreferrer">Hexo</a> 强力驱动 v3.7.1</div>
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io" rel="external nofollow noopener noreferrer">Hexo</a> 强力驱动 v4.2.0</div>
 
 
 

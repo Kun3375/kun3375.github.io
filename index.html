@@ -113,16 +113,22 @@
 
 
   <meta name="description" content="留下思考和记录才能让代码更酷">
-<meta name="keywords" content="Java,Docker,Linux,Shell,Python,MQ,Redis,ES">
 <meta property="og:type" content="website">
 <meta property="og:title" content="码路狂飙">
 <meta property="og:url" content="http://kun3375.com/index.html">
 <meta property="og:site_name" content="码路狂飙">
 <meta property="og:description" content="留下思考和记录才能让代码更酷">
-<meta property="og:locale" content="zh-CN">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:author" content="斯特拉不用电">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="Docker">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="Shell">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="MQ">
+<meta property="article:tag" content="Redis">
+<meta property="article:tag" content="ES">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="码路狂飙">
-<meta name="twitter:description" content="留下思考和记录才能让代码更酷">
 
 
 
@@ -177,7 +183,7 @@
   </style>
 </noscript>
 
-</head>
+<meta name="generator" content="Hexo 4.2.0"></head>
 
 <body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
 
@@ -338,7 +344,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://kun3375.com/2020/02/对-Netty-ByteBuf-的探究/">
+    <link itemprop="mainEntityOfPage" href="http://kun3375.com/2020/02/%E5%AF%B9-Netty-ByteBuf-%E7%9A%84%E6%8E%A2%E7%A9%B6/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="斯特拉不用电">
@@ -357,7 +363,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2020/02/对-Netty-ByteBuf-的探究/" itemprop="url">
+                <a class="post-title-link" href="/2020/02/%E5%AF%B9-Netty-ByteBuf-%E7%9A%84%E6%8E%A2%E7%A9%B6/" itemprop="url">
                   对 Netty ByteBuf 的探究
                 </a>
               
@@ -443,17 +449,17 @@
         
           <h2 id="对-Netty-ByteBuf-的探究"><a href="#对-Netty-ByteBuf-的探究" class="headerlink" title="对 Netty ByteBuf 的探究"></a>对 Netty ByteBuf 的探究</h2><p><code>ByteBuf</code> 是 Netty 在通信过程中数据传递的容器，类似于 Java NIO 中的 <code>ByteBuffer</code>，是通道 <code>Channel</code> 传输过程中的介质。</p>
 <h3 id="ByteBuf-类型"><a href="#ByteBuf-类型" class="headerlink" title="ByteBuf 类型"></a>ByteBuf 类型</h3><p>从池化与否上看，分为池化的 <code>PooledByteBuf</code> 和非池化的 <code>UnpooledByteBuf</code>，</p>
-<p>而从内存属性上看 <code>ByteBuf</code> 有着使用<strong>堆内存</strong>的 <code>HeapByteBuf</code> 以及<strong>基于直接内存映射</strong>的 <code>DirectByteBuf</code>。Netty 的高效也体现在 <code>ByteBuf</code> 的使用上，以 <code>NIOEventLoop</code> 来举例，在通道读写是后使用了 <code>PooledDirectByteBuf</code> 将字节缓冲的高效发挥到了极致。<br>
+<p>而从内存属性上看 <code>ByteBuf</code> 有着使用<strong>堆内存</strong>的 <code>HeapByteBuf</code> 以及<strong>基于直接内存映射</strong>的 <code>DirectByteBuf</code>。Netty 的高效也体现在 <code>ByteBuf</code> 的使用上，以 <code>NIOEventLoop</code> 来举例，在通道读写是后使用了 <code>PooledDirectByteBuf</code> 将字节缓冲的高效发挥到了极致。</p>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2020/02/对-Netty-ByteBuf-的探究/#more" rel="contents">
+            <a class="btn" href="/2020/02/%E5%AF%B9-Netty-ByteBuf-%E7%9A%84%E6%8E%A2%E7%A9%B6/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
           <!--/noindex-->
         
       
-    </p></div>
+    </div>
 
     
 
@@ -502,7 +508,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://kun3375.com/2020/02/Netty-ByteBuf-相关参数意义/">
+    <link itemprop="mainEntityOfPage" href="http://kun3375.com/2020/02/Netty-ByteBuf-%E7%9B%B8%E5%85%B3%E5%8F%82%E6%95%B0%E6%84%8F%E4%B9%89/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="斯特拉不用电">
@@ -521,7 +527,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2020/02/Netty-ByteBuf-相关参数意义/" itemprop="url">
+                <a class="post-title-link" href="/2020/02/Netty-ByteBuf-%E7%9B%B8%E5%85%B3%E5%8F%82%E6%95%B0%E6%84%8F%E4%B9%89/" itemprop="url">
                   Netty ByteBuf 相关参数意义
                 </a>
               
@@ -607,11 +613,12 @@
         
           
           这里仅记录一下 ByteBuf 相关的一下内存配置参数和默认情况，分析一下 Allocator 的组成，为分析 ByteBuf 做一些概念上的铺垫。
-首先看几个 PooledByteBifAllocator 中的静态变量，挑了几个说明一下：12345678910// 默认的 arena 数量，一个对
+首先看几个 PooledByteBifAllocator 中的静态变量，挑了几个说明一下：
+12345678910// 默认的 arena 数量，一个
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2020/02/Netty-ByteBuf-相关参数意义/#more" rel="contents">
+            <a class="btn" href="/2020/02/Netty-ByteBuf-%E7%9B%B8%E5%85%B3%E5%8F%82%E6%95%B0%E6%84%8F%E4%B9%89/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -667,7 +674,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://kun3375.com/2019/10/网络配置参数和调优的一些总结/">
+    <link itemprop="mainEntityOfPage" href="http://kun3375.com/2019/10/%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE%E5%8F%82%E6%95%B0%E5%92%8C%E8%B0%83%E4%BC%98%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%BB%E7%BB%93/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="斯特拉不用电">
@@ -686,7 +693,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/10/网络配置参数和调优的一些总结/" itemprop="url">
+                <a class="post-title-link" href="/2019/10/%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE%E5%8F%82%E6%95%B0%E5%92%8C%E8%B0%83%E4%BC%98%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%BB%E7%BB%93/" itemprop="url">
                   网络配置参数和调优的一些总结
                 </a>
               
@@ -775,7 +782,7 @@
 <p>同时，想要修改 <code>/proc/sys/</code> 下参数也可以通过修改 <code>/etc/sysctl.conf</code> 配置文件达到目的。如：想要修改 <code>/proc/sys/net/ipv4/tcp_max_syn_backlog</code> 为 <code>1024</code>，可以添加一行 <code>net.ipv4.tcp_max_syn_backlog = 1024</code>。</p>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/10/网络配置参数和调优的一些总结/#more" rel="contents">
+            <a class="btn" href="/2019/10/%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE%E5%8F%82%E6%95%B0%E5%92%8C%E8%B0%83%E4%BC%98%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%BB%E7%BB%93/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -947,8 +954,7 @@ Value
 
 
 
-
-1 By
+1 Byt
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1008,7 +1014,7 @@ Value
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://kun3375.com/2019/06/G1GC-解读/">
+    <link itemprop="mainEntityOfPage" href="http://kun3375.com/2019/06/G1GC-%E8%A7%A3%E8%AF%BB/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="斯特拉不用电">
@@ -1027,7 +1033,7 @@ Value
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/06/G1GC-解读/" itemprop="url">
+                <a class="post-title-link" href="/2019/06/G1GC-%E8%A7%A3%E8%AF%BB/" itemprop="url">
                   G1GC 解读
                 </a>
               
@@ -1124,10 +1130,10 @@ Value
       
         
           <p>之前对 G1 之前的垃圾回收器进行了整理<a href="http://kun3375.com/2019/02/JVM-垃圾回收器小记/">《JVM 垃圾回收器小记》</a>，但是留下了 G1 的坑长久未填，现在把相关的概念、配置参数以及 G1 的流程进行了整理。</p>
-<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><h3 id="Region"><a href="#Region" class="headerlink" title="Region"></a>Region</h3><p>不同于之前的垃圾回收按照连续的物理内存空间进行划分产生 Yong、Tenured、MetaSpace 区域并使用分代垃圾回收处理。G1 将整个堆空间切分成若干个小型的区域 Region 来存放对象，每个 Region 可以单独作为 <em>Yong</em>、<em>Tenured</em> 或者 <em>Humongous</em>（大对象分配区域），这使得不同代的内存区域在物理上是可以割裂的。</p>
+<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><h3 id="Region"><a href="#Region" class="headerlink" title="Region"></a>Region</h3><p>不同于之前的垃圾回收按照连续的物理内存空间进行划分产生 Yong、Tenured、MetaSpace 区域并使用分代垃圾回收处理。G1 将整个堆空间切分成若干个小型的区域 Region 来存放对象，每个 Region 可以单独作为 <em>Yong<em>、</em>Tenured</em> 或者 <em>Humongous</em>（大对象分配区域），这使得不同代的内存区域在物理上是可以割裂的。</p>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/06/G1GC-解读/#more" rel="contents">
+            <a class="btn" href="/2019/06/G1GC-%E8%A7%A3%E8%AF%BB/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1183,7 +1189,7 @@ Value
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://kun3375.com/2019/04/SpringKafkaConsumer-增效/">
+    <link itemprop="mainEntityOfPage" href="http://kun3375.com/2019/04/SpringKafkaConsumer-%E5%A2%9E%E6%95%88/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="斯特拉不用电">
@@ -1202,7 +1208,7 @@ Value
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/04/SpringKafkaConsumer-增效/" itemprop="url">
+                <a class="post-title-link" href="/2019/04/SpringKafkaConsumer-%E5%A2%9E%E6%95%88/" itemprop="url">
                   SpringKafkaListener 增效
                 </a>
               
@@ -1302,7 +1308,7 @@ Value
 <p>在 kafka 的实现中，某个 topic 的 partition 即分区的数量，基本上决定在这个 topic 下的最大并发程度。因为客户端的数量是受限于 partition 数量的。对于一定数量的 partition 而言，客户端数量如果更少，将有部分客户端会被分配上多个分区；如果客户端数量更多，超过 partition 数量的客户端将会无法消费，这是由 kafka 本身的负载均衡策略决定的。<br>尽管我们可以动态地调整 partition，但是对于基于 Key 的消息，并需要有序消费时，由于 kafka 通过 Key 进行 hash 分片，更改 partition 数量将无法保证有序性。</p>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/04/SpringKafkaConsumer-增效/#more" rel="contents">
+            <a class="btn" href="/2019/04/SpringKafkaConsumer-%E5%A2%9E%E6%95%88/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1358,7 +1364,7 @@ Value
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://kun3375.com/2019/02/JVM-垃圾回收器小记/">
+    <link itemprop="mainEntityOfPage" href="http://kun3375.com/2019/02/JVM-%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8%E5%B0%8F%E8%AE%B0/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="斯特拉不用电">
@@ -1377,7 +1383,7 @@ Value
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/02/JVM-垃圾回收器小记/" itemprop="url">
+                <a class="post-title-link" href="/2019/02/JVM-%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8%E5%B0%8F%E8%AE%B0/" itemprop="url">
                   JVM 垃圾回收器小记
                 </a>
               
@@ -1474,17 +1480,17 @@ Value
       
         
           <h3 id="能力各异的垃圾回收器"><a href="#能力各异的垃圾回收器" class="headerlink" title="能力各异的垃圾回收器"></a>能力各异的垃圾回收器</h3><h4 id="Serial"><a href="#Serial" class="headerlink" title="Serial"></a>Serial</h4><p>Serial 收集器是一个新生代串行垃圾回收器，单线程执行，使用复制算法，整个流程会 STW。在单核环境下可能会不存在线程切换的问题而有略高的效率。也是之前 client 模式下的默认垃圾回收器。</p>
-<h4 id="ParNew"><a href="#ParNew" class="headerlink" title="ParNew"></a>ParNew</h4><p>ParNew 收集器是一个新生代并行垃圾回收器，多线程执行，使用复制算法，整个流程会 STW。除了使用多个线程进行垃圾回收之外，其余和 Serial 一致。<br>
+<h4 id="ParNew"><a href="#ParNew" class="headerlink" title="ParNew"></a>ParNew</h4><p>ParNew 收集器是一个新生代并行垃圾回收器，多线程执行，使用复制算法，整个流程会 STW。除了使用多个线程进行垃圾回收之外，其余和 Serial 一致。</p>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/02/JVM-垃圾回收器小记/#more" rel="contents">
+            <a class="btn" href="/2019/02/JVM-%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8%E5%B0%8F%E8%AE%B0/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
           <!--/noindex-->
         
       
-    </p></div>
+    </div>
 
     
 
@@ -1533,7 +1539,7 @@ Value
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://kun3375.com/2019/01/MySQL-主从复制/">
+    <link itemprop="mainEntityOfPage" href="http://kun3375.com/2019/01/MySQL-%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="斯特拉不用电">
@@ -1552,7 +1558,7 @@ Value
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/01/MySQL-主从复制/" itemprop="url">
+                <a class="post-title-link" href="/2019/01/MySQL-%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6/" itemprop="url">
                   MySQL 主从复制
                 </a>
               
@@ -1655,17 +1661,17 @@ Value
 <li>从机开启 slave 模式，使用一个 IO 线程去请求 master 的数据，记录在中继日志 relay-log 中；master 方面有一个 dump 线程配合传输这份数据。</li>
 <li>从机的另一个 SQL 线程读取中继日志内容并解析后执行相应的操作。</li>
 </ol>
-<h3 id="复制方案"><a href="#复制方案" class="headerlink" title="复制方案"></a>复制方案</h3><p>通常的，我们做主从复制，不仅仅为了数据备份。同时会在从机上设置只读，对 MySQL 集群做读写分离，提高数据库的响(wu)应(jin)速(qi)度(yong)，所以一般都采用了<strong>异步复制</strong>方案。主机采用完全独立的 dump 线程来传输 bin-log，备份完全异步化。<br>
+<h3 id="复制方案"><a href="#复制方案" class="headerlink" title="复制方案"></a>复制方案</h3><p>通常的，我们做主从复制，不仅仅为了数据备份。同时会在从机上设置只读，对 MySQL 集群做读写分离，提高数据库的响(wu)应(jin)速(qi)度(yong)，所以一般都采用了<strong>异步复制</strong>方案。主机采用完全独立的 dump 线程来传输 bin-log，备份完全异步化。</p>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/01/MySQL-主从复制/#more" rel="contents">
+            <a class="btn" href="/2019/01/MySQL-%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
           <!--/noindex-->
         
       
-    </p></div>
+    </div>
 
     
 
@@ -1714,7 +1720,7 @@ Value
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://kun3375.com/2018/11/ES-数据类型元字段与映射/">
+    <link itemprop="mainEntityOfPage" href="http://kun3375.com/2018/11/ES-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%85%83%E5%AD%97%E6%AE%B5%E4%B8%8E%E6%98%A0%E5%B0%84/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="斯特拉不用电">
@@ -1733,7 +1739,7 @@ Value
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/11/ES-数据类型元字段与映射/" itemprop="url">
+                <a class="post-title-link" href="/2018/11/ES-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%85%83%E5%AD%97%E6%AE%B5%E4%B8%8E%E6%98%A0%E5%B0%84/" itemprop="url">
                   ES 数据类型、元字段与映射
                 </a>
               
@@ -1835,7 +1841,7 @@ Value
 <li><strong><em>keyword</em></strong><br>关键字类型，通常用于索引结构化的字段（通常意义明确，用于过滤），这样的字段只能被精确搜索。
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/11/ES-数据类型元字段与映射/#more" rel="contents">
+            <a class="btn" href="/2018/11/ES-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%85%83%E5%AD%97%E6%AE%B5%E4%B8%8E%E6%98%A0%E5%B0%84/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1891,7 +1897,7 @@ Value
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://kun3375.com/2018/10/ES-分片路由/">
+    <link itemprop="mainEntityOfPage" href="http://kun3375.com/2018/10/ES-%E5%88%86%E7%89%87%E8%B7%AF%E7%94%B1/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="斯特拉不用电">
@@ -1910,7 +1916,7 @@ Value
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/10/ES-分片路由/" itemprop="url">
+                <a class="post-title-link" href="/2018/10/ES-%E5%88%86%E7%89%87%E8%B7%AF%E7%94%B1/" itemprop="url">
                   ES 分片路由
                 </a>
               
@@ -2004,7 +2010,7 @@ Value
 </ol>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/10/ES-分片路由/#more" rel="contents">
+            <a class="btn" href="/2018/10/ES-%E5%88%86%E7%89%87%E8%B7%AF%E7%94%B1/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -2049,7 +2055,7 @@ Value
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/">&lt;i class&#x3D;&quot;fa fa-angle-right&quot; aria-label&#x3D;&quot;下一页&quot;&gt;&lt;&#x2F;i&gt;</a>
   </nav>
 
 
@@ -2234,7 +2240,7 @@ Value
 
 
 
-  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io" rel="external nofollow noopener noreferrer">Hexo</a> 强力驱动 v3.7.1</div>
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io" rel="external nofollow noopener noreferrer">Hexo</a> 强力驱动 v4.2.0</div>
 
 
 

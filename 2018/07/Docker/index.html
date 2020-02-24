@@ -113,17 +113,17 @@
 
 
   <meta name="description" content="Docker 镜像是层层分离的，分为只读的底层和可读写的当前层。容器在运行时候如果有文件改动，会自动从含有该文件的底层拷贝并更新在当前层。如果容器在 commit 之前被销毁，那么有这个镜像重新生成的容器是不包含改动的内容的。">
-<meta name="keywords" content="Docker">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Docker 挂载与数据存储">
 <meta property="og:url" content="http://kun3375.com/2018/07/Docker/index.html">
 <meta property="og:site_name" content="码路狂飙">
 <meta property="og:description" content="Docker 镜像是层层分离的，分为只读的底层和可读写的当前层。容器在运行时候如果有文件改动，会自动从含有该文件的底层拷贝并更新在当前层。如果容器在 commit 之前被销毁，那么有这个镜像重新生成的容器是不包含改动的内容的。">
-<meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-08-04T04:03:23.492Z">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-07-09T13:54:45.000Z">
+<meta property="article:modified_time" content="2018-08-04T04:03:23.492Z">
+<meta property="article:author" content="斯特拉不用电">
+<meta property="article:tag" content="Docker">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Docker 挂载与数据存储">
-<meta name="twitter:description" content="Docker 镜像是层层分离的，分为只读的底层和可读写的当前层。容器在运行时候如果有文件改动，会自动从含有该文件的底层拷贝并更新在当前层。如果容器在 commit 之前被销毁，那么有这个镜像重新生成的容器是不包含改动的内容的。">
 
 
 
@@ -178,7 +178,7 @@
   </style>
 </noscript>
 
-</head>
+<meta name="generator" content="Hexo 4.2.0"></head>
 
 <body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
 
@@ -467,9 +467,12 @@
       
         <p>Docker 镜像是层层分离的，分为只读的底层和可读写的当前层。容器在运行时候如果有文件改动，会自动从含有该文件的底层拷贝并更新在当前层。如果容器在 commit 之前被销毁，那么有这个镜像重新生成的容器是不包含改动的内容的。</p>
 <a id="more"></a>
+
 <h2 id="需求来源"><a href="#需求来源" class="headerlink" title="需求来源"></a>需求来源</h2><p>所以数据问题是使用 Docker 必然会关注到的，除了如何持久化以外，如何从宿主机访问到容器内的数据？或者将容器内的数据同步到宿主机？又或是多个容器间怎么共享数据？这都是要处理的。</p>
 <p>还好 Docker 提供了一套完善而简单的数据挂载机制 Volume。</p>
-<h2 id="命名卷"><a href="#命名卷" class="headerlink" title="命名卷"></a>命名卷</h2><p>要控制容器的数据内容，首先从文件的挂载开始。<code>docker volume</code> 提供了一套管理卷（volume）的 API：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Usage:  docker volume COMMAND</span><br><span class="line"></span><br><span class="line">Manage volumes</span><br><span class="line"></span><br><span class="line">Commands:</span><br><span class="line">  create      Create a volume</span><br><span class="line">  inspect     Display detailed information on one or more volumes</span><br><span class="line">  ls          List volumes</span><br><span class="line">  prune       Remove all unused local volumes</span><br><span class="line">  rm          Remove one or more volumes</span><br></pre></td></tr></table></figure></p>
+<h2 id="命名卷"><a href="#命名卷" class="headerlink" title="命名卷"></a>命名卷</h2><p>要控制容器的数据内容，首先从文件的挂载开始。<code>docker volume</code> 提供了一套管理卷（volume）的 API：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Usage:  docker volume COMMAND</span><br><span class="line"></span><br><span class="line">Manage volumes</span><br><span class="line"></span><br><span class="line">Commands:</span><br><span class="line">  create      Create a volume</span><br><span class="line">  inspect     Display detailed information on one or more volumes</span><br><span class="line">  ls          List volumes</span><br><span class="line">  prune       Remove all unused local volumes</span><br><span class="line">  rm          Remove one or more volumes</span><br></pre></td></tr></table></figure>
+
 <p>先创建一个 named volume：<code>docker volume create vol</code><br>使用 <code>docker volume ls</code> 可以看到当前存在的所有的 volume。<br>使用 <code>docker volume rm</code> 删除指定的 volume。<br>使用 <code>docker volume inspect vol</code> 可以看到它的详情，包括创建时间和宿主机上的真正挂载位置等：</p>
 <pre><code>[
     {
@@ -481,12 +484,17 @@
         &quot;Options&quot;: {},
         &quot;Scope&quot;: &quot;local&quot;
     }
-]
-</code></pre><p>可以看到这个新建的 vol 保存在 <code>/var/lib/docker/volumes/vol/_data</code> 下，其中 <code>/var/lib/docker/volumes</code> 目录保存了所有的 Docker volume。</p>
-<h2 id="运行时挂载"><a href="#运行时挂载" class="headerlink" title="运行时挂载"></a>运行时挂载</h2><h3 id="使用命名卷"><a href="#使用命名卷" class="headerlink" title="使用命名卷"></a>使用命名卷</h3><p>有了 volume 之后，我们便可以使用刚才创建的 vol 来挂载容器中的某个目录：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -v vol:/data --name temp-redis redis</span><br></pre></td></tr></table></figure></p>
+]</code></pre><p>可以看到这个新建的 vol 保存在 <code>/var/lib/docker/volumes/vol/_data</code> 下，其中 <code>/var/lib/docker/volumes</code> 目录保存了所有的 Docker volume。</p>
+<h2 id="运行时挂载"><a href="#运行时挂载" class="headerlink" title="运行时挂载"></a>运行时挂载</h2><h3 id="使用命名卷"><a href="#使用命名卷" class="headerlink" title="使用命名卷"></a>使用命名卷</h3><p>有了 volume 之后，我们便可以使用刚才创建的 vol 来挂载容器中的某个目录：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -v vol:/data --name temp-redis redis</span><br></pre></td></tr></table></figure>
+
 <p>如此一来，在 temp-redis 容器中 <code>/data</code> 下的改动，都会同步反映在宿主机的 <code>/var/lib/docker/volumes/vol/_data</code> 下；而宿主机的改动亦然。</p>
-<h3 id="使用绝对路径"><a href="#使用绝对路径" class="headerlink" title="使用绝对路径"></a>使用绝对路径</h3><p>使用命名的 volume 通常是为了数据共享，很多时候我们只是想指定一个挂载的目录便于记忆和管理，这个时候可以使用绝对路径，如：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -v /data/docker_volume/temp_redis/data:/data --name temp-redis redis</span><br></pre></td></tr></table></figure></p>
-<h3 id="自动挂载"><a href="#自动挂载" class="headerlink" title="自动挂载"></a>自动挂载</h3><p>有时候你甚至不想关心任何 volume 的形式，你只是想把某个目录持久化而已，可以这么做：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -v /data --name temp-redis redis</span><br></pre></td></tr></table></figure></p>
+<h3 id="使用绝对路径"><a href="#使用绝对路径" class="headerlink" title="使用绝对路径"></a>使用绝对路径</h3><p>使用命名的 volume 通常是为了数据共享，很多时候我们只是想指定一个挂载的目录便于记忆和管理，这个时候可以使用绝对路径，如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -v /data/docker_volume/temp_redis/data:/data --name temp-redis redis</span><br></pre></td></tr></table></figure>
+
+<h3 id="自动挂载"><a href="#自动挂载" class="headerlink" title="自动挂载"></a>自动挂载</h3><p>有时候你甚至不想关心任何 volume 的形式，你只是想把某个目录持久化而已，可以这么做：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -v /data --name temp-redis redis</span><br></pre></td></tr></table></figure>
+
 <p>Docker 会自动生成一个匿名的 volume。想要知道具体的宿主机目录可以使用：<code>docker inspect</code> 来查看。这种情况通常在构建纯数据容器时使用。</p>
 <h3 id="注意点"><a href="#注意点" class="headerlink" title="注意点"></a>注意点</h3><p>在 volume 创建时和创建之后仍然需要关注他们，下面是一些典型的问题。</p>
 <h4 id="volume-自动创建"><a href="#volume-自动创建" class="headerlink" title="volume 自动创建"></a>volume 自动创建</h4><p>事实上在 <code>-v vol:/data</code> 时候，vol volume 甚至不需要提前使用 <code>docker volume create vol</code> 创建，使用 <code>docker run -v vol:/data</code> 命令时便会自动创建。<br><strong>同时地，也意味着 <code>-v</code> 选项不支持相对路径的使用</strong>。</p>
@@ -500,15 +508,17 @@
 <li>使用 <code>docker volume rm VOLUME</code> 来删除。</li>
 <li>使用 <code>docker volume prune</code> 删除所有不再被使用的 volume。</li>
 </ul>
-<h4 id="volume-的只读控制"><a href="#volume-的只读控制" class="headerlink" title="volume 的只读控制"></a>volume 的只读控制</h4><p>一些场合下，我们提供只是需要容器内的程序去读取一些内容而非修改。我们可以严格的控制 volume，增加只读选项 <code>ro</code>：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker run -d \</span><br><span class="line">  --name=nginxtest \</span><br><span class="line">  -v nginx-vol:/usr/share/nginx/html:ro \</span><br><span class="line">  nginx:latest</span><br></pre></td></tr></table></figure></p>
-<h2 id="通过-Dockerfile-挂载"><a href="#通过-Dockerfile-挂载" class="headerlink" title="通过 Dockerfile 挂载"></a>通过 Dockerfile 挂载</h2><p>可以通过 Dockerfile 在构建镜像的时候便指定需要的 volume，这对于很多应用都是必要的，尤其是一些数据类应用。<br>Dockerfile 中使用 VOLUME 表明挂载目录，如：<br><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">VOLUME</span><span class="bash"> [<span class="string">"/data1"</span>, <span class="string">"/data2"</span>]</span></span><br></pre></td></tr></table></figure></p>
+<h4 id="volume-的只读控制"><a href="#volume-的只读控制" class="headerlink" title="volume 的只读控制"></a>volume 的只读控制</h4><p>一些场合下，我们提供只是需要容器内的程序去读取一些内容而非修改。我们可以严格的控制 volume，增加只读选项 <code>ro</code>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker run -d \</span><br><span class="line">  --name=nginxtest \</span><br><span class="line">  -v nginx-vol:/usr/share/nginx/html:ro \</span><br><span class="line">  nginx:latest</span><br></pre></td></tr></table></figure>
+
+<h2 id="通过-Dockerfile-挂载"><a href="#通过-Dockerfile-挂载" class="headerlink" title="通过 Dockerfile 挂载"></a>通过 Dockerfile 挂载</h2><p>可以通过 Dockerfile 在构建镜像的时候便指定需要的 volume，这对于很多应用都是必要的，尤其是一些数据类应用。<br>Dockerfile 中使用 VOLUME 表明挂载目录，如：</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">VOLUME</span><span class="bash"> [<span class="string">"/data1"</span>, <span class="string">"/data2"</span>]</span></span><br></pre></td></tr></table></figure>
+
 <p>任何通过该镜像构建的容器都会将 <code>/data1</code>，<code>/data2</code> 两个目录进行挂载。但是 Dockerfile 形式的弱势是<strong>无法进行 named volume 或者绝对路径的挂载</strong>。</p>
 <h2 id="数据共享与存储"><a href="#数据共享与存储" class="headerlink" title="数据共享与存储"></a>数据共享与存储</h2><h3 id="共享-volume"><a href="#共享-volume" class="headerlink" title="共享 volume"></a>共享 volume</h3><p>既然数据可以在宿主机和容器间同步，那么可以使多个容器间同步吗？当然可以！</p>
 <ol>
-<li><h4 id="–volumes-from"><a href="#–volumes-from" class="headerlink" title="–volumes-from"></a>–volumes-from</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 首先创建一个容器，并挂载 /data</span></span><br><span class="line">docker run -d -v /data --name ng1 nginx</span><br><span class="line"><span class="comment"># 创建第二个容器，共享前者的 volume</span></span><br><span class="line">docker run -d --volumes-from ng1 --name gn2 nginx</span><br></pre></td></tr></table></figure>
-</li>
-<li><h4 id="named-volume"><a href="#named-volume" class="headerlink" title="named volume"></a>named volume</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 首先创建一个容器，并创建命名卷 share 来挂载 /data</span></span><br><span class="line">docker run -d -v share:/data --name ng1 nginx</span><br><span class="line"><span class="comment"># 创建第二个容器，使用同样的 /data</span></span><br><span class="line">docker run -d -v share:/data --name ng2 nginx</span><br></pre></td></tr></table></figure>
-</li>
+<li><h4 id="–volumes-from"><a href="#–volumes-from" class="headerlink" title="–volumes-from"></a>–volumes-from</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 首先创建一个容器，并挂载 /data</span></span><br><span class="line">docker run -d -v /data --name ng1 nginx</span><br><span class="line"><span class="comment"># 创建第二个容器，共享前者的 volume</span></span><br><span class="line">docker run -d --volumes-from ng1 --name gn2 nginx</span><br></pre></td></tr></table></figure></li>
+<li><h4 id="named-volume"><a href="#named-volume" class="headerlink" title="named volume"></a>named volume</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 首先创建一个容器，并创建命名卷 share 来挂载 /data</span></span><br><span class="line">docker run -d -v share:/data --name ng1 nginx</span><br><span class="line"><span class="comment"># 创建第二个容器，使用同样的 /data</span></span><br><span class="line">docker run -d -v share:/data --name ng2 nginx</span><br></pre></td></tr></table></figure></li>
 </ol>
 <p><strong>两种方式都能达到数据共享的目的，但是由于通过命名卷的方式对多个容器的依赖进行了解耦，所以推荐第二种。</strong></p>
 <h3 id="数据容器"><a href="#数据容器" class="headerlink" title="数据容器"></a>数据容器</h3><p>这个话题事实上和数据共享紧密相关，由于在 Docker1.9 之前，大家广泛使用使用 <code>--volumes-from</code> 的形式来共享卷，导致必须要一个底层的没有依赖的容器来保存数据。</p>
@@ -589,7 +599,7 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/07/Dockerfile-中三个运行指令的差异/" rel="next" title="Dockerfile 中三个运行指令的差异">
+              <a href="/2018/07/Dockerfile-%E4%B8%AD%E4%B8%89%E4%B8%AA%E8%BF%90%E8%A1%8C%E6%8C%87%E4%BB%A4%E7%9A%84%E5%B7%AE%E5%BC%82/" rel="next" title="Dockerfile 中三个运行指令的差异">
                 <i class="fa fa-chevron-left"></i> Dockerfile 中三个运行指令的差异
               </a>
             
@@ -599,7 +609,7 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/07/实现-MyBatis-插件/" rel="prev" title="实现 MyBatis 插件">
+              <a href="/2018/07/%E5%AE%9E%E7%8E%B0-MyBatis-%E6%8F%92%E4%BB%B6/" rel="prev" title="实现 MyBatis 插件">
                 实现 MyBatis 插件 <i class="fa fa-chevron-right"></i>
               </a>
             
@@ -841,7 +851,7 @@
 
 
 
-  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io" rel="external nofollow noopener noreferrer">Hexo</a> 强力驱动 v3.7.1</div>
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io" rel="external nofollow noopener noreferrer">Hexo</a> 强力驱动 v4.2.0</div>
 
 
 

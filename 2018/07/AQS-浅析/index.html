@@ -113,17 +113,18 @@
 
 
   <meta name="description" content="java.util.concurrent 包中提供了许多易用而有效的工具类，诸如 ReentrantLock，CountDownLatch，Semaphore 等等，给日常的并发编程带来了许多便利。他们都使用了同样的框架来完成基本的同步过程：AbstractQueuedSynchronizer （AQS）来实现基本功能，比如获取资源和释放的步骤。">
-<meta name="keywords" content="Java,并发">
 <meta property="og:type" content="article">
 <meta property="og:title" content="AQS 浅析">
-<meta property="og:url" content="http://kun3375.com/2018/07/AQS-浅析/index.html">
+<meta property="og:url" content="http://kun3375.com/2018/07/AQS-%E6%B5%85%E6%9E%90/index.html">
 <meta property="og:site_name" content="码路狂飙">
 <meta property="og:description" content="java.util.concurrent 包中提供了许多易用而有效的工具类，诸如 ReentrantLock，CountDownLatch，Semaphore 等等，给日常的并发编程带来了许多便利。他们都使用了同样的框架来完成基本的同步过程：AbstractQueuedSynchronizer （AQS）来实现基本功能，比如获取资源和释放的步骤。">
-<meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-08-04T04:03:23.491Z">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-07-02T03:27:16.000Z">
+<meta property="article:modified_time" content="2018-08-04T04:03:23.491Z">
+<meta property="article:author" content="斯特拉不用电">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="并发">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="AQS 浅析">
-<meta name="twitter:description" content="java.util.concurrent 包中提供了许多易用而有效的工具类，诸如 ReentrantLock，CountDownLatch，Semaphore 等等，给日常的并发编程带来了许多便利。他们都使用了同样的框架来完成基本的同步过程：AbstractQueuedSynchronizer （AQS）来实现基本功能，比如获取资源和释放的步骤。">
 
 
 
@@ -178,7 +179,7 @@
   </style>
 </noscript>
 
-</head>
+<meta name="generator" content="Hexo 4.2.0"></head>
 
 <body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
 
@@ -338,7 +339,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://kun3375.com/2018/07/AQS-浅析/">
+    <link itemprop="mainEntityOfPage" href="http://kun3375.com/2018/07/AQS-%E6%B5%85%E6%9E%90/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="斯特拉不用电">
@@ -429,8 +430,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2018/07/AQS-浅析/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2018/07/AQS-浅析/" itemprop="commentsCount"></span>
+                <a href="/2018/07/AQS-%E6%B5%85%E6%9E%90/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2018/07/AQS-%E6%B5%85%E6%9E%90/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -467,6 +468,7 @@
       
         <p><code>java.util.concurrent</code> 包中提供了许多易用而有效的工具类，诸如 <strong>ReentrantLock</strong>，<strong>CountDownLatch</strong>，<strong>Semaphore</strong> 等等，给日常的并发编程带来了许多便利。他们都使用了同样的框架来完成基本的同步过程：<strong><em>AbstractQueuedSynchronizer</em></strong> （AQS）来实现基本功能，比如获取资源和释放的步骤。</p>
 <a id="more"></a>
+
 <h2 id="简单了解"><a href="#简单了解" class="headerlink" title="简单了解"></a>简单了解</h2><p>戳开 AQS 一览其结构，其实它本身维护了两个概念：</p>
 <ul>
 <li>state：（volatile int）该属性维护了资源的状态，或者是数量。</li>
@@ -479,7 +481,9 @@
 </ul>
 <p>子类实现 AQS 时候只需要实现关于 state 的获取（acquire）和释放（release）方案即可，包括队列的维护，线程的唤醒等工作，大部分都在 AQS 维护了。举个栗子，在使用 CountDownLatch 的时候，我们会初始化一个计数值 n 用于对应 n 个子线程，这个 n 同时也对应了 state 值，每一次 <code>countDown()</code> 的时候，会使得 state CAS 地减 1。在 state 归零的时候会使用 <code>unpark()</code>，主线程 从 <code>await()</code> 函数返回。</p>
 <h2 id="工作流程"><a href="#工作流程" class="headerlink" title="工作流程"></a>工作流程</h2><p>AQS 的 API 同一般的同步工具 API 一样，除了对于资源的 <code>acquire</code> / <code>release</code> 操作，还提供的了 <code>tryAcquire</code> / <code>tryRelease</code> 的非阻塞操作。同时 <code>acquireInterruptibly</code> 支持线程中断。如果需要使用共享式的操作，需要实现对应的 Share 操作方法。</p>
-<h3 id="资源获取"><a href="#资源获取" class="headerlink" title="资源获取"></a>资源获取</h3><p>首先看 <code>acquire</code> 方法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">acquire</span><span class="params">(<span class="keyword">int</span> arg)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!tryAcquire(arg) &amp;&amp; acquireQueued(addWaiter(Node.EXCLUSIVE), arg))</span><br><span class="line">        selfInterrupt();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="资源获取"><a href="#资源获取" class="headerlink" title="资源获取"></a>资源获取</h3><p>首先看 <code>acquire</code> 方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">acquire</span><span class="params">(<span class="keyword">int</span> arg)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!tryAcquire(arg) &amp;&amp; acquireQueued(addWaiter(Node.EXCLUSIVE), arg))</span><br><span class="line">        selfInterrupt();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <ul>
 <li><code>tryAcquire(int)</code>：尝试获取资源</li>
 <li><code>addWaiter(Node)</code>：使线程（Node 对象维护这线程对象）进入等待队列，对于 acquire 方法使用 EXCLUSICE-排他模式。</li>
@@ -488,27 +492,35 @@
 </ul>
 <p><code>tryAcquire(int)</code> 方法默认会抛出操作不支持的异常，需要子类的具体实现。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">boolean</span> <span class="title">tryAcquire</span><span class="params">(<span class="keyword">int</span> arg)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> UnsupportedOperationException();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p><code>addWaiter(Node, int)</code> 方法会自旋使用 CAS 方式将一个 Node 加入队尾。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> Node <span class="title">addWaiter</span><span class="params">(Node mode)</span> </span>&#123;</span><br><span class="line">    Node node = <span class="keyword">new</span> Node(Thread.currentThread(), mode);</span><br><span class="line">    <span class="comment">// Try the fast path of enq; backup to full enq on failure</span></span><br><span class="line">    Node pred = tail;</span><br><span class="line">    <span class="keyword">if</span> (pred != <span class="keyword">null</span>) &#123;</span><br><span class="line">        node.prev = pred;</span><br><span class="line">        <span class="keyword">if</span> (compareAndSetTail(pred, node)) &#123;</span><br><span class="line">            pred.next = node;</span><br><span class="line">            <span class="keyword">return</span> node;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    enq(node);</span><br><span class="line">    <span class="keyword">return</span> node;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">private</span> Node <span class="title">enq</span><span class="params">(<span class="keyword">final</span> Node node)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">        Node t = tail;</span><br><span class="line">        <span class="keyword">if</span> (t == <span class="keyword">null</span>) &#123; <span class="comment">// Must initialize</span></span><br><span class="line">            <span class="keyword">if</span> (compareAndSetHead(<span class="keyword">new</span> Node()))</span><br><span class="line">                tail = head;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            node.prev = t;</span><br><span class="line">            <span class="keyword">if</span> (compareAndSetTail(t, node)) &#123;</span><br><span class="line">                t.next = node;</span><br><span class="line">                <span class="keyword">return</span> t;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>从上面两个方法可以看出位于队列头部的 Node 其实只是一个标记，在队列第二位置的时候，线程已经可以获取资源并进行相关任务了。</p>
 <p><code>acquireQueued(Node, int)</code> 更关键的一步，在获取资源失败， Node 已经被加入队尾之后，线程需要进入等待状态等待被唤醒。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">acquireQueued</span><span class="params">(<span class="keyword">final</span> Node node, <span class="keyword">int</span> arg)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">boolean</span> failed = <span class="keyword">true</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">boolean</span> interrupted = <span class="keyword">false</span>;</span><br><span class="line">        <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">            <span class="keyword">final</span> Node p = node.predecessor();</span><br><span class="line">            <span class="keyword">if</span> (p == head &amp;&amp; tryAcquire(arg)) &#123;</span><br><span class="line">                setHead(node);</span><br><span class="line">                p.next = <span class="keyword">null</span>; <span class="comment">// help GC</span></span><br><span class="line">                failed = <span class="keyword">false</span>;</span><br><span class="line">                <span class="keyword">return</span> interrupted;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (shouldParkAfterFailedAcquire(p, node) &amp;&amp;</span><br><span class="line">                parkAndCheckInterrupt())</span><br><span class="line">                interrupted = <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (failed)</span><br><span class="line">            cancelAcquire(node);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>shouldParkAfterFailedAcquire(Node, Node) 每个节点是否需要等待需要阻塞取决于前驱节点的状态。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">shouldParkAfterFailedAcquire</span><span class="params">(Node pred, Node node)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> ws = pred.waitStatus;</span><br><span class="line">    <span class="keyword">if</span> (ws == Node.SIGNAL)</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    <span class="keyword">if</span> (ws &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">do</span> &#123;</span><br><span class="line">            node.prev = pred = pred.prev;</span><br><span class="line">        &#125; <span class="keyword">while</span> (pred.waitStatus &gt; <span class="number">0</span>);</span><br><span class="line">        pred.next = node;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        compareAndSetWaitStatus(pred, ws, Node.SIGNAL);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>前驱节点最后会通过该状态值来判断是否需要 unpark 下个线程。在这里，如果前驱节点标识为 SIGNAL，则进入等待；标识为 CANCAL 需要追溯更前的节点状态；如果为其他正常值，则更新为 SIGNAL。</p>
 <p><code>parkAndCheckInterrupt()</code> 使线程进入 WATING，等待 unpark（在 release 中触发，马上就来） 或者 interrupt，被唤醒后回到 <code>acquireQueued</code> 触发中断或者继续检查是否可以获取资源。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">parkAndCheckInterrupt</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    LockSupport.park(<span class="keyword">this</span>);</span><br><span class="line">    <span class="keyword">return</span> Thread.interrupted();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <h3 id="释放资源并唤醒后置线程"><a href="#释放资源并唤醒后置线程" class="headerlink" title="释放资源并唤醒后置线程"></a>释放资源并唤醒后置线程</h3><p>这是 <code>acquire</code> 方法的反操作，用于资源的释放，当资源成功释放时，唤醒下一个线程（位于头节点之后）。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">release</span><span class="params">(<span class="keyword">int</span> arg)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (tryRelease(arg)) &#123;</span><br><span class="line">        Node h = head;</span><br><span class="line">        <span class="keyword">if</span> (h != <span class="keyword">null</span> &amp;&amp; h.waitStatus != <span class="number">0</span>)</span><br><span class="line">            unparkSuccessor(h);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>通过 <code>tryRelease(int)</code> 方法判断资源是否释放，这个方法同样需要被实现：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">boolean</span> <span class="title">tryRelease</span><span class="params">(<span class="keyword">int</span> arg)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> UnsupportedOperationException();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>而 <code>unparkSuccessor(Node)</code> 方法用来真正唤醒 node.next 中的线程：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">unparkSuccessor</span><span class="params">(Node node)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> ws = node.waitStatus;</span><br><span class="line">    <span class="keyword">if</span> (ws &lt; <span class="number">0</span>)</span><br><span class="line">        compareAndSetWaitStatus(node, ws, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    Node s = node.next;</span><br><span class="line">    <span class="keyword">if</span> (s == <span class="keyword">null</span> || s.waitStatus &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        s = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">for</span> (Node t = tail; t != <span class="keyword">null</span> &amp;&amp; t != node; t = t.prev)</span><br><span class="line">            <span class="keyword">if</span> (t.waitStatus &lt;= <span class="number">0</span>)</span><br><span class="line">                s = t;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (s != <span class="keyword">null</span>)</span><br><span class="line">        LockSupport.unpark(s.thread);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>看到这就能了解整个 AQS 的运作流程了。在 parkAndCheckInterrupt 中进入 WAITING 的线程，在这里被唤醒，它会继续进入 <code>acquireQueued</code> 中的自旋，如果 <code>tryAcquire</code> 顺利获得资源，则将本线程的节点设置为 head 并返回 acquire 方法。so, go on.</p>
 <p>AQS 本身并不复杂，使用时只需要手动实现 <code>tryAcquire</code> 和 <code>tryRealeas</code> 方法。</p>
 <p>而对于 Share-共享式的 acquire / release 流程，区别并不太大，有兴趣的小伙伴可以自行翻阅源码一探究竟。</p>
 <h6 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h6><ol>
-<li><a href="https://mp.weixin.qq.com/s/eyZyzk8ZzjwzZYN4a4H5YA" rel="external nofollow noopener noreferrer" target="_blank">https://mp.weixin.qq.com/s/eyZyzk8ZzjwzZYN4a4H5YA</a></li>
+<li><a href="https://mp.weixin.qq.com/s/eyZyzk8ZzjwzZYN4a4H5YA" target="_blank" rel="external nofollow noopener noreferrer">https://mp.weixin.qq.com/s/eyZyzk8ZzjwzZYN4a4H5YA</a></li>
 </ol>
 
       
@@ -556,7 +568,7 @@
           
             <a href="/tags/Java/" rel="tag"># Java</a>
           
-            <a href="/tags/并发/" rel="tag"># 并发</a>
+            <a href="/tags/%E5%B9%B6%E5%8F%91/" rel="tag"># 并发</a>
           
         </div>
       
@@ -594,7 +606,7 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/07/文字处理-sed/" rel="prev" title="文字处理-sed">
+              <a href="/2018/07/%E6%96%87%E5%AD%97%E5%A4%84%E7%90%86-sed/" rel="prev" title="文字处理-sed">
                 文字处理-sed <i class="fa fa-chevron-right"></i>
               </a>
             
@@ -836,7 +848,7 @@
 
 
 
-  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io" rel="external nofollow noopener noreferrer">Hexo</a> 强力驱动 v3.7.1</div>
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io" rel="external nofollow noopener noreferrer">Hexo</a> 强力驱动 v4.2.0</div>
 
 
 

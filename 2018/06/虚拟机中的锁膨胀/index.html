@@ -113,22 +113,24 @@
 
 
   <meta name="description" content="尽管当下几乎所有的服务器环境都以集群为主，在考虑并发问题的时候通常会使用分布式技术,如 redis 等中间件来维护全局的资源和锁。但是对于一些实例层面上的资源，依旧需要使用传统的锁来维护。所以我觉得，理解 JVM 对锁的处理还是有价值的。 JVM上针对锁的处理（这里只描述内部锁，即 synchronized 的处理情况），除了有自旋锁，锁粗化，锁消除等简单的自动优化机制（不探讨啦），还可以从锁的维">
-<meta name="keywords" content="Java,并发,JVM">
 <meta property="og:type" content="article">
 <meta property="og:title" content="虚拟机中的锁膨胀">
-<meta property="og:url" content="http://kun3375.com/2018/06/虚拟机中的锁膨胀/index.html">
+<meta property="og:url" content="http://kun3375.com/2018/06/%E8%99%9A%E6%8B%9F%E6%9C%BA%E4%B8%AD%E7%9A%84%E9%94%81%E8%86%A8%E8%83%80/index.html">
 <meta property="og:site_name" content="码路狂飙">
 <meta property="og:description" content="尽管当下几乎所有的服务器环境都以集群为主，在考虑并发问题的时候通常会使用分布式技术,如 redis 等中间件来维护全局的资源和锁。但是对于一些实例层面上的资源，依旧需要使用传统的锁来维护。所以我觉得，理解 JVM 对锁的处理还是有价值的。 JVM上针对锁的处理（这里只描述内部锁，即 synchronized 的处理情况），除了有自旋锁，锁粗化，锁消除等简单的自动优化机制（不探讨啦），还可以从锁的维">
-<meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://kun3375.com/images/对象头.jpg">
-<meta property="og:image" content="http://kun3375.com/images/偏向锁的获得和撤销.png">
-<meta property="og:image" content="http://kun3375.com/images/轻量级锁膨胀.png">
-<meta property="og:image" content="http://kun3375.com/images/锁关系.png">
-<meta property="og:updated_time" content="2018-08-04T04:03:23.493Z">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://kun3375.com/images/%E5%AF%B9%E8%B1%A1%E5%A4%B4.jpg">
+<meta property="og:image" content="http://kun3375.com/images/%E5%81%8F%E5%90%91%E9%94%81%E7%9A%84%E8%8E%B7%E5%BE%97%E5%92%8C%E6%92%A4%E9%94%80.png">
+<meta property="og:image" content="http://kun3375.com/images/%E8%BD%BB%E9%87%8F%E7%BA%A7%E9%94%81%E8%86%A8%E8%83%80.png">
+<meta property="og:image" content="http://kun3375.com/images/%E9%94%81%E5%85%B3%E7%B3%BB.png">
+<meta property="article:published_time" content="2018-06-30T02:58:00.000Z">
+<meta property="article:modified_time" content="2018-08-04T04:03:23.493Z">
+<meta property="article:author" content="斯特拉不用电">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="并发">
+<meta property="article:tag" content="JVM">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="虚拟机中的锁膨胀">
-<meta name="twitter:description" content="尽管当下几乎所有的服务器环境都以集群为主，在考虑并发问题的时候通常会使用分布式技术,如 redis 等中间件来维护全局的资源和锁。但是对于一些实例层面上的资源，依旧需要使用传统的锁来维护。所以我觉得，理解 JVM 对锁的处理还是有价值的。 JVM上针对锁的处理（这里只描述内部锁，即 synchronized 的处理情况），除了有自旋锁，锁粗化，锁消除等简单的自动优化机制（不探讨啦），还可以从锁的维">
-<meta name="twitter:image" content="http://kun3375.com/images/对象头.jpg">
+<meta name="twitter:image" content="http://kun3375.com/images/%E5%AF%B9%E8%B1%A1%E5%A4%B4.jpg">
 
 
 
@@ -183,7 +185,7 @@
   </style>
 </noscript>
 
-</head>
+<meta name="generator" content="Hexo 4.2.0"></head>
 
 <body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
 
@@ -343,7 +345,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://kun3375.com/2018/06/虚拟机中的锁膨胀/">
+    <link itemprop="mainEntityOfPage" href="http://kun3375.com/2018/06/%E8%99%9A%E6%8B%9F%E6%9C%BA%E4%B8%AD%E7%9A%84%E9%94%81%E8%86%A8%E8%83%80/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="斯特拉不用电">
@@ -434,8 +436,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2018/06/虚拟机中的锁膨胀/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2018/06/虚拟机中的锁膨胀/" itemprop="commentsCount"></span>
+                <a href="/2018/06/%E8%99%9A%E6%8B%9F%E6%9C%BA%E4%B8%AD%E7%9A%84%E9%94%81%E8%86%A8%E8%83%80/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2018/06/%E8%99%9A%E6%8B%9F%E6%9C%BA%E4%B8%AD%E7%9A%84%E9%94%81%E8%86%A8%E8%83%80/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -473,6 +475,7 @@
         <p>尽管当下几乎所有的服务器环境都以集群为主，在考虑并发问题的时候通常会使用分布式技术,如 redis 等中间件来维护全局的资源和锁。但是对于一些实例层面上的资源，依旧需要使用传统的锁来维护。所以我觉得，理解 JVM 对锁的处理还是有价值的。</p>
 <p>JVM上针对锁的处理（这里只描述内部锁，即 <code>synchronized</code> 的处理情况），除了有<strong>自旋锁</strong>，<strong>锁粗化</strong>，<strong>锁消除</strong>等简单的自动优化机制（不探讨啦），还可以从锁的维护的角度去看，可以分为<strong>偏向锁</strong>，<strong>轻量级锁</strong>，<strong>重量级锁</strong>。<br><em>三者的开销是递增的，演变顺序也是递增的，而且不可逆。</em><br>如轻型的锁可以膨胀升级至重型锁，但是不可以从重型的锁降级。</p>
 <a id="more"></a>
+
 <p>之所以有不同程度的锁的处理方式，可以看一下这一个场景：如果在逻辑上某一时间基本只有一个线程，会访问由某个锁对象控制的同步块，很多时候不存在资源征用的问题。那么在这个时候，很多时候上锁解锁的开销就显得繁琐而低效了。以重量级锁（也是 <code>synchronized</code> 的最终形态）为例，取锁过程需要操作系统的介入，使线程从用户态进入核心态，开销还是挺大的。所以一开始 JVM 会对锁做偏向锁处理，在一些条件下升至轻量级锁乃至重量级锁。</p>
 <h3 id="前置概念"><a href="#前置概念" class="headerlink" title="前置概念"></a>前置概念</h3><p>在阐述锁膨胀之前，先插入几个内容点，<strong>对象头</strong>和<strong>自旋锁</strong>。</p>
 <h4 id="对象头"><a href="#对象头" class="headerlink" title="对象头"></a>对象头</h4><p>在 HotSpot 虚拟机中，对象在内存中存储的布局可以分为三块区域：<strong>对象头</strong>（Header）、<strong>实例数据</strong>（Instance Data）和<strong>对齐填充</strong>（Padding）。 </p>
@@ -481,24 +484,26 @@
 <li><strong><em>类型指针</em></strong>：<br>在虚拟机加载类的时候，除了会在元空间/方法区存储类信息，也会在堆区生成一个 Class 对象。类型指针，便是为一个实例对象指向 Class 对象的指针。</li>
 <li><strong><em>标记字段</em></strong>：<br>在这一个字的区域内，描述了很多信息。通常一个对象会有其哈希码，年代标记（经历 GC 次数），锁标识等。但是如果该对象充当了一个上锁对象，情况会有所不同，下文详述。</li>
 </ul>
-<p><img src="/images/对象头.jpg" alt="对象头示意图"></p>
-<h4 id="自旋锁"><a href="#自旋锁" class="headerlink" title="自旋锁"></a>自旋锁</h4><p>通常来说，取锁时候如果未能获得锁，线程会进入<em>阻塞状态</em>（Blocking），同时会让线程进入等待队列/同步块的入口集中，并导致一个<em>上下文切换</em>，出让 CPU 资源。<br>我们可以实现一个忙轮询的机制来尝试获得锁。比如使用一个状态对象来代替锁，使用一个循环来判断状态是否未可用，如下是代码层面的实现。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">volatile</span> <span class="keyword">boolean</span> flag = <span class="keyword">false</span>;</span><br><span class="line"><span class="keyword">while</span>(<span class="keyword">true</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span>(flag) &#123;</span><br><span class="line">	<span class="comment">// do something</span></span><br><span class="line">	<span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="/images/%E5%AF%B9%E8%B1%A1%E5%A4%B4.jpg" alt="对象头示意图"></p>
+<h4 id="自旋锁"><a href="#自旋锁" class="headerlink" title="自旋锁"></a>自旋锁</h4><p>通常来说，取锁时候如果未能获得锁，线程会进入<em>阻塞状态</em>（Blocking），同时会让线程进入等待队列/同步块的入口集中，并导致一个<em>上下文切换</em>，出让 CPU 资源。<br>我们可以实现一个忙轮询的机制来尝试获得锁。比如使用一个状态对象来代替锁，使用一个循环来判断状态是否未可用，如下是代码层面的实现。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">volatile</span> <span class="keyword">boolean</span> flag = <span class="keyword">false</span>;</span><br><span class="line"><span class="keyword">while</span>(<span class="keyword">true</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span>(flag) &#123;</span><br><span class="line">	<span class="comment">// do something</span></span><br><span class="line">	<span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>这可以避免在首次取得锁失败的时候直接线程切出，在同步逻辑处理量较少的时候可以带来明显的效率提升，但是如果如果说“同步块”的处理时间很长，或者在“同步块”内的线程发生异常未能更改状态量，将严重损失性能乃至发生更严重的死锁。</p>
 <p><strong>所以自旋锁适合同步逻辑的处理时间很短的场合</strong>（几个循环内能拿到锁）</p>
 <h3 id="锁膨胀过程中的三个阶段"><a href="#锁膨胀过程中的三个阶段" class="headerlink" title="锁膨胀过程中的三个阶段"></a>锁膨胀过程中的三个阶段</h3><p>现在已经了解了对象在堆中的存储形式，以及依靠自旋可以在短时间内减少加锁开销。继续深入 JVM 中不同并发程度下锁的不同的机制。</p>
 <h4 id="偏向锁"><a href="#偏向锁" class="headerlink" title="偏向锁"></a>偏向锁</h4><p>偏向锁是在 JDK 1.5？1.6 之后对锁进行的优化。先来看一个图：</p>
-<p><img src="/images/偏向锁的获得和撤销.png" alt="偏向锁示意图"></p>
+<p><img src="/images/%E5%81%8F%E5%90%91%E9%94%81%E7%9A%84%E8%8E%B7%E5%BE%97%E5%92%8C%E6%92%A4%E9%94%80.png" alt="偏向锁示意图"></p>
 <p>前文提到过，如果一个线程经常获得锁，且资源争用不严重，那么可以尽量减少取锁的开销。JDK 是这么做的：<br>在一个线程获得锁的时候，会在栈帧记录中以及锁对象的标记字段中写入线程 id，在该线程进入/离开同步块的时候不需要额外的锁开销，这里甚至不需要 CAS 操作，因为只需要比较标记字段中的线程 id 与自身是否一致。如果在尝试获得锁的时候发现标记字段中的线程 id 与自身不一致，会尝试利用 CAS 操作来争抢这个偏向锁。</p>
 <p>补充：偏向锁是默认启用的，但是它在应用程序启动几秒钟之后才激活，如有必要可以使用 JVM 参数来关闭延迟 <code>-XX:BiasedLockingStartupDelay=0</code>。如果你确定自己应用程序里所有的锁通常情况下处于竞争状态，甚至可以通过 JVM 参数关闭偏向锁 <code>-XX:-UseBiasedLocking=false</code>，那么所有的内部锁都会直接进入轻量级锁状态。</p>
 <h4 id="轻量级锁"><a href="#轻量级锁" class="headerlink" title="轻量级锁"></a>轻量级锁</h4><p>线程在执行同步块之前，JVM 会先在当前线程的栈桢中创建用于存储锁记录的空间，并将对象头中的标记字段复制到锁记录中。然后线程尝试使用 CAS 将对象头中的标记字段替换为指向锁记录的指针。如果成功，当前线程获得锁；如果失败，则进行自旋来获取锁，当自旋获取锁仍然失败时，表示竞争严重（两条或两条以上的线程竞争同一个锁），则轻量级锁会膨胀成重量级锁。</p>
-<p><img src="/images/轻量级锁膨胀.png" alt="轻量级锁膨胀示意图"></p>
+<p><img src="/images/%E8%BD%BB%E9%87%8F%E7%BA%A7%E9%94%81%E8%86%A8%E8%83%80.png" alt="轻量级锁膨胀示意图"></p>
 <h4 id="重量级锁"><a href="#重量级锁" class="headerlink" title="重量级锁"></a>重量级锁</h4><p>重量级锁其实才是通常涉及的锁概念，这时候它已经是一个彻底的<em>悲观锁</em>了。在 JVM 中又叫<strong>对象监视器</strong>，它至少包含一个竞争锁的队列，和一个信号阻塞队列（wait队列），前者负责做互斥，后一个用于做线程同步。</p>
-<p><img src="/images/锁关系.png" alt="锁关系示意图"></p>
+<p><img src="/images/%E9%94%81%E5%85%B3%E7%B3%BB.png" alt="锁关系示意图"></p>
 <h6 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h6><ol>
 <li>《Java多线程编程实战指南》 黄文海</li>
 <li>《深入理解Java虚拟机》 周志明</li>
-<li><a href="https://www.cnblogs.com/wade-luffy/p/5969418.html" rel="external nofollow noopener noreferrer" target="_blank">https://www.cnblogs.com/wade-luffy/p/5969418.html</a></li>
-<li><a href="https://blog.csdn.net/wolegequdidiao/article/details/45116141" rel="external nofollow noopener noreferrer" target="_blank">https://blog.csdn.net/wolegequdidiao/article/details/45116141</a></li>
+<li><a href="https://www.cnblogs.com/wade-luffy/p/5969418.html" target="_blank" rel="external nofollow noopener noreferrer">https://www.cnblogs.com/wade-luffy/p/5969418.html</a></li>
+<li><a href="https://blog.csdn.net/wolegequdidiao/article/details/45116141" target="_blank" rel="external nofollow noopener noreferrer">https://blog.csdn.net/wolegequdidiao/article/details/45116141</a></li>
 </ol>
 
       
@@ -546,7 +551,7 @@
           
             <a href="/tags/Java/" rel="tag"># Java</a>
           
-            <a href="/tags/并发/" rel="tag"># 并发</a>
+            <a href="/tags/%E5%B9%B6%E5%8F%91/" rel="tag"># 并发</a>
           
             <a href="/tags/JVM/" rel="tag"># JVM</a>
           
@@ -582,7 +587,7 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/06/正则笔记/" rel="prev" title="正则笔记">
+              <a href="/2018/06/%E6%AD%A3%E5%88%99%E7%AC%94%E8%AE%B0/" rel="prev" title="正则笔记">
                 正则笔记 <i class="fa fa-chevron-right"></i>
               </a>
             
@@ -824,7 +829,7 @@
 
 
 
-  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io" rel="external nofollow noopener noreferrer">Hexo</a> 强力驱动 v3.7.1</div>
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io" rel="external nofollow noopener noreferrer">Hexo</a> 强力驱动 v4.2.0</div>
 
 
 
