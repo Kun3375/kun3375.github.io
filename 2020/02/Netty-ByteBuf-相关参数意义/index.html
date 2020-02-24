@@ -112,25 +112,25 @@
 
 
 
-  <meta name="description" content="sed 是非常常用的流式处理编辑工具，配合正则表达式可以进行十分效率的文字处理。它通过逐行地将文字读取，暂存进模式空间，通过指定的命令进行处理后，输出至标准输出，直到文件或者说输入的结束。原理十分简单，来学习一下吧。">
-<meta name="keywords" content="Regex">
+  <meta name="description" content="这里仅记录一下 ByteBuf 相关的一下内存配置参数和默认情况，分析一下 Allocator 的组成，为分析 ByteBuf 做一些概念上的铺垫。 首先看几个 PooledByteBifAllocator 中的静态变量，挑了几个说明一下：12345678910// 默认的 arena 数量，一个对应 HeapBuf 一个对应 DirectBufprivate static final int D">
+<meta name="keywords" content="Java,Netty">
 <meta property="og:type" content="article">
-<meta property="og:title" content="文字处理-sed">
-<meta property="og:url" content="http://kun3375.com/2018/07/文字处理-sed/index.html">
+<meta property="og:title" content="Netty ByteBuf 相关参数意义">
+<meta property="og:url" content="http://kun3375.com/2020/02/Netty-ByteBuf-相关参数意义/index.html">
 <meta property="og:site_name" content="码路狂飙">
-<meta property="og:description" content="sed 是非常常用的流式处理编辑工具，配合正则表达式可以进行十分效率的文字处理。它通过逐行地将文字读取，暂存进模式空间，通过指定的命令进行处理后，输出至标准输出，直到文件或者说输入的结束。原理十分简单，来学习一下吧。">
+<meta property="og:description" content="这里仅记录一下 ByteBuf 相关的一下内存配置参数和默认情况，分析一下 Allocator 的组成，为分析 ByteBuf 做一些概念上的铺垫。 首先看几个 PooledByteBifAllocator 中的静态变量，挑了几个说明一下：12345678910// 默认的 arena 数量，一个对应 HeapBuf 一个对应 DirectBufprivate static final int D">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-08-04T04:03:23.493Z">
+<meta property="og:updated_time" content="2020-02-24T08:56:12.568Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="文字处理-sed">
-<meta name="twitter:description" content="sed 是非常常用的流式处理编辑工具，配合正则表达式可以进行十分效率的文字处理。它通过逐行地将文字读取，暂存进模式空间，通过指定的命令进行处理后，输出至标准输出，直到文件或者说输入的结束。原理十分简单，来学习一下吧。">
+<meta name="twitter:title" content="Netty ByteBuf 相关参数意义">
+<meta name="twitter:description" content="这里仅记录一下 ByteBuf 相关的一下内存配置参数和默认情况，分析一下 Allocator 的组成，为分析 ByteBuf 做一些概念上的铺垫。 首先看几个 PooledByteBifAllocator 中的静态变量，挑了几个说明一下：12345678910// 默认的 arena 数量，一个对应 HeapBuf 一个对应 DirectBufprivate static final int D">
 
 
 
 
 
 
-  <link rel="canonical" href="http://kun3375.com/2018/07/文字处理-sed/">
+  <link rel="canonical" href="http://kun3375.com/2020/02/Netty-ByteBuf-相关参数意义/">
 
 
 
@@ -140,7 +140,7 @@
   };
 </script>
 
-  <title>文字处理-sed | 码路狂飙</title>
+  <title>Netty ByteBuf 相关参数意义 | 码路狂飙</title>
   
 
 
@@ -338,7 +338,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://kun3375.com/2018/07/文字处理-sed/">
+    <link itemprop="mainEntityOfPage" href="http://kun3375.com/2020/02/Netty-ByteBuf-相关参数意义/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="斯特拉不用电">
@@ -355,7 +355,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">文字处理-sed
+          <h1 class="post-title" itemprop="name headline">Netty ByteBuf 相关参数意义
               
             
           </h1>
@@ -380,24 +380,12 @@
                 
               
 
-              <time title="创建时间：2018-07-03 23:22:42" itemprop="dateCreated datePublished" datetime="2018-07-03T23:22:42+08:00">2018-07-03</time>
+              <time title="创建时间：2020-02-24 16:52:18 / 修改时间：16:56:12" itemprop="dateCreated datePublished" datetime="2020-02-24T16:52:18+08:00">2020-02-24</time>
             
 
             
               
 
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2018-08-04 12:03:23" itemprop="dateModified" datetime="2018-08-04T12:03:23+08:00">2018-08-04</time>
               
             
           </span>
@@ -414,7 +402,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/shell/" itemprop="url" rel="index"><span itemprop="name">shell</span></a></span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a></span>
 
                 
                 
@@ -429,8 +417,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2018/07/文字处理-sed/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2018/07/文字处理-sed/" itemprop="commentsCount"></span>
+                <a href="/2020/02/Netty-ByteBuf-相关参数意义/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2020/02/Netty-ByteBuf-相关参数意义/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -465,61 +453,16 @@
       
 
       
-        <p>sed 是非常常用的流式处理编辑工具，配合正则表达式可以进行十分效率的文字处理。它通过逐行地将文字读取，暂存进模式空间，通过指定的命令进行处理后，输出至标准输出，直到文件或者说输入的结束。原理十分简单，来学习一下吧。</p>
-<a id="more"></a>
-<h2 id="命令格式"><a href="#命令格式" class="headerlink" title="命令格式"></a>命令格式</h2><p>sed [选项及参数]… ‘操作命令’ 文件…</p>
-<h2 id="常用选项"><a href="#常用选项" class="headerlink" title="常用选项"></a>常用选项</h2><ul>
-<li>-n <strong>静默模式</strong> 取消 sed 默认的输出</li>
-<li>-e <strong>多重编辑</strong> 可以多次使用，携带 sed 命令作为该选项的参数，对于缓冲区的每一行按命令顺序进行处理</li>
-<li>-f 使用 sed 操作的<strong>脚本处理</strong>，跟上脚本文件名做参数。sed 脚本可以保存多条 sed 命令，一行一条，依次执行。</li>
-<li>-r 使用<strong>拓展正则</strong>，类似 grep -e 或者 egrep 的增强，让人少些一点转义符</li>
-<li>-i <strong>原地修改</strong>，该选项会使得 sed 命令直接修改原文件，可以紧跟一个后缀如 -i.bk，同时生成备份</li>
-</ul>
-<h2 id="命令组成"><a href="#命令组成" class="headerlink" title="命令组成"></a>命令组成</h2><p>sed 命令的组成通常是 ‘行选择具体操作’。sed 在读入行内容之后，如果匹配定址要求就会进行命令操作。我们来两部分分开一看~</p>
-<h3 id="行选择"><a href="#行选择" class="headerlink" title="行选择"></a>行选择</h3><ul>
-<li><strong>num</strong>             选择第 num 行。</li>
-<li><strong>start,end</strong>       选择第 start 行至第 end 行。</li>
-<li><strong>start~step</strong>      从 start 行开始，以 step 为步长选择行。</li>
-<li><strong>/pattern/</strong>       选择含有该正则的内容的行。</li>
-<li><strong>start,/pattern/</strong> 从 start 行开始直到首次成功匹配表达式的一行将被选定，注意 sed 的处理机制，如果表达式最终无法有任何匹配行，将会对 start 行之后的所有行进行选定。</li>
-<li><strong>/pattern/,end</strong>   从首次成功匹配表达式的一行至 end 行将被选定，如果在第 end 行之前如果没有成功匹配将会不有行被选中。</li>
-<li><strong>!</strong>               置于行选择末尾，进行反选，如 <code>10,20!</code> 将排除 10 至 20 行。</li>
-</ul>
-<h3 id="具体操作"><a href="#具体操作" class="headerlink" title="具体操作"></a>具体操作</h3><ul>
-<li><strong>p</strong> 打印缓冲内容，通常配合 -n 选项测试指令正确性。</li>
-<li><strong>q</strong> 提前退出 sed，当到达匹配行或者指定行就退出 sed。</li>
-<li><strong>i\[content]</strong> 行前追加内容，如在第 1 行至第 5 行，每行之后插入‘===’：<code>&#39;1,5i\===&#39;</code>。</li>
-<li><strong>a\[content]</strong> 行后追加内容。</li>
-<li><strong>c\[content]</strong> 替换内容，如果是批量选择，并不是对每行内容进行替换，而是对整体替换成相应内容。</li>
-<li><strong>d</strong> 删除。</li>
-<li><strong>s/pattern/new_chars/[g]</strong> 对选定的行中首次匹配表达式的内容替换成目标字符串，如果末尾使用‘g’，可以对行中所有匹配内容替换。</li>
-<li><strong>y/old-char-set/new-char-set</strong> 对选定行中所有 old-char-set 内的字符替换成相应的新的字符。</li>
-<li><strong>n</strong> 提前读取下一输入行至缓冲区。</li>
-<li><strong>r [file-name]</strong> 行后追加指定文件内容。</li>
-<li><strong>w [file-name]</strong> 将选定行输入至指定文件。</li>
-<li><strong>h</strong> 复制匹配行进入暂存空间。</li>
-<li><strong>G</strong> 配合 h 命令，取出暂存空间内的行，插入至模式空间的末尾。</li>
-<li><strong>x</strong> 配合 h 命令，交换当前匹配行的暂存空间内的行。</li>
-</ul>
-<h3 id="命令叠加"><a href="#命令叠加" class="headerlink" title="命令叠加"></a>命令叠加</h3><p>需要多次使用 sed 操作的时候，可以有这么些办法：</p>
-<ol>
-<li>通过 <code>{命令1;命令2...}</code> 可以使用‘{}’将多个命令整合一块儿，中间使用‘;’分割，类似代码块的表达。其中如果如果多个命令的行定位条件一致，可以将该部分提出，如：<code>&#39;{10p;10p}&#39;</code> 等于 <code>&#39;10{p;p}&#39;</code>。</li>
-<li>通过 -e 选项多次输入 sed 命令。</li>
-<li>将多个 sed 命令逐行写入文件，使用 -f 选项执行 sed。</li>
-</ol>
-<h3 id="额外技巧"><a href="#额外技巧" class="headerlink" title="额外技巧"></a>额外技巧</h3><p>sed 命令其实和正则表达式通常配合使用，所以这一些小技巧其实和正则有很密切的关系。比如对于一个简单的替换操作，如 <code>s/abc/xyz/</code> 是十分简单的，但是 sed 支持更复杂的操作，可以用一些特殊意义的操作符号:</p>
-<ul>
-<li>&amp; 表示正则匹配成功的原字符串内容，如想要替换所有数字为它的百倍，可以使用 ‘s/[[:digit:]]\+/&amp;00/g’</li>
-<li>\num 获取缓存的匹配中缓存的字符串，num 指定位置（这取决于表达式中使用了多少次小括号‘()’）。<ul>
-<li>如去除数字并字母大写，’s/([[:digit:]]\+\)\|\([[:alpha:]]\+\)/\U\2/gp’</li>
-<li>获取包含一段 ip 的文本中 ip 的前两段地址 ‘s/\([0-9]\+\):\([0-9]\+\):[0-9]\+:[0-9]+/\1 \2/p’</li>
-</ul>
-</li>
-<li>\u 将后方的表达式结果进行首字母大写处理</li>
-<li>\U 将后方的表达式结果进行大写处理</li>
-<li>\l 将后方的表达式结果进行首字母小写处理</li>
-<li>\L 将后方的表达式结果进行小写处理</li>
-</ul>
+        <p>这里仅记录一下 <code>ByteBuf</code> 相关的一下内存配置参数和默认情况，分析一下 Allocator 的组成，为分析 <code>ByteBuf</code> 做一些概念上的铺垫。</p>
+<p>首先看几个 <code>PooledByteBifAllocator</code> 中的静态变量，挑了几个说明一下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 默认的 arena 数量，一个对应 HeapBuf 一个对应 DirectBuf</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DEFAULT_NUM_HEAP_ARENA;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DEFAULT_NUM_DIRECT_ARENA;</span><br><span class="line"><span class="comment">// 默认 pageSzie、order 默认的 chunk = pageSize &lt;&lt; order</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DEFAULT_PAGE_SIZE;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DEFAULT_MAX_ORDER;</span><br><span class="line"><span class="comment">// 三个不同大小的 cacheSize</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DEFAULT_TINY_CACHE_SIZE;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DEFAULT_SMALL_CACHE_SIZE;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DEFAULT_NORMAL_CACHE_SIZE;</span><br></pre></td></tr></table></figure></p>
+<p>再来看一下 <code>PooledByteBufAllocator</code> 的静态代码块，主要是为了结合机器环境和设置值对上面的静态变量进行初始化：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> &#123;</span><br><span class="line">    <span class="comment">// 设置页大小，默认 8KB</span></span><br><span class="line">    <span class="keyword">int</span> defaultPageSize = SystemPropertyUtil.getInt(<span class="string">"io.netty.allocator.pageSize"</span>, <span class="number">8192</span>);</span><br><span class="line">    Throwable pageSizeFallbackCause = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">// 校验页大小是否是 2 的幂，且大于最小值</span></span><br><span class="line">        validateAndCalculatePageShifts(defaultPageSize);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Throwable t) &#123;</span><br><span class="line">        <span class="comment">// 如果设置的页大小有问题则重新设置为 8KB</span></span><br><span class="line">        pageSizeFallbackCause = t;</span><br><span class="line">        defaultPageSize = <span class="number">8192</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    DEFAULT_PAGE_SIZE = defaultPageSize;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 同样的设置 MaxOrder，默认 11。chunk = page &lt;&lt; order 即要申请的内存空间</span></span><br><span class="line">    <span class="keyword">int</span> defaultMaxOrder = SystemPropertyUtil.getInt(<span class="string">"io.netty.allocator.maxOrder"</span>, <span class="number">11</span>);</span><br><span class="line">    Throwable maxOrderFallbackCause = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">// 校验 MaxOrder 在 0~14 间，并且块大小不超过最大限制</span></span><br><span class="line">        validateAndCalculateChunkSize(DEFAULT_PAGE_SIZE, defaultMaxOrder);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Throwable t) &#123;</span><br><span class="line">        <span class="comment">// 检验失败则重置为默认的 11</span></span><br><span class="line">        maxOrderFallbackCause = t;</span><br><span class="line">        defaultMaxOrder = <span class="number">11</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    DEFAULT_MAX_ORDER = defaultMaxOrder;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">final</span> Runtime runtime = Runtime.getRuntime();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 有一段官方说明，默认使用处理器数量两倍的 Arena（这和 Epoll/Nio EventLoop 的数量一致来避免争用）所以一般如果需要修改 EventLoop 的线程数量，需要同时定制好 ByteBuf 的分配器。</span></span><br><span class="line">    <span class="comment">// 默认 Arena 最小数量为处理器核心数两倍</span></span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">int</span> defaultMinNumArena = NettyRuntime.availableProcessors() * <span class="number">2</span>;</span><br><span class="line">    <span class="comment">// 默认 Chunk = PageSize &lt;&lt; MaxOrder 按默认配置就是 16MB</span></span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">int</span> defaultChunkSize = DEFAULT_PAGE_SIZE &lt;&lt; DEFAULT_MAX_ORDER;</span><br><span class="line">    <span class="comment">// 默认 Arena 数量取决于以下两者的最小值</span></span><br><span class="line">    <span class="comment">// - 处理器核心数两倍</span></span><br><span class="line">    <span class="comment">// - 对内存占用不超过 50% 且保证每个 Arena 拥有 3 个 Chunk</span></span><br><span class="line">    <span class="comment">// 默认的一个 Arena 16*3=48MB </span></span><br><span class="line">    DEFAULT_NUM_HEAP_ARENA = Math.max(<span class="number">0</span>,</span><br><span class="line">            SystemPropertyUtil.getInt(</span><br><span class="line">                    <span class="string">"io.netty.allocator.numHeapArenas"</span>,</span><br><span class="line">                    (<span class="keyword">int</span>) Math.min(</span><br><span class="line">                            defaultMinNumArena,</span><br><span class="line">                            runtime.maxMemory() / defaultChunkSize / <span class="number">2</span> / <span class="number">3</span>)));</span><br><span class="line">    <span class="comment">// 对直接内存也类似处理</span></span><br><span class="line">    DEFAULT_NUM_DIRECT_ARENA = Math.max(<span class="number">0</span>,</span><br><span class="line">            SystemPropertyUtil.getInt(</span><br><span class="line">                    <span class="string">"io.netty.allocator.numDirectArenas"</span>,</span><br><span class="line">                    (<span class="keyword">int</span>) Math.min(</span><br><span class="line">                            defaultMinNumArena,</span><br><span class="line">                            PlatformDependent.maxDirectMemory() / defaultChunkSize / <span class="number">2</span> / <span class="number">3</span>)));</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 初始化三个 size </span></span><br><span class="line">    DEFAULT_TINY_CACHE_SIZE = SystemPropertyUtil.getInt(<span class="string">"io.netty.allocator.tinyCacheSize"</span>, <span class="number">512</span>);</span><br><span class="line">    DEFAULT_SMALL_CACHE_SIZE = SystemPropertyUtil.getInt(<span class="string">"io.netty.allocator.smallCacheSize"</span>, <span class="number">256</span>);</span><br><span class="line">    DEFAULT_NORMAL_CACHE_SIZE = SystemPropertyUtil.getInt(<span class="string">"io.netty.allocator.normalCacheSize"</span>, <span class="number">64</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 缓存 Buffer 的默认最大大小</span></span><br><span class="line">    DEFAULT_MAX_CACHED_BUFFER_CAPACITY = SystemPropertyUtil.getInt(</span><br><span class="line">            <span class="string">"io.netty.allocator.maxCachedBufferCapacity"</span>, <span class="number">32</span> * <span class="number">1024</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 设定超过多少大小进行缓存释放</span></span><br><span class="line">    DEFAULT_CACHE_TRIM_INTERVAL = SystemPropertyUtil.getInt(</span><br><span class="line">            <span class="string">"io.netty.allocator.cacheTrimInterval"</span>, <span class="number">8192</span>);</span><br><span class="line">    <span class="comment">// 设定超过多少时间进行缓存释放，默认仅依靠数量阈值释放缓存</span></span><br><span class="line">    DEFAULT_CACHE_TRIM_INTERVAL_MILLIS = SystemPropertyUtil.getLong(</span><br><span class="line">            <span class="string">"io.netty.allocation.cacheTrimIntervalMillis"</span>, <span class="number">0</span>);</span><br><span class="line">    <span class="comment">// 是否允许所有线程访问缓存内容</span></span><br><span class="line">    DEFAULT_USE_CACHE_FOR_ALL_THREADS = SystemPropertyUtil.getBoolean(</span><br><span class="line">            <span class="string">"io.netty.allocator.useCacheForAllThreads"</span>, <span class="keyword">true</span>);</span><br><span class="line">    <span class="comment">// 是否内存对齐，默认关闭</span></span><br><span class="line">    DEFAULT_DIRECT_MEMORY_CACHE_ALIGNMENT = SystemPropertyUtil.getInt(</span><br><span class="line">            <span class="string">"io.netty.allocator.directMemoryCacheAlignment"</span>, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 设置每个 Chunk 可以缓存多少 ByteBuffer</span></span><br><span class="line">    DEFAULT_MAX_CACHED_BYTEBUFFERS_PER_CHUNK = SystemPropertyUtil.getInt(</span><br><span class="line">            <span class="string">"io.netty.allocator.maxCachedByteBuffersPerChunk"</span>, <span class="number">1023</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 省略 Debug Log</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<p>静态变量作为分配器的一些阈值、默认值，那么这些成员变量控制着分配器实际状态</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 这里的成员变量都会在下面的全参构造器中进行初始化</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> PoolArena&lt;<span class="keyword">byte</span>[]&gt;[] heapArenas;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> PoolArena&lt;ByteBuffer&gt;[] directArenas;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> tinyCacheSize;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> smallCacheSize;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> normalCacheSize;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> List&lt;PoolArenaMetric&gt; heapArenaMetrics;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> List&lt;PoolArenaMetric&gt; directArenaMetrics;</span><br><span class="line"><span class="comment">// 这是分配器的核心，缓存池。在完成分配器的初始化后会分析</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> PoolThreadLocalCache threadCache;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> chunkSize;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> PooledByteBufAllocatorMetric metric;</span><br></pre></td></tr></table></figure>
+<p>再看 <code>PooledByteBufAllocator</code> 的全参构造器，包含了缓存池的初始化：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">PooledByteBufAllocator</span><span class="params">(<span class="keyword">boolean</span> preferDirect, <span class="keyword">int</span> nHeapArena, <span class="keyword">int</span> nDirectArena, <span class="keyword">int</span> pageSize, <span class="keyword">int</span> maxOrder,</span></span></span><br><span class="line"><span class="function"><span class="params">                                  <span class="keyword">int</span> tinyCacheSize, <span class="keyword">int</span> smallCacheSize, <span class="keyword">int</span> normalCacheSize,</span></span></span><br><span class="line"><span class="function"><span class="params">                                  <span class="keyword">boolean</span> useCacheForAllThreads, <span class="keyword">int</span> directMemoryCacheAlignment)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 确认了是否直接内存优先</span></span><br><span class="line">    <span class="keyword">super</span>(preferDirect);</span><br><span class="line">    <span class="comment">// PoolThreadLocalCache 是 Netty FastThreadLocal 子类，Java ThreadLocal 更快</span></span><br><span class="line">    threadCache = <span class="keyword">new</span> PoolThreadLocalCache(useCacheForAllThreads);</span><br><span class="line">    <span class="comment">// 三个 cacheSize 大小赋值、chunkSize 赋值</span></span><br><span class="line">    <span class="keyword">this</span>.tinyCacheSize = tinyCacheSize;</span><br><span class="line">    <span class="keyword">this</span>.smallCacheSize = smallCacheSize;</span><br><span class="line">    <span class="keyword">this</span>.normalCacheSize = normalCacheSize;</span><br><span class="line">    chunkSize = validateAndCalculateChunkSize(pageSize, maxOrder);</span><br><span class="line">    <span class="comment">// 验证 Arena 数量</span></span><br><span class="line">    checkPositiveOrZero(nHeapArena, <span class="string">"nHeapArena"</span>);</span><br><span class="line">    checkPositiveOrZero(nDirectArena, <span class="string">"nDirectArena"</span>);</span><br><span class="line">    <span class="comment">// Alignment 对齐参数验证</span></span><br><span class="line">    checkPositiveOrZero(directMemoryCacheAlignment, <span class="string">"directMemoryCacheAlignment"</span>);</span><br><span class="line">    <span class="comment">// 内存对齐需要 unsafe 的支持，判断如果 JDK 实现中没有的话是不支持内存对齐的</span></span><br><span class="line">    <span class="keyword">if</span> (directMemoryCacheAlignment &gt; <span class="number">0</span> &amp;&amp; !isDirectMemoryCacheAlignmentSupported()) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"directMemoryCacheAlignment is not supported"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 继续验证对齐值是否为 2 的幂次方</span></span><br><span class="line">    <span class="keyword">if</span> ((directMemoryCacheAlignment &amp; -directMemoryCacheAlignment) != directMemoryCacheAlignment) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"directMemoryCacheAlignment: "</span></span><br><span class="line">                + directMemoryCacheAlignment + <span class="string">" (expected: power of two)"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// pageShift = log2(pageSize)</span></span><br><span class="line">    <span class="keyword">int</span> pageShifts = validateAndCalculatePageShifts(pageSize);</span><br><span class="line">    <span class="comment">// 如果内存不够是无法开启 arena 的，而 arena 是池化的核心之一</span></span><br><span class="line">    <span class="keyword">if</span> (nHeapArena &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">// 初始化 arena，这些 arena 会被缓存池 PoolThreadLocalCache 引用</span></span><br><span class="line">        heapArenas = newArenaArray(nHeapArena);</span><br><span class="line">        List&lt;PoolArenaMetric&gt; metrics = <span class="keyword">new</span> ArrayList&lt;PoolArenaMetric&gt;(heapArenas.length);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; heapArenas.length; i ++) &#123;</span><br><span class="line">            PoolArena.HeapArena arena = <span class="keyword">new</span> PoolArena.HeapArena(<span class="keyword">this</span>,</span><br><span class="line">                    pageSize, maxOrder, pageShifts, chunkSize,</span><br><span class="line">                    directMemoryCacheAlignment);</span><br><span class="line">            heapArenas[i] = arena;</span><br><span class="line">            metrics.add(arena);</span><br><span class="line">        &#125;</span><br><span class="line">        heapArenaMetrics = Collections.unmodifiableList(metrics);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        heapArenas = <span class="keyword">null</span>;</span><br><span class="line">        heapArenaMetrics = Collections.emptyList();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 省略 directArena 初始化部分，同上</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 对 metric 初始化，暴露该分配器的的一些信息</span></span><br><span class="line">    metric = <span class="keyword">new</span> PooledByteBufAllocatorMetric(<span class="keyword">this</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>到这里分配器的本身的初始化已经完成，包含了一个缓存池：<code>PoolThreadLocalCache</code>。这是 <code>FastThreadLocal&lt;PoolThreadCache&gt;</code> 的子类，同时也是 <code>PooledByteBufAllocator</code> 的一个非静态内部类，缓存池内的很多信息直接引用了分配器的一些成员变量，后续的 <code>ByteBuf</code> 的分配都是直接或者间接地通过这个缓存来执行的。</p>
 
       
     </div>
@@ -564,7 +507,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Regex/" rel="tag"># Regex</a>
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/Netty/" rel="tag"># Netty</a>
           
         </div>
       
@@ -592,8 +537,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/07/AQS-浅析/" rel="next" title="AQS 浅析">
-                <i class="fa fa-chevron-left"></i> AQS 浅析
+              <a href="/2019/10/网络配置参数和调优的一些总结/" rel="next" title="网络配置参数和调优的一些总结">
+                <i class="fa fa-chevron-left"></i> 网络配置参数和调优的一些总结
               </a>
             
           </div>
@@ -602,8 +547,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/07/Dockerfile-中三个运行指令的差异/" rel="prev" title="Dockerfile 中三个运行指令的差异">
-                Dockerfile 中三个运行指令的差异 <i class="fa fa-chevron-right"></i>
+              <a href="/2020/02/对-Netty-ByteBuf-的探究/" rel="prev" title="对 Netty ByteBuf 的探究">
+                对 Netty ByteBuf 的探究 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -661,17 +606,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview-wrap sidebar-panel">
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -800,22 +736,6 @@
         </div>
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#命令格式"><span class="nav-number">1.</span> <span class="nav-text">命令格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用选项"><span class="nav-number">2.</span> <span class="nav-text">常用选项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#命令组成"><span class="nav-number">3.</span> <span class="nav-text">命令组成</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#行选择"><span class="nav-number">3.1.</span> <span class="nav-text">行选择</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#具体操作"><span class="nav-number">3.2.</span> <span class="nav-text">具体操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#命令叠加"><span class="nav-number">3.3.</span> <span class="nav-text">命令叠加</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#额外技巧"><span class="nav-number">3.4.</span> <span class="nav-text">额外技巧</span></a></li></ol></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       
@@ -1011,7 +931,7 @@
       <script type="text/javascript">
       function renderGitment(){
         var gitment = new Gitmint({
-            id: '1530631362000',
+            id: '1582534338000',
             owner: 'Kun3375',
             repo: 'kun3375.github.io',
             
