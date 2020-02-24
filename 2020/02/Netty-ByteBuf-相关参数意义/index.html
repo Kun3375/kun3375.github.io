@@ -916,7 +916,7 @@
       repo: 'kun3375.github.io',
       owner: 'Kun3375',
       admin: ['Kun3375'],
-      id: location.pathname,
+      id: decodeURI(location.pathname),
       distractionFreeMode: 'false'
     })
     gitalk.render('gitalk-container')
