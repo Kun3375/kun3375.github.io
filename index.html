@@ -384,7 +384,7 @@
                 
               
 
-              <time title="创建时间：2020-02-24 16:57:45 / 修改时间：17:32:36" itemprop="dateCreated datePublished" datetime="2020-02-24T16:57:45+08:00">2020-02-24</time>
+              <time title="创建时间：2020-02-24 16:57:45 / 修改时间：17:38:48" itemprop="dateCreated datePublished" datetime="2020-02-24T16:57:45+08:00">2020-02-24</time>
             
 
             
@@ -441,10 +441,9 @@
 
       
         
-          
-          对 Netty ByteBuf 的探究ByteBuf 是 Netty 在通信过程中数据传递的容器，类似于 Java NIO 中的 ByteBuffer，是通道 Channel 传输过程中的介质。
-ByteBuf 类型从池化与否上看，分为池化的 PooledByteBuf 和非池化的 Unpooled
-          ...
+          <h2 id="对-Netty-ByteBuf-的探究"><a href="#对-Netty-ByteBuf-的探究" class="headerlink" title="对 Netty ByteBuf 的探究"></a>对 Netty ByteBuf 的探究</h2><p><code>ByteBuf</code> 是 Netty 在通信过程中数据传递的容器，类似于 Java NIO 中的 <code>ByteBuffer</code>，是通道 <code>Channel</code> 传输过程中的介质。</p>
+<h3 id="ByteBuf-类型"><a href="#ByteBuf-类型" class="headerlink" title="ByteBuf 类型"></a>ByteBuf 类型</h3><p>从池化与否上看，分为池化的 <code>PooledByteBuf</code> 和非池化的 <code>UnpooledByteBuf</code>，</p>
+<p>而从内存属性上看 <code>ByteBuf</code> 有着使用<strong>堆内存</strong>的 <code>HeapByteBuf</code> 以及<strong>基于直接内存映射</strong>的 <code>DirectByteBuf</code>。Netty 的高效也体现在 <code>ByteBuf</code> 的使用上，以 <code>NIOEventLoop</code> 来举例，在通道读写是后使用了 <code>PooledDirectByteBuf</code> 将字节缓冲的高效发挥到了极致。<br>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2020/02/对-Netty-ByteBuf-的探究/#more" rel="contents">
@@ -454,7 +453,7 @@ ByteBuf 类型从池化与否上看，分为池化的 PooledByteBuf 和非池化
           <!--/noindex-->
         
       
-    </div>
+    </p></div>
 
     
 

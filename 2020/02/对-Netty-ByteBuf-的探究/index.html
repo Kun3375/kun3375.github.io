@@ -123,7 +123,7 @@
 <meta property="og:image" content="https://blog-1258216698.cos.ap-hongkong.myqcloud.com/Netty/MemoryRegionCaches.png">
 <meta property="og:image" content="https://blog-1258216698.cos.ap-hongkong.myqcloud.com/Netty/ChunkList.png">
 <meta property="og:image" content="https://blog-1258216698.cos.ap-hongkong.myqcloud.com/Netty/MemoryMap.png">
-<meta property="og:updated_time" content="2020-02-24T09:32:36.585Z">
+<meta property="og:updated_time" content="2020-02-24T09:38:48.798Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="对 Netty ByteBuf 的探究">
 <meta name="twitter:description" content="对 Netty ByteBuf 的探究ByteBuf 是 Netty 在通信过程中数据传递的容器，类似于 Java NIO 中的 ByteBuffer，是通道 Channel 传输过程中的介质。 ByteBuf 类型从池化与否上看，分为池化的 PooledByteBuf 和非池化的 UnpooledByteBuf， 而从内存属性上看 ByteBuf 有着使用堆内存的 HeapByteBuf 以及基">
@@ -384,7 +384,7 @@
                 
               
 
-              <time title="创建时间：2020-02-24 16:57:45 / 修改时间：17:32:36" itemprop="dateCreated datePublished" datetime="2020-02-24T16:57:45+08:00">2020-02-24</time>
+              <time title="创建时间：2020-02-24 16:57:45 / 修改时间：17:38:48" itemprop="dateCreated datePublished" datetime="2020-02-24T16:57:45+08:00">2020-02-24</time>
             
 
             
@@ -459,7 +459,7 @@
       
         <h2 id="对-Netty-ByteBuf-的探究"><a href="#对-Netty-ByteBuf-的探究" class="headerlink" title="对 Netty ByteBuf 的探究"></a>对 Netty ByteBuf 的探究</h2><p><code>ByteBuf</code> 是 Netty 在通信过程中数据传递的容器，类似于 Java NIO 中的 <code>ByteBuffer</code>，是通道 <code>Channel</code> 传输过程中的介质。</p>
 <h3 id="ByteBuf-类型"><a href="#ByteBuf-类型" class="headerlink" title="ByteBuf 类型"></a>ByteBuf 类型</h3><p>从池化与否上看，分为池化的 <code>PooledByteBuf</code> 和非池化的 <code>UnpooledByteBuf</code>，</p>
-<p>而从内存属性上看 <code>ByteBuf</code> 有着使用<strong>堆内存</strong>的 <code>HeapByteBuf</code> 以及<strong>基于直接内存映射</strong>的 <code>DirectByteBuf</code>。Netty 的高效也体现在 <code>ByteBuf</code> 的使用上，以 <code>NIOEventLoop</code> 来举例，在通道读写是后使用了 <code>PooledDirectByteBuf</code> 将字节缓冲的高效发挥到了极致。</p>
+<p>而从内存属性上看 <code>ByteBuf</code> 有着使用<strong>堆内存</strong>的 <code>HeapByteBuf</code> 以及<strong>基于直接内存映射</strong>的 <code>DirectByteBuf</code>。Netty 的高效也体现在 <code>ByteBuf</code> 的使用上，以 <code>NIOEventLoop</code> 来举例，在通道读写是后使用了 <code>PooledDirectByteBuf</code> 将字节缓冲的高效发挥到了极致。<br><a id="more"></a></p>
 <h4 id="ByteBuf-分配方式"><a href="#ByteBuf-分配方式" class="headerlink" title="ByteBuf 分配方式"></a>ByteBuf 分配方式</h4><ul>
 <li><strong><code>UnPooledHeapByteBuf</code></strong> 即在堆中新建对应大小的数组并初始化容量大小、读写索引等</li>
 <li><strong><code>UnPooledDirectByteBuf</code></strong> 对应的使用 <code>java.nio.ByteBuffer.allocateDirect(capacity)</code> 进行初始化。由于使用堆外内存，可能因为使用不当产生内存泄露，建议在调试时打开最高等级的泄露探测：<code>-Dio.netty.leakDetection.level=PARANOID</code>。<blockquote>
