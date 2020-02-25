@@ -10,5 +10,5 @@ Disallow: /fonts/
 Disallow: /vendors/
 Disallow: /fancybox/
 
-Sitemap: http://kun3375.com/sitemap.xml
-Sitemap: http://kun3375.com/baidusitemap.xml
+Sitemap: https://caoziye.top/sitemap.xml
+Sitemap: https://caoziye.top/baidusitemap.xml

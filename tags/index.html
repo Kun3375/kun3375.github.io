@@ -130,6 +130,7 @@
 <meta property="article:tag" content="MQ">
 <meta property="article:tag" content="Redis">
 <meta property="article:tag" content="ES">
+<meta property="article:tag" content="Netty">
 <meta name="twitter:card" content="summary">
 
 
@@ -658,7 +659,7 @@
 
         
 <div class="busuanzi-count">
-  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
   
     <span class="site-uv" title="总访客量">
@@ -694,6 +695,12 @@
       </div>
     
 
+    
+      <div id="needsharebutton-float">
+        <span class="btn">
+          <i class="fa fa-share-alt" aria-hidden="true"></i>
+        </span>
+      </div>
     
 
   </div>
@@ -1143,16 +1150,28 @@
     
       pbOptions = {};
       
-          pbOptions.iconStyle = "box";
+          pbOptions.iconStyle = "default";
       
           pbOptions.boxForm = "horizontal";
       
           pbOptions.position = "bottomCenter";
       
-          pbOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
+          pbOptions.networks = "Weibo,Wechat,Douban,Twitter,Facebook";
       
       new needShareButton('#needsharebutton-postbottom', pbOptions);
     
+    
+      flOptions = {};
+      
+          flOptions.iconStyle = "default";
+      
+          flOptions.boxForm = "vertical";
+      
+          flOptions.position = "middleRight";
+      
+          flOptions.networks = "Weibo,Wechat,Douban,Twitter,Facebook";
+      
+      new needShareButton('#needsharebutton-float', flOptions);
     
   </script>
 
