@@ -465,7 +465,7 @@
   <entry>
     <title>G1GC 解读</title>
     <url>/2019/06/G1GC-%E8%A7%A3%E8%AF%BB/</url>
-    <content><![CDATA[<p>之前对 G1 之前的垃圾回收器进行了整理<a href="http://kun3375.com/2019/02/JVM-垃圾回收器小记/">《JVM 垃圾回收器小记》</a>，但是留下了 G1 的坑长久未填，现在把相关的概念、配置参数以及 G1 的流程进行了整理。</p>
+    <content><![CDATA[<p>之前对 G1 之前的垃圾回收器进行了整理<a href="http://kun3375.com/2019/02/JVM-垃圾回收器小记/" target="_blank" rel="external nofollow noopener noreferrer">《JVM 垃圾回收器小记》</a>，但是留下了 G1 的坑长久未填，现在把相关的概念、配置参数以及 G1 的流程进行了整理。</p>
 <h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><h3 id="Region"><a href="#Region" class="headerlink" title="Region"></a>Region</h3><p>不同于之前的垃圾回收按照连续的物理内存空间进行划分产生 Yong、Tenured、MetaSpace 区域并使用分代垃圾回收处理。G1 将整个堆空间切分成若干个小型的区域 Region 来存放对象，每个 Region 可以单独作为 <em>Yong<em>、</em>Tenured</em> 或者 <em>Humongous</em>（大对象分配区域），这使得不同代的内存区域在物理上是可以割裂的。</p>
 <a id="more"></a>
 
