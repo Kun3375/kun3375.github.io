@@ -599,7 +599,7 @@ NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
       repo        : 'kun3375.github.io',
       owner       : 'Kun3375',
       admin       : ['Kun3375'],
-      id          : 'd77f3ddc3f533364968890de5c7127d1',
+      id          : decodeURI(location.pathname),
         language: '',
       distractionFreeMode: true
     });

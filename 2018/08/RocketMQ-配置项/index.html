@@ -587,7 +587,7 @@ NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
       repo        : 'kun3375.github.io',
       owner       : 'Kun3375',
       admin       : ['Kun3375'],
-      id          : '2f4371aa70b5b8315de1c1c64fdc7aad',
+      id          : decodeURI(location.pathname),
         language: '',
       distractionFreeMode: true
     });
