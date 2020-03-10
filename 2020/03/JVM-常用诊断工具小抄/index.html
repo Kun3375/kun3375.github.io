@@ -20,20 +20,21 @@
     var CONFIG = {"hostname":"caoziye.top","root":"/","scheme":"Muse","version":"7.7.1","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="分片路由ES 在创建新文档时候时如何选择具体存储在哪个分片上？这就是一个文档分片路由的机制。ES 使用路由值（routing）的哈希散列进行分片的路由：index_of_shards &#x3D; hash(routing) % num_of_shards。 ES 查询请求过程假设在一个多分片的 ES 进行查询，会有以下几个步骤：  请求被某个节点接受 接受请求的节点将该请求广播到所有节点 每个分片进行搜索">
+  <meta name="description" content="jps查看 Java 进程及其相关信息。常用用法： 12jps # 所有 java 进程jps -mv # 所有 java 进程及启动参数  常用参数：  l：输出启动类全类名 m：显示 main 方法接收到的参数 v：显示 JVM 进程及其接收的参数，通常配合 m 得到进程的启动命令">
 <meta property="og:type" content="article">
-<meta property="og:title" content="ES 分片路由">
-<meta property="og:url" content="https://caoziye.top/2018/10/ES-%E5%88%86%E7%89%87%E8%B7%AF%E7%94%B1/index.html">
+<meta property="og:title" content="JVM 常用诊断工具小抄">
+<meta property="og:url" content="https://caoziye.top/2020/03/JVM-%E5%B8%B8%E7%94%A8%E8%AF%8A%E6%96%AD%E5%B7%A5%E5%85%B7%E5%B0%8F%E6%8A%84/index.html">
 <meta property="og:site_name" content="码文小记">
-<meta property="og:description" content="分片路由ES 在创建新文档时候时如何选择具体存储在哪个分片上？这就是一个文档分片路由的机制。ES 使用路由值（routing）的哈希散列进行分片的路由：index_of_shards &#x3D; hash(routing) % num_of_shards。 ES 查询请求过程假设在一个多分片的 ES 进行查询，会有以下几个步骤：  请求被某个节点接受 接受请求的节点将该请求广播到所有节点 每个分片进行搜索">
+<meta property="og:description" content="jps查看 Java 进程及其相关信息。常用用法： 12jps # 所有 java 进程jps -mv # 所有 java 进程及启动参数  常用参数：  l：输出启动类全类名 m：显示 main 方法接收到的参数 v：显示 JVM 进程及其接收的参数，通常配合 m 得到进程的启动命令">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2018-10-29T16:54:31.000Z">
-<meta property="article:modified_time" content="2018-10-29T16:58:07.886Z">
+<meta property="article:published_time" content="2020-03-10T15:38:13.000Z">
+<meta property="article:modified_time" content="2020-03-10T15:40:23.841Z">
 <meta property="article:author" content="斯特拉不用电">
-<meta property="article:tag" content="ElasticSearch">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="JVM">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://caoziye.top/2018/10/ES-%E5%88%86%E7%89%87%E8%B7%AF%E7%94%B1/">
+<link rel="canonical" href="https://caoziye.top/2020/03/JVM-%E5%B8%B8%E7%94%A8%E8%AF%8A%E6%96%AD%E5%B7%A5%E5%85%B7%E5%B0%8F%E6%8A%84/">
 
 
 <script id="page-configurations">
@@ -45,7 +46,7 @@
   };
 </script>
 
-  <title>ES 分片路由 | 码文小记</title>
+  <title>JVM 常用诊断工具小抄 | 码文小记</title>
   
 
 
@@ -186,7 +187,7 @@
   
   
   <article itemscope="" itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://caoziye.top/2018/10/ES-%E5%88%86%E7%89%87%E8%B7%AF%E7%94%B1/">
+    <link itemprop="mainEntityOfPage" href="https://caoziye.top/2020/03/JVM-%E5%B8%B8%E7%94%A8%E8%AF%8A%E6%96%AD%E5%B7%A5%E5%85%B7%E5%B0%8F%E6%8A%84/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -199,7 +200,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          ES 分片路由
+          JVM 常用诊断工具小抄
         </h2>
 
         <div class="post-meta">
@@ -210,7 +211,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2018-10-30 00:54:31 / 修改时间：00:58:07" itemprop="dateCreated datePublished" datetime="2018-10-30T00:54:31+08:00">2018-10-30</time>
+              <time title="创建时间：2020-03-10 23:38:13 / 修改时间：23:40:23" itemprop="dateCreated datePublished" datetime="2020-03-10T23:38:13+08:00">2020-03-10</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -218,7 +219,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/ElasticSearch/" itemprop="url" rel="index"><span itemprop="name">ElasticSearch</span></a>
+                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
                 </span>
             </span>
 
@@ -235,14 +236,14 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>608</span>
+              <span>1.6k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
+              <span>2 分钟</span>
             </span>
 
         </div>
@@ -254,27 +255,74 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h3 id="分片路由"><a href="#分片路由" class="headerlink" title="分片路由"></a>分片路由</h3><p>ES 在创建新文档时候时如何选择具体存储在哪个分片上？这就是一个文档分片路由的机制。ES 使用路由值（routing）的哈希散列进行分片的路由：<code>index_of_shards = hash(routing) % num_of_shards</code>。</p>
-<h4 id="ES-查询请求过程"><a href="#ES-查询请求过程" class="headerlink" title="ES 查询请求过程"></a>ES 查询请求过程</h4><p>假设在一个多分片的 ES 进行查询，会有以下几个步骤：</p>
-<ol>
-<li>请求被某个节点接受</li>
-<li>接受请求的节点将该请求广播到所有节点</li>
-<li>每个分片进行搜索，并返回</li>
-<li>各个分片的结果在一个节点合并，排序，返回响应</li>
-</ol>
+        <h3 id="jps"><a href="#jps" class="headerlink" title="jps"></a>jps</h3><p>查看 Java 进程及其相关信息。<br>常用用法：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">jps # 所有 java 进程</span><br><span class="line">jps -mv # 所有 java 进程及启动参数</span><br></pre></td></tr></table></figure>
+
+<p>常用参数：</p>
+<ul>
+<li><strong>l</strong>：输出启动类全类名</li>
+<li><strong>m</strong>：显示 main 方法接收到的参数</li>
+<li><strong>v</strong>：显示 JVM 进程及其接收的参数，通常配合 <strong>m</strong> 得到进程的启动命令</li>
+</ul>
 <a id="more"></a>
 
-<h4 id="利用路由值进行搜索优化"><a href="#利用路由值进行搜索优化" class="headerlink" title="利用路由值进行搜索优化"></a>利用路由值进行搜索优化</h4><p>在默认情况下路由值等于文档的编号：<code>routing=_id</code>，这样可以让文档均匀的散列在所有分片上。但是在很多查询的时候 ES 无法确定查询的文档所在分片，所有会向所有分片进行广播。<strong>指定路由值可以避免广播请求</strong>，一定程度上减少资源消耗和增加效率，在请求时跟上 <code>routing</code> 参数即可：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GET /index/<span class="built_in">type</span>/_search?routing=123123</span><br></pre></td></tr></table></figure>
+<h3 id="jinfo"><a href="#jinfo" class="headerlink" title="jinfo"></a>jinfo</h3><p>查看或修改 Java 进程其虚拟机的配置项。<br>常用用法：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jinfo -flag &lt;config&gt; &lt;pid&gt; # 查看指定进程的指定配置值</span><br></pre></td></tr></table></figure>
 
-<p>指定 <code>routing</code> 的这个时候请求指向的分片事实上是<strong>确定</strong>的！这样的请求通常是查询的文档已经通过同样的路由值被添加了！否则这样的查询是无效的。</p>
-<p>路由值是可以指定多个的，中间使用逗号 <code>,</code> 隔开。</p>
-<h4 id="显式路由指定的弊端"><a href="#显式路由指定的弊端" class="headerlink" title="显式路由指定的弊端"></a>显式路由指定的弊端</h4><p>通常各个分片上的数据是均匀分布的（默认使用 id 进行哈希），但是如果大量使用显式路由指定文档，容易造成数据偏移在某些节点上。所以使用时需要对数据有足够了解。</p>
-<hr>
-<p>参考：</p>
+<p>常用参数：</p>
 <ul>
-<li>《从Lucene到Elasticsearch全文检索实战》 姚攀</li>
+<li><strong>flags</strong> 主要用来查看对应进程的 <strong><em>非默认</em></strong> 配置项，和 <strong><em>通过命令行</em></strong> 配置的配置项</li>
+<li><strong>flag [+|-<name>]</name></strong> 针对性查阅指定配置项具体值。在使用 <strong>+</strong> 或 <strong>-</strong> 时候可以启用或者禁用对应的布尔配置项</li>
+<li><strong>sysprops</strong> 输出系统变量</li>
 </ul>
+<h3 id="jstack"><a href="#jstack" class="headerlink" title="jstack"></a>jstack</h3><p>用来导出 Java 程序当前的线程情况。不仅有所有的线程，还有各个线程的优先级、是否守护、线程状态等。通常在服务卡顿时候可能有死循环，通过 jstack 找出在特定方法上大量 RUNABLE 的线程<br>用法最为简单，只需要：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jstack &lt;pid&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="jstat"><a href="#jstat" class="headerlink" title="jstat"></a>jstat</h3><p>统计 JVM 运行的情况和各项指标，一般在分析问题中十分常用。<br>基本用法：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jstat &lt;-op&gt; [-t] &lt;pid&gt; [interval [count]] # op指定输出类别，t输出JVM启动时间，同时可以指定采样间隔和次数</span><br></pre></td></tr></table></figure>
+
+<h4 id="jstat-常用输出选项"><a href="#jstat-常用输出选项" class="headerlink" title="jstat 常用输出选项"></a>jstat 常用输出选项</h4><p>jstat 功能强大几乎面面俱到，这里罗列部分常用的统计信息，详情可以参考 <a href="https://docs.oracle.com/en/java/javase/11/tools/jstat.html" target="_blank" rel="external nofollow noopener noreferrer">Java11-jstat</a>。</p>
+<ul>
+<li><strong>class</strong> 类加载卸载的数量及耗时等</li>
+<li><strong>compiler</strong> JIT 编译器的统计信息</li>
+<li><strong>gcutil</strong> 输出 GC 统计信息以及各区使用量占比<ul>
+<li>S0/S1/E/O/M/CCS: 各区使用量占比（这个可能还是 jmap 更直观）</li>
+<li>YGC: Young GC 次数</li>
+<li>YGCT: Young GC 耗时</li>
+<li>FGC: Full GC 次数</li>
+<li>FGCT: Full GC 耗时</li>
+<li>GCT: 全部 GC 累计时间</li>
+</ul>
+</li>
+<li><strong>gccause</strong> 在 <em>gcutil</em> 基础上增加上一次和当次的 GC 原因</li>
+</ul>
+<h3 id="jmap"><a href="#jmap" class="headerlink" title="jmap"></a>jmap</h3><p>jmap 用来检查分析 Java 程序的内存状态，比如定位一些内存泄露、内存溢出的情况。<br>基本用法：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jmap &lt;-op&gt; &lt;pid&gt;</span><br></pre></td></tr></table></figure>
+
+<h4 id="jmap-常用输出选项"><a href="#jmap-常用输出选项" class="headerlink" title="jmap 常用输出选项"></a>jmap 常用输出选项</h4><ul>
+<li><strong>clstats</strong> 打印类加载器统计的情况，巨慢，尝试一直未成功…对生产指导意义似乎不大，不太常用</li>
+<li><strong>heap</strong> 输出堆内存的信息，有使用的垃圾回收器、各区大小、当前使用占比以及包括 <em>SurvivorRatio</em> 之类的一些配置信息，十分直观</li>
+<li><strong>dump</strong> 导出内存信息文件，下面会展开。导出文件用来给 MAT 等内存分析工具进行分析，用命令行直接使用 hprof 会稍复杂一些</li>
+<li><strong>histo:[live]</strong> 打印各 Class 的实例数量和占用大小，加上 <code>:live</code> 可以只统计存活对象，可用来确认内存泄露问题，但不如 MAT 强大</li>
+</ul>
+<h4 id="内存信息文件"><a href="#内存信息文件" class="headerlink" title="内存信息文件"></a>内存信息文件</h4><p>一般生产环境出现内存溢出和泄露都是比较严重的问题。出现了必须即可解决，而如何保留内存溢出时候的案发现场？需要配合两个虚拟机参数了：</p>
+<ul>
+<li><code>-XX:+HeapDumpOnOutOfMemoryError</code> 在发生内存溢出时候导入内存镜像</li>
+<li><code>-XX:HeapDumpPath=&lt;PATH&gt;</code> 指定导出的内存文件位置</li>
+</ul>
+<p>另一个方案就是通过 jmap 来导出了。<code>jmap -dump[:&lt;item&gt;]</code> 有几个子选项（多个间用逗号分开）：</p>
+<ul>
+<li><code>live</code> 只输出存活对象</li>
+<li><code>format=b</code> 保存会 hprof 格式，通常都会指定上</li>
+<li><code>file=&lt;fileName&gt;</code> 指定导出的文件名</li>
+</ul>
+<h3 id="问题和解决"><a href="#问题和解决" class="headerlink" title="问题和解决"></a>问题和解决</h3><ol>
+<li>关于 jinfo/jmap 出现 <code>Can&#39;t attach symbolicator to the process</code> 问题。原因为 Linux 默认不允许使用 ptrace 方位运行的程序内存状态可以：<ol>
+<li>[建议] 修改 echo 0 &gt; /proc/sys/kernel/yama/ptrace_scope</li>
+<li>[永久] 修改 /etc/sysctl.d/10-ptrace.conf 中  kernel.yama.ptrace_scope = 0</li>
+</ol>
+</li>
+</ol>
 
     </div>
 
@@ -285,13 +333,13 @@
   <div class="popular-posts-header">相关文章</div>
   <ul class="popular-posts">
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2018/11/ES-数据类型元字段与映射/" rel="bookmark">ES 数据类型、元字段与映射</a></div>
+      <div class="popular-posts-title"><a href="/2019/06/G1GC-解读/" rel="bookmark">G1GC 解读</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2018/10/ES-操作-文档操作/" rel="bookmark">ES 操作-文档管理</a></div>
+      <div class="popular-posts-title"><a href="/2019/02/JVM-垃圾回收器小记/" rel="bookmark">JVM 垃圾回收器小记</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2018/09/ES-操作-索引管理/" rel="bookmark">ES 操作-索引管理</a></div>
+      <div class="popular-posts-title"><a href="/2018/06/虚拟机中的锁膨胀/" rel="bookmark">虚拟机中的锁膨胀</a></div>
     </li>
   </ul>
 
@@ -319,7 +367,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://caoziye.top/2018/10/ES-%E5%88%86%E7%89%87%E8%B7%AF%E7%94%B1/" title="ES 分片路由">https://caoziye.top/2018/10/ES-分片路由/</a>
+    <a href="https://caoziye.top/2020/03/JVM-%E5%B8%B8%E7%94%A8%E8%AF%8A%E6%96%AD%E5%B7%A5%E5%85%B7%E5%B0%8F%E6%8A%84/" title="JVM 常用诊断工具小抄">https://caoziye.top/2020/03/JVM-常用诊断工具小抄/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -330,7 +378,8 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/ElasticSearch/" rel="tag"># ElasticSearch</a>
+              <a href="/tags/Java/" rel="tag"># Java</a>
+              <a href="/tags/JVM/" rel="tag"># JVM</a>
           </div>
 
         
@@ -339,13 +388,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2018/10/ES-%E6%93%8D%E4%BD%9C-%E6%96%87%E6%A1%A3%E6%93%8D%E4%BD%9C/" rel="prev" title="ES 操作-文档管理">
-      <i class="fa fa-chevron-left"></i> ES 操作-文档管理
+    <a href="/2020/02/%E5%AF%B9-Netty-ByteBuf-%E7%9A%84%E6%8E%A2%E7%A9%B6/" rel="prev" title="对 Netty ByteBuf 的探究">
+      <i class="fa fa-chevron-left"></i> 对 Netty ByteBuf 的探究
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2018/11/ES-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%85%83%E5%AD%97%E6%AE%B5%E4%B8%8E%E6%98%A0%E5%B0%84/" rel="next" title="ES 数据类型、元字段与映射">
-      ES 数据类型、元字段与映射 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -406,7 +452,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#分片路由"><span class="nav-number">1.</span> <span class="nav-text">分片路由</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ES-查询请求过程"><span class="nav-number">1.1.</span> <span class="nav-text">ES 查询请求过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#利用路由值进行搜索优化"><span class="nav-number">1.2.</span> <span class="nav-text">利用路由值进行搜索优化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#显式路由指定的弊端"><span class="nav-number">1.3.</span> <span class="nav-text">显式路由指定的弊端</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#jps"><span class="nav-number">1.</span> <span class="nav-text">jps</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#jinfo"><span class="nav-number">2.</span> <span class="nav-text">jinfo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#jstack"><span class="nav-number">3.</span> <span class="nav-text">jstack</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#jstat"><span class="nav-number">4.</span> <span class="nav-text">jstat</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#jstat-常用输出选项"><span class="nav-number">4.1.</span> <span class="nav-text">jstat 常用输出选项</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#jmap"><span class="nav-number">5.</span> <span class="nav-text">jmap</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#jmap-常用输出选项"><span class="nav-number">5.1.</span> <span class="nav-text">jmap 常用输出选项</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#内存信息文件"><span class="nav-number">5.2.</span> <span class="nav-text">内存信息文件</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题和解决"><span class="nav-number">6.</span> <span class="nav-text">问题和解决</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
