@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.loli.net/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"caoziye.top","root":"/","scheme":"Muse","version":"7.7.1","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="应用限制的修改在调优过程中，在修改应用程序本身参数之前，需要确认系统环境的配置是否满足要求。涉及到内存、文件描述符、文件大小等一系列的限制。而由于系统的保守，一般服务端应用的需求会大于系统的默认限制。那么如何查看和修改，就是首先要解决的问题了。 在 Linux 中，对应用程序的限制，首先可以从 ulimit 着手。 查看用户程序系统限制使用 ulimit -{op} 来查看对应的变量限制。ulim">
+<meta property="og:type" content="article">
+<meta property="og:title" content="修改系统对应用的限制">
+<meta property="og:url" content="https://caoziye.top/2020/12/%E4%BF%AE%E6%94%B9%E7%B3%BB%E7%BB%9F%E5%AF%B9%E5%BA%94%E7%94%A8%E7%9A%84%E9%99%90%E5%88%B6/index.html">
+<meta property="og:site_name" content="码文小记">
+<meta property="og:description" content="应用限制的修改在调优过程中，在修改应用程序本身参数之前，需要确认系统环境的配置是否满足要求。涉及到内存、文件描述符、文件大小等一系列的限制。而由于系统的保守，一般服务端应用的需求会大于系统的默认限制。那么如何查看和修改，就是首先要解决的问题了。 在 Linux 中，对应用程序的限制，首先可以从 ulimit 着手。 查看用户程序系统限制使用 ulimit -{op} 来查看对应的变量限制。ulim">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-12-04T09:01:21.000Z">
+<meta property="article:modified_time" content="2020-12-04T09:08:14.934Z">
+<meta property="article:author" content="斯特拉不用电">
+<meta property="article:tag" content="System">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://caoziye.top/2020/12/%E4%BF%AE%E6%94%B9%E7%B3%BB%E7%BB%9F%E5%AF%B9%E5%BA%94%E7%94%A8%E7%9A%84%E9%99%90%E5%88%B6/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>修改系统对应用的限制 | 码文小记</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">码文小记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">代码还有随感</h1>
+      
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="搜索..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://caoziye.top/2020/12/%E4%BF%AE%E6%94%B9%E7%B3%BB%E7%BB%9F%E5%AF%B9%E5%BA%94%E7%94%A8%E7%9A%84%E9%99%90%E5%88%B6/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="斯特拉不用电">
+      <meta itemprop="description" content="留下思考和记录才能让代码更酷">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="码文小记">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          修改系统对应用的限制
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-12-04 17:01:21 / 修改时间：17:08:14" itemprop="dateCreated datePublished" datetime="2020-12-04T17:01:21+08:00">2020-12-04</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/System/" itemprop="url" rel="index"><span itemprop="name">System</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.4k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="应用限制的修改"><a href="#应用限制的修改" class="headerlink" title="应用限制的修改"></a>应用限制的修改</h2><p>在调优过程中，在修改应用程序本身参数之前，需要确认系统环境的配置是否满足要求。涉及到内存、文件描述符、文件大小等一系列的限制。而由于系统的保守，一般服务端应用的需求会大于系统的默认限制。那么如何查看和修改，就是首先要解决的问题了。</p>
+<p>在 Linux 中，对应用程序的限制，首先可以从 ulimit 着手。</p>
+<h3 id="查看用户程序系统限制"><a href="#查看用户程序系统限制" class="headerlink" title="查看用户程序系统限制"></a>查看用户程序系统限制</h3><p>使用 <code>ulimit -{op}</code> 来查看对应的变量限制。<code>ulimit</code> 是基于 PAM 的用户限制模块，一般除了一些系统的程序，一般用户都受此限制。先罗列几个常用的：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ulimit -a # 查看全部</span><br><span class="line">ulimit -n # 文件描述符上限</span><br><span class="line">ulimit -l # 应用程序允许锁定的内存量</span><br><span class="line">ulimit -m # 应用程序允许占用的内存大小</span><br><span class="line">ulimit -s # 应用程序线程栈大小</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+
+<h3 id="修改用户程序系统限制"><a href="#修改用户程序系统限制" class="headerlink" title="修改用户程序系统限制"></a>修改用户程序系统限制</h3><h4 id="会话级修改"><a href="#会话级修改" class="headerlink" title="会话级修改"></a>会话级修改</h4><p>如果要修改该值也很简单，只需要在命令之后跟上需要修改的上限值就可以了：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ulimit -n 65535 # 修改当前的文件描述符限制为 65535</span><br></pre></td></tr></table></figure>
+
+<p>但是这种的好处是可以立即生效，但是仅影响本次会话。之后启动的程序都会应用当前的修改，但是重启之后就会失效。</p>
+<h4 id="永久修改"><a href="#永久修改" class="headerlink" title="永久修改"></a>永久修改</h4><p>对用户程序的这些限制，都是由 <code>/etc/security/limits.conf</code> 所影响。修改这个文件即可达到修改限制的目的了。看一下这个文件长什么样：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># example</span><br><span class="line">root           hard    core           100000</span><br><span class="line">*              hard    rss            10000</span><br><span class="line">@student       hard    nproc           20</span><br></pre></td></tr></table></figure>
+
+<p>这里每一行是一个四元表达式：<code>&lt;domain&gt; &lt;type&gt; &lt;item&gt; &lt;value&gt;</code>，说一下四个元素的意义：</p>
+<ul>
+<li><em>domain</em>: 指定控制的<strong>用户</strong>或者<strong>组</strong>，可以使用 <code>%</code>/<code>*</code> 这样的通配符，<em>root</em> 用户不受通配符影响，需要显示指定。</li>
+<li><em>type</em>：可选项有三个<ul>
+<li><em>soft*：控制对应用户该项目的默认的上限（用户可以手动上调至 *hard</em> ）</li>
+<li><em>hard*：控制对应用户该项目的最大上限，需要大于等于 *soft</em></li>
+<li>-：设置 <code>-</code> 可以表示 <em>soft<em>、</em>hard</em> 值统一</li>
+</ul>
+</li>
+<li><em>item</em>：指定不同的条目，如进程数、fd数量、栈大小等等，可以在 <code>limits.conf</code> 的注释和手册中找到详细说明。下面是摘要：<blockquote>
+<ul>
+<li>core - limits the core file size (KB)</li>
+<li>data - max data size (KB)</li>
+<li>fsize - maximum filesize (KB)</li>
+<li>memlock - max locked-in-memory address space (KB)</li>
+<li>nofile - max number of open files</li>
+<li>rss - max resident set size (KB)</li>
+<li>stack - max stack size (KB)</li>
+<li>cpu - max CPU time (MIN)</li>
+<li>nproc - max number of processes</li>
+<li>as - address space limit (KB)</li>
+<li>maxlogins - max number of logins for this user</li>
+<li>maxsyslogins - max number of logins on the system</li>
+<li>priority - the priority to run user process with</li>
+<li>locks - max number of file locks the user can hold</li>
+<li>sigpending - max number of pending signals</li>
+<li>msgqueue - max memory used by POSIX message queues (bytes)</li>
+<li>nice - max nice priority allowed to raise to values: [-20, 19]</li>
+<li>rtprio - max realtime priority</li>
+<li>chroot - change root to directory (Debian-specific)</li>
+</ul>
+</blockquote>
+</li>
+<li><em>value</em>：设定的值</li>
+</ul>
+<p><code>limits.conf</code> 的配置十分简单。但是自定义配置的时候并不建议直接修改该文件，可以把需要的配置写入 <code>/etc/security/limits.conf/&lt;file_name&gt;.conf</code>（文件名随意，conf 后缀）这样有利于后期维护和查阅改动点。</p>
+<h2 id="系统限制修改"><a href="#系统限制修改" class="headerlink" title="系统限制修改"></a>系统限制修改</h2><p>可能会出现这样的情况，即使设置了较大的限制，但是应用最终依然被限制在了较低的阈值。这时候需要确认系统全局的限制。当然一般情况下，系统全局的限制并不容易触及，但是实际需要的话，我们依然可以进行调整。</p>
+<h3 id="关于-proc-sys"><a href="#关于-proc-sys" class="headerlink" title="关于 /proc/sys"></a>关于 <code>/proc/sys</code></h3><p>系统内核的具体设定值都在 <code>/proc/sys</code> 之下，从网络到文件系统等等方方面面，比如关于网络的就在 <code>/proc/sys/net</code> 之下。不同的文件名对应了不同的配置参数，所以只需要直接查看对应文件就能知道设定值了。比如我们可以查看系统全局能打开的文件描述符数量：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash">cat /proc/sys/fs/file-max</span></span><br><span class="line">93975</span><br></pre></td></tr></table></figure>
+
+<p>如果要暂时修改，直接更改文件值就可以。影响全局而且不仅仅是当次会话哦。但是一旦重启就会还原回原来的状态。如果想要恒定修改，那么就需要 <code>/etc/sysctl.conf</code> 了。</p>
+<h3 id="关于-etc-sysctl-conf-及-etc-sysctl-d"><a href="#关于-etc-sysctl-conf-及-etc-sysctl-d" class="headerlink" title="关于 /etc/sysctl.conf 及 /etc/sysctl.d/"></a>关于 <code>/etc/sysctl.conf</code> 及 <code>/etc/sysctl.d/</code></h3><p>修改 <code>/etc/sysctl.conf</code> 可以达到保存的效果。例如需要修改文件描述符限制更大，可以在文件末尾添加上：<code>fs.file-max=1024000</code>。同样的，做为自定的配置，我们可以将文件放置到 <code>/etc/sysctl.d/</code> 之下。但是可以和 <code>limits.d</code> 略有不同，可以参考文件夹下的 README，<code>10-&lt;name&gt;.conf</code> 是系统的配置，<code>30-&lt;name&gt;.conf</code> 是其他程序的设定，而一般用户自定义的可以使用 <code>60-&lt;name&gt;.conf</code> 这样的文件。最终会从 10/30/60/sysctl.conf 这样的顺序生效。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>以上就是关于如何修改应用级别的限制和系统全局限制的方式了。在调优的时候，需要先看一下关于网络、内存、文件等方面的限制。</p>
+
+    </div>
+
+    
+    
+    
+      
+
+        <div class="reward-container">
+  <div>谢谢支持！</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.jpg" alt="斯特拉不用电 微信支付">
+        <p>微信支付</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>斯特拉不用电
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://caoziye.top/2020/12/%E4%BF%AE%E6%94%B9%E7%B3%BB%E7%BB%9F%E5%AF%B9%E5%BA%94%E7%94%A8%E7%9A%84%E9%99%90%E5%88%B6/" title="修改系统对应用的限制">https://caoziye.top/2020/12/修改系统对应用的限制/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/System/" rel="tag"># System</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/JVM-%E5%B8%B8%E7%94%A8%E8%AF%8A%E6%96%AD%E5%B7%A5%E5%85%B7%E5%B0%8F%E6%8A%84/" rel="prev" title="JVM 常用诊断工具小抄">
+      <i class="fa fa-chevron-left"></i> JVM 常用诊断工具小抄
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#应用限制的修改"><span class="nav-number">1.</span> <span class="nav-text">应用限制的修改</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#查看用户程序系统限制"><span class="nav-number">1.1.</span> <span class="nav-text">查看用户程序系统限制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修改用户程序系统限制"><span class="nav-number">1.2.</span> <span class="nav-text">修改用户程序系统限制</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#会话级修改"><span class="nav-number">1.2.1.</span> <span class="nav-text">会话级修改</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#永久修改"><span class="nav-number">1.2.2.</span> <span class="nav-text">永久修改</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#系统限制修改"><span class="nav-number">2.</span> <span class="nav-text">系统限制修改</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#关于-proc-sys"><span class="nav-number">2.1.</span> <span class="nav-text">关于 &#x2F;proc&#x2F;sys</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于-etc-sysctl-conf-及-etc-sysctl-d"><span class="nav-number">2.2.</span> <span class="nav-text">关于 &#x2F;etc&#x2F;sysctl.conf 及 &#x2F;etc&#x2F;sysctl.d&#x2F;</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">斯特拉不用电</p>
+  <div class="site-description" itemprop="description">留下思考和记录才能让代码更酷</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">29</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/kun3375" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;kun3375" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:kun3375@gmail.com" title="E-Mail → mailto:kun3375@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh" class="cc-opacity" rel="external nofollow noopener noreferrer" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">斯特拉不用电</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数">99k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:50</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://muse.theme-next.org/" class="theme-link" rel="external nofollow noopener noreferrer" target="_blank">NexT.Muse</a> v7.7.1
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script color="0,0,255" opacity="0.5" zindex="-1" count="99" src="/lib/canvas-nest/canvas-nest-nomobile.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'ae3ec12efda7fbbba32f',
+      clientSecret: 'ca42d298b0fda51fd3b4327e6c7d7f676fd0e815',
+      repo        : 'kun3375.github.io',
+      owner       : 'Kun3375',
+      admin       : ['Kun3375'],
+      id          : decodeURI(location.pathname),
+        language: '',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

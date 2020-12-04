@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.loli.net/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"caoziye.top","root":"/","scheme":"Muse","version":"7.7.1","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="在服务端进行消息过滤，可以减少不必要的流量，提高带宽利用度和吞吐量。RocketMQ 支持多种方式来进行服务端的消息过滤 消息使用 Tag 标签作为一条 Message，它有着特定的 Topic，同时也可以指定唯一的 Tag 标记子分类。消费方在订阅消息时候，Broker 可以在指定 Topic 的 ConsumeQueue 下按 Tag 进行过滤，只从 CommitLog 中取出 Tag 命中的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RocketMQ 服务端消息过滤">
+<meta property="og:url" content="https://caoziye.top/2018/08/RocketMQ-%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B6%88%E6%81%AF%E8%BF%87%E6%BB%A4/index.html">
+<meta property="og:site_name" content="码文小记">
+<meta property="og:description" content="在服务端进行消息过滤，可以减少不必要的流量，提高带宽利用度和吞吐量。RocketMQ 支持多种方式来进行服务端的消息过滤 消息使用 Tag 标签作为一条 Message，它有着特定的 Topic，同时也可以指定唯一的 Tag 标记子分类。消费方在订阅消息时候，Broker 可以在指定 Topic 的 ConsumeQueue 下按 Tag 进行过滤，只从 CommitLog 中取出 Tag 命中的">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-08-26T08:12:57.000Z">
+<meta property="article:modified_time" content="2018-08-26T08:32:05.137Z">
+<meta property="article:author" content="斯特拉不用电">
+<meta property="article:tag" content="MQ">
+<meta property="article:tag" content="RocketMQ">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://caoziye.top/2018/08/RocketMQ-%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B6%88%E6%81%AF%E8%BF%87%E6%BB%A4/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>RocketMQ 服务端消息过滤 | 码文小记</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">码文小记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">代码还有随感</h1>
+      
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="搜索..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://caoziye.top/2018/08/RocketMQ-%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B6%88%E6%81%AF%E8%BF%87%E6%BB%A4/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="斯特拉不用电">
+      <meta itemprop="description" content="留下思考和记录才能让代码更酷">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="码文小记">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          RocketMQ 服务端消息过滤
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2018-08-26 16:12:57 / 修改时间：16:32:05" itemprop="dateCreated datePublished" datetime="2018-08-26T16:12:57+08:00">2018-08-26</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/RocketMQ/" itemprop="url" rel="index"><span itemprop="name">RocketMQ</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.7k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>在服务端进行消息过滤，可以减少不必要的流量，提高带宽利用度和吞吐量。<br>RocketMQ 支持多种方式来进行服务端的消息过滤</p>
+<h2 id="消息使用-Tag-标签"><a href="#消息使用-Tag-标签" class="headerlink" title="消息使用 Tag 标签"></a>消息使用 Tag 标签</h2><p>作为一条 Message，它有着特定的 Topic，同时也可以指定唯一的 Tag 标记子分类。消费方在订阅消息时候，Broker 可以在指定 Topic 的 ConsumeQueue 下按 Tag 进行过滤，只从 CommitLog 中取出 Tag 命中的消息。 </p>
+<a id="more"></a>
+<p>使用 Tag 进行过滤是高效的，因为消息在 MessageQueue 的存储格式如下：</p>
+<ul>
+<li>CommitLog Offset：顾名思义，保存着在 CommitLog 中的偏移量，占用 8 个字节</li>
+<li>Size：使用 4 个字节来记录消息的大小</li>
+<li>Message Tag HashCode：记录对应消息的 Tag 的哈希</li>
+</ul>
+<p>在获取消息时候，通过 Tag HashCode 的对比，从 CommitLog 读取对应消息。由于哈希冲突实际上是不可避免的，消息在从 CommitLog 中拉取之后被消费之前，仍然会进行 Tag 的完整对比，以消除潜在哈希冲突问题</p>
+<h2 id="携带-MessageKey-来发送和查询"><a href="#携带-MessageKey-来发送和查询" class="headerlink" title="携带 MessageKey 来发送和查询"></a>携带 MessageKey 来发送和查询</h2><p>其实这部分内容并不属于服务端消息过滤的功能，但是也为我们提供了一种较精确的查询指定消息的功能。在发送消息之前可以为消息设定指定的 Key，通常这个 Key 是在业务层面是唯一的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Message msg = <span class="keyword">new</span> Message(<span class="string">"Topic"</span>, <span class="string">"Tag"</span>, <span class="string">"Content"</span>.getBytes());</span><br><span class="line">msg.setKey(uniqueKey);</span><br></pre></td></tr></table></figure>
+<p>尽管 Broker 不会对消息进行 Key 相关的过滤，但是会为消息定制相应的索引。看一下索引格式：</p>
+<ul>
+<li>Key HashCode：4 个字节的 Key 的哈希，用来快速检索</li>
+<li>CommitLog Offset：8 个字节来保存 CommitLog 中的偏移量</li>
+<li>Timestamp：使用 4 个字节记录消息存储时间和产生时间的时间差</li>
+<li>Next Index Offset：使用 4 个字节来记录下一索引的偏移量<br>在存储 Key 相应的索引时候，其实分了多个哈希桶来（Slot）存储，也就是相对 Key 进行了两次散列。怎么解决哈希冲突？因为索引结构中保存了 Key 的哈希，所以对于哈希值不同而模数相同的 Key 在查询时候可以直接区分开来。对于哈希值相等但是 Key 本身不相等的情况，客户端继续做一次 Key 比较来进行筛选。<br>一般应用中进行消息过滤使用 Tag，而使用命令行工具 mqadmin 做运维时查询特定 Key 的消息，用法：<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mqadmin queryMsgByKey -k &lt;Key&gt; -n &lt;NamesrvAddr&gt; -t &lt;Topic&gt; -f &lt;endTime&gt;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h2 id="使用-MessageId-来查询消息"><a href="#使用-MessageId-来查询消息" class="headerlink" title="使用 MessageId 来查询消息"></a>使用 MessageId 来查询消息</h2><p>每次消息成功发送后，都会生产一个 <strong>MsgId</strong> 和 <strong>OffsetMsgId</strong>，来标识这条消息：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Message msg = <span class="keyword">new</span> Message(<span class="string">"Topic"</span>, <span class="string">"Tag"</span>, <span class="string">"Content"</span>.getBytes());</span><br><span class="line">SendResult result = producer.send(msg);</span><br><span class="line"><span class="comment">// producer 产生的 id</span></span><br><span class="line">String msgId = result.getMsgId();</span><br><span class="line"><span class="comment">// broker 产生的 id</span></span><br><span class="line">String offsetMsgId = result.getOffsetMsgId();</span><br></pre></td></tr></table></figure>
+<ul>
+<li>对于 MsgId，由 producer ip + pid + MessageClientIDSetter.class.getClassLoader().hashCode() + time + counter 组成</li>
+<li>而对于 OffsetMsgId，由 broker ip + CommitLog Offset 组成，可以精确地定位消息存储的位置</li>
+</ul>
+<p>同时我们可以使用运维工具 mqadmin 针对 OffsetMsgId 进行检索</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mqadmin queryMsgById -n &lt;NamesrvAddr&gt; -I &lt;OffsetMsgId&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="使用自定义属性和类-SQL-过滤"><a href="#使用自定义属性和类-SQL-过滤" class="headerlink" title="使用自定义属性和类 SQL 过滤"></a>使用自定义属性和类 SQL 过滤</h2><p>在发送消息前，我们可以为消息设置自定义的属性：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Message msg = <span class="keyword">new</span> Message(<span class="string">"Topic"</span>, <span class="string">"Tag"</span>, <span class="string">"Content"</span>.getBytes());</span><br><span class="line">msg.putUserProperty(<span class="string">"p1"</span>, <span class="string">"v1"</span>);</span><br><span class="line">msg.putUserProperty(<span class="string">"p2"</span>, <span class="string">"v2"</span>);</span><br></pre></td></tr></table></figure>
+<p>在服务端进行消费时候，可以针对自定义属性，利用类 SQL 的表达式来进行消息的进一步筛选：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">consumer.subscribe(<span class="string">"Topic"</span>, MessageSelector.bySql(<span class="string">"p1 = v1"</span>);</span><br></pre></td></tr></table></figure>
+<p>使用这样的方式进行过滤，需要 Broker 先从 CommitLog 中取出消息，得到消息中的自定义属性进行对应的计算。理所当然的，功能很强大，但是效率没有使用 Tag 的过滤方式高。</p>
+<h3 id="对于表达式的语法支持如下："><a href="#对于表达式的语法支持如下：" class="headerlink" title="对于表达式的语法支持如下："></a>对于表达式的语法支持如下：</h3><ul>
+<li>对比操作：<ul>
+<li>数字：&gt;, &lt;, &lt;=, &gt;=, =, BETWEEN</li>
+<li>字符串：=, &lt;&gt;, IN</li>
+<li>空值判断：IS NULL, IS NOT NULL</li>
+<li>逻辑判断：AND, OR, NOT</li>
+</ul>
+</li>
+<li>数据类型：<ul>
+<li>数字：123，456</li>
+<li>字符串：’abc’, ‘def’, 必须使用单引号</li>
+<li>空值：NULL</li>
+<li>布尔：TRUE，FALSE</li>
+</ul>
+</li>
+</ul>
+<h2 id="使用自定义代码和-Filter-Server"><a href="#使用自定义代码和-Filter-Server" class="headerlink" title="使用自定义代码和 Filter Server"></a>使用自定义代码和 Filter Server</h2><p>对于 Filter Server，事实上实在 Broker 所在服务器启动了多个类似中转代理的进程，这几个进程负责充当 Consumer 从 Broker 上拉取代码，使用用户上传的 Java 代码进行过滤，最后传送给消费者。<br>这个中转代理会和 Broker 本身争抢 CPU 资源，需要按需求谨慎使用；同时用于过滤的代码需要严格的审查，避免可能影响 Broker 宕机的风险操作。这个过滤操作只支持 PushConsumer<br>使用流程：</p>
+<ol>
+<li>启动 Broker 时指定 <code>filterServerNums=&lt;n&gt;</code>，当然使用配置文件也可以。n 的数量就是中转代理 FilterServer 的进程数</li>
+<li>实现 <code>org.apache.rocketmq.common.filter.MessageFilter</code> 接口，定制过滤逻辑</li>
+<li>接收消息：<pre><code class="java">PushConsumer.subscribe(<span class="keyword">final</span> String topic, <span class="keyword">final</span> String fullClassName, <span class="keyword">final</span> String filterClassSource)</code></pre>
+filterClassSource 是前一步 MessageFilter 接口实现的源码，必须使用 utf-8 编码。这会在 Consumer 启动时将过滤逻辑上传至 Broker</li>
+</ol>
+<p>参考：</p>
+<ol>
+<li>MessageId 生成解读 <a href="https://www.cnblogs.com/linlinismine/p/9184917.html" target="_blank" rel="external nofollow noopener noreferrer">https://www.cnblogs.com/linlinismine/p/9184917.html</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">相关文章</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2018/08/RocketMQ-Consumer-摘要/" rel="bookmark">RocketMQ Consumer 摘要</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2018/08/RocketMQ-Producer-摘要/" rel="bookmark">RocketMQ Producer 摘要</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2018/07/RocketMQ-配置探索/" rel="bookmark">RocketMQ 配置探索</a></div>
+    </li>
+  </ul>
+
+        <div class="reward-container">
+  <div>谢谢支持！</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.jpg" alt="斯特拉不用电 微信支付">
+        <p>微信支付</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>斯特拉不用电
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://caoziye.top/2018/08/RocketMQ-%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B6%88%E6%81%AF%E8%BF%87%E6%BB%A4/" title="RocketMQ 服务端消息过滤">https://caoziye.top/2018/08/RocketMQ-服务端消息过滤/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/MQ/" rel="tag"># MQ</a>
+              <a href="/tags/RocketMQ/" rel="tag"># RocketMQ</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/08/RocketMQ-%E6%97%A5%E5%BF%97%E8%AE%BE%E7%BD%AE/" rel="prev" title="RocketMQ 日志设置">
+      <i class="fa fa-chevron-left"></i> RocketMQ 日志设置
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/09/ES-%E6%93%8D%E4%BD%9C-%E7%B4%A2%E5%BC%95%E7%AE%A1%E7%90%86/" rel="next" title="ES 操作-索引管理">
+      ES 操作-索引管理 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#消息使用-Tag-标签"><span class="nav-number">1.</span> <span class="nav-text">消息使用 Tag 标签</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#携带-MessageKey-来发送和查询"><span class="nav-number">2.</span> <span class="nav-text">携带 MessageKey 来发送和查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用-MessageId-来查询消息"><span class="nav-number">3.</span> <span class="nav-text">使用 MessageId 来查询消息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用自定义属性和类-SQL-过滤"><span class="nav-number">4.</span> <span class="nav-text">使用自定义属性和类 SQL 过滤</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#对于表达式的语法支持如下："><span class="nav-number">4.1.</span> <span class="nav-text">对于表达式的语法支持如下：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用自定义代码和-Filter-Server"><span class="nav-number">5.</span> <span class="nav-text">使用自定义代码和 Filter Server</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">斯特拉不用电</p>
+  <div class="site-description" itemprop="description">留下思考和记录才能让代码更酷</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">29</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/kun3375" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;kun3375" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:kun3375@gmail.com" title="E-Mail → mailto:kun3375@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh" class="cc-opacity" rel="external nofollow noopener noreferrer" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">斯特拉不用电</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数">99k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:50</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://muse.theme-next.org/" class="theme-link" rel="external nofollow noopener noreferrer" target="_blank">NexT.Muse</a> v7.7.1
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script color="0,0,255" opacity="0.5" zindex="-1" count="99" src="/lib/canvas-nest/canvas-nest-nomobile.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'ae3ec12efda7fbbba32f',
+      clientSecret: 'ca42d298b0fda51fd3b4327e6c7d7f676fd0e815',
+      repo        : 'kun3375.github.io',
+      owner       : 'Kun3375',
+      admin       : ['Kun3375'],
+      id          : decodeURI(location.pathname),
+        language: '',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

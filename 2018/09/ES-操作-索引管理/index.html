@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.loli.net/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"caoziye.top","root":"/","scheme":"Muse","version":"7.7.1","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="新建索引新建索引很简单，但是需要注意的是：  ES 中索引名称不能包含大写字母 不能再次 PUT 一个已经存在的索引 ES 默认给索引设置 5 个分片和 1 个副本，该值可以通过 setting 参数域进行修改。其中副本数在索引创建之后支持修改，而分片数无法修改！12345678910PUT &#x2F;person# 可选项，不附加请求体的情况下统一使用默认值&amp;#123;    &quot;settings&quot;: &amp;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ES 操作-索引管理">
+<meta property="og:url" content="https://caoziye.top/2018/09/ES-%E6%93%8D%E4%BD%9C-%E7%B4%A2%E5%BC%95%E7%AE%A1%E7%90%86/index.html">
+<meta property="og:site_name" content="码文小记">
+<meta property="og:description" content="新建索引新建索引很简单，但是需要注意的是：  ES 中索引名称不能包含大写字母 不能再次 PUT 一个已经存在的索引 ES 默认给索引设置 5 个分片和 1 个副本，该值可以通过 setting 参数域进行修改。其中副本数在索引创建之后支持修改，而分片数无法修改！12345678910PUT &#x2F;person# 可选项，不附加请求体的情况下统一使用默认值&amp;#123;    &quot;settings&quot;: &amp;">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-09-24T08:16:33.000Z">
+<meta property="article:modified_time" content="2020-02-26T17:47:47.955Z">
+<meta property="article:author" content="斯特拉不用电">
+<meta property="article:tag" content="ElasticSearch">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://caoziye.top/2018/09/ES-%E6%93%8D%E4%BD%9C-%E7%B4%A2%E5%BC%95%E7%AE%A1%E7%90%86/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>ES 操作-索引管理 | 码文小记</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">码文小记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">代码还有随感</h1>
+      
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="搜索..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://caoziye.top/2018/09/ES-%E6%93%8D%E4%BD%9C-%E7%B4%A2%E5%BC%95%E7%AE%A1%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="斯特拉不用电">
+      <meta itemprop="description" content="留下思考和记录才能让代码更酷">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="码文小记">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          ES 操作-索引管理
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-09-24 16:16:33" itemprop="dateCreated datePublished" datetime="2018-09-24T16:16:33+08:00">2018-09-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-02-27 01:47:47" itemprop="dateModified" datetime="2020-02-27T01:47:47+08:00">2020-02-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/ElasticSearch/" itemprop="url" rel="index"><span itemprop="name">ElasticSearch</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h4 id="新建索引"><a href="#新建索引" class="headerlink" title="新建索引"></a>新建索引</h4><p>新建索引很简单，但是需要注意的是：</p>
+<ul>
+<li>ES 中索引名称不能包含大写字母</li>
+<li>不能再次 PUT 一个已经存在的索引</li>
+<li>ES 默认给索引设置 5 个分片和 1 个副本，该值可以通过 setting 参数域进行修改。其中副本数在索引创建之后支持修改，而分片数无法修改！<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">PUT /person</span><br><span class="line"><span class="comment"># 可选项，不附加请求体的情况下统一使用默认值</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">"settings"</span>: &#123;</span><br><span class="line">        <span class="comment"># 分片数量</span></span><br><span class="line">        <span class="string">"number_of_shards"</span>: 3,</span><br><span class="line">        <span class="comment"># 副本数量</span></span><br><span class="line">        <span class="string">"number_of_replicas"</span>: 1</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+
+</li>
+</ul>
+<h4 id="更新索引"><a href="#更新索引" class="headerlink" title="更新索引"></a>更新索引</h4><p>对某属性设置相应的值即可。如果设置为 <code>null</code> 可以将其恢复成默认值</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">PUT /person/_settings</span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">"number_of_replicas"</span>: 2</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="索引设置"><a href="#索引设置" class="headerlink" title="索引设置"></a>索引设置</h5><p>部分设置的含义在后文涉及</p>
+<ul>
+<li>静态设置<br>这部分的设置只有在索引创建或者关闭时支持修改（分片数量只能在创建索引时设置）  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 主分片数，默认为5.只能在创建索引时设置，不能修改</span></span><br><span class="line">index.number_of_shards</span><br><span class="line"><span class="comment"># 是否应在索引打开前检查分片是否损坏，当检查到分片损坏将禁止分片被打开</span></span><br><span class="line"><span class="comment">#   false //默认值</span></span><br><span class="line"><span class="comment">#   checksum //检查物理损坏</span></span><br><span class="line"><span class="comment">#   true //检查物理和逻辑损坏，这将消耗大量内存和CPU</span></span><br><span class="line"><span class="comment">#   fix //检查物理和逻辑损坏。有损坏的分片将被集群自动删除，这可能导致数据丢失</span></span><br><span class="line">index.shard.check_on_startup</span><br><span class="line"><span class="comment"># 自定义路由值可以转发的目的分片数。默认为 1，只能在索引创建时设置。此值必须小于index.number_of_shards</span></span><br><span class="line">index.routing_partition_size</span><br><span class="line"><span class="comment"># 数据压缩方式，默认使用LZ4，也可以设置为 best_compression，它使用 DEFLATE 方式以牺牲字段存储性能为代价来获得更高的压缩比例</span></span><br><span class="line">index.codec</span><br></pre></td></tr></table></figure></li>
+<li>动态设置<br>这部分配置支持直接修改<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 每个主分片的副本数，默认为 1</span></span><br><span class="line">index.number_of_replicas</span><br><span class="line"><span class="comment"># 基于可用节点的数量自动分配副本数量，默认为 false（即禁用此功能）</span></span><br><span class="line">index.auto_expand_replicas</span><br><span class="line"><span class="comment"># 执行刷新操作的频率，这使得索引的最近更改可以被搜索。默认为 1s。可以设置为 -1 以禁用刷新。</span></span><br><span class="line">index.refresh_interval</span><br><span class="line"><span class="comment"># 用于索引搜索的 from + size 的最大值，默认为 10000</span></span><br><span class="line">index.max_result_window</span><br><span class="line"><span class="comment"># 在搜索此索引中 rescore 的 window_size 的最大值</span></span><br><span class="line">index.max_rescore_window</span><br><span class="line"><span class="comment"># 设置为 true 使索引和索引元数据为只读，默认 false 为允许写入和元数据更改</span></span><br><span class="line">index.blocks.read_only</span><br><span class="line"><span class="comment"># 设置为 true 可禁用对索引的读取操作，默认 false</span></span><br><span class="line">index.blocks.read</span><br><span class="line"><span class="comment"># 设置为 true 可禁用对索引的写入操作，默认 false</span></span><br><span class="line">index.blocks.write</span><br><span class="line"><span class="comment"># 设置为 true 可禁用索引元数据的读取和写入，默认 false</span></span><br><span class="line">index.blocks.metadata</span><br><span class="line"><span class="comment"># 索引的每个分片上可用的最大刷新侦听器数</span></span><br><span class="line">index.max_refresh_listeners</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h4 id="查询索引"><a href="#查询索引" class="headerlink" title="查询索引"></a>查询索引</h4><p>关于查询也是简单的，通过 GET 请求和 _setting API 可以获得索引的配置信息。而 _cat API 可以以摘要的形式展示所有索引的开关状态，健康状态，分片数，副本数以及一些其他信息</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查询单个索引设置</span></span><br><span class="line">GET /person/_settings</span><br><span class="line"><span class="comment"># 查询多个索引设置</span></span><br><span class="line">GET /person,animal/_settings</span><br><span class="line"><span class="comment"># 按通配符查询索引设置</span></span><br><span class="line">GET /p*/_settings</span><br><span class="line"><span class="comment"># 查询所有索引设置</span></span><br><span class="line">GET /_all/settings</span><br><span class="line"><span class="comment"># 使用 _cat API 来展示所有索引的综合信息</span></span><br><span class="line">GET /_cat/indices</span><br></pre></td></tr></table></figure>
+
+<h4 id="删除索引"><a href="#删除索引" class="headerlink" title="删除索引"></a>删除索引</h4><p>删除是最简单，当然如果指定的索引名称不存在会响应 404</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DELETE /person</span><br></pre></td></tr></table></figure>
+
+<h4 id="索引开关"><a href="#索引开关" class="headerlink" title="索引开关"></a>索引开关</h4><p>可以关闭一些暂时不用的索引来减少系统资源的开销，关闭后将无法进行读写</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">POST person/_close</span><br></pre></td></tr></table></figure>
+<p>相对的，打开操作：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">POST person/_open</span><br></pre></td></tr></table></figure>
+<p>这里依然支持同时操作多个索引，以及通配符和 _all 关键字的处理：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">POST /person,animal/_close</span><br></pre></td></tr></table></figure>
+<p>如果同时指定的索引中存在不存在的索引，会显示抛出错误。这可以通过一个简单参数 <code>ignore_unavailable=true</code> 来忽略</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">POST /person,animal/_close?ignore_unavailable=<span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="索引复制"><a href="#索引复制" class="headerlink" title="索引复制"></a>索引复制</h4><p>通过 _reindex API 可以将一个索引的内容复制至另一个索引，这同时可以指定过滤条件，已筛选需要的 type 以及 doc。<br>需要注意的是，由于这不会同时复制索引的配置信息，所以在操作的时候需要提前建立好新索引</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">POST /_reindex</span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">"source"</span>: &#123;</span><br><span class="line">        <span class="string">"index"</span>: <span class="string">"person"</span>,</span><br><span class="line">        <span class="comment"># 可选项，用于过滤类型 type</span></span><br><span class="line">        <span class="string">"type"</span>: <span class="string">"student"</span></span><br><span class="line">        <span class="comment"># 可选项，用于过滤文档 doc</span></span><br><span class="line">        <span class="string">"query"</span>: &#123;</span><br><span class="line">            <span class="string">"term"</span>: &#123; <span class="string">"sex"</span>: <span class="string">"male"</span> &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="string">"dest"</span>: &#123;</span><br><span class="line">        <span class="string">"index"</span>: <span class="string">"person_new"</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="索引收缩"><a href="#索引收缩" class="headerlink" title="索引收缩"></a>索引收缩</h4><p>分片数量在索引初始化之后便无法修改。_shrink API 可以将一个索引收缩成一个分片数量更少的索引。当然，这是有要求的：</p>
+<ul>
+<li>收缩后索引的分片数必须是收缩前索引的分片数的因子，如 8 -&gt; 4，或者 15 -&gt; 5。这意味着如果源索引的分片数如果是质数，那么很尴尬，只能收缩成 1 个分片的新索引</li>
+<li>收缩前，索引的每个分片需要都存在于同一节点上（可以指定路由实现）</li>
+<li>索引必须为只读状态</li>
+</ul>
+<p>后两者条件可以通过以下指令实现：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">PUT /person/_settings</span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">"index.routing.allocation.require._name"</span>: <span class="string">"shrink_node_name"</span>,</span><br><span class="line">    <span class="string">"index.block.write"</span>: <span class="literal">true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>接下来便可以实际进行索引的收缩了，ES 完成的流程包括这几个步骤：</p>
+<ol>
+<li>创建一个配置与源索引相同但是分片数减少的新索引</li>
+<li>源索引硬链接至新索引（文件系统不支持的情况下会进行复制）</li>
+<li>打开新的索引</li>
+</ol>
+<p>_shrink 的一个例子如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">POST /person/_shrink/person_new</span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">"settings"</span>: &#123;</span><br><span class="line">        <span class="string">"index.number_of_replicas"</span>: 0,</span><br><span class="line">        <span class="string">"index.number_of_shards"</span>: 1,</span><br><span class="line">        <span class="string">"index.codec"</span>: <span class="string">"best_compression"</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="comment"># 就如同新建索引一样，可以同时设置别名</span></span><br><span class="line">    <span class="string">"aliases"</span>: &#123;</span><br><span class="line">        <span class="string">"pn"</span>: &#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="索引别名"><a href="#索引别名" class="headerlink" title="索引别名"></a>索引别名</h4><p>通过 _aliases API 可以选择为索引设置别名，这就像软连接一样</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">POST /_aliases</span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">"actions"</span>: [&#123;</span><br><span class="line">        <span class="comment"># 新增索引，可以一次操作多个索引，并合并书写</span></span><br><span class="line">        <span class="string">"add"</span>: &#123;</span><br><span class="line">            <span class="string">"indices"</span>: [<span class="string">"animal"</span>, <span class="string">"plant"</span>],</span><br><span class="line">            <span class="string">"alias"</span>: <span class="string">"living_thing"</span></span><br><span class="line">        &#125;&#125;, &#123;</span><br><span class="line">         <span class="comment"># 删除索引，也可以一次操作多个索引，支持通配符</span></span><br><span class="line">        <span class="string">"remove"</span>: &#123;</span><br><span class="line">            <span class="string">"index"</span>: <span class="string">"person"</span>,</span><br><span class="line">            <span class="string">"alias"</span>: <span class="string">"person_alias"</span></span><br><span class="line">        &#125;&#125;, &#123;</span><br><span class="line">        <span class="string">"remove"</span>: &#123;</span><br><span class="line">            <span class="string">"index"</span>: <span class="string">"school"</span>,</span><br><span class="line">            <span class="string">"alias"</span>: <span class="string">"school_alias"</span></span><br><span class="line">        &#125;&#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在通常使用时，别名基本和原索引名用法一样。但是如果别名和索引不是一对一关系的时候，无法通过别名索引文档或者通过 ID 来查询</p>
+<p>关于索引别名的查询也十分简单：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 如果想知道某索引（如 person）的别名</span></span><br><span class="line">GET /person/_aliases</span><br><span class="line"><span class="comment"># 获取所有别名</span></span><br><span class="line">GET /_aliases</span><br><span class="line"><span class="comment"># 使用 _cat API 获取所有索引摘要</span></span><br><span class="line">GET /_cat/aliases</span><br></pre></td></tr></table></figure>
+
+<h3 id="补充-Restful-语义"><a href="#补充-Restful-语义" class="headerlink" title="补充 Restful 语义"></a>补充 Restful 语义</h3><p>在 ES 操作中，以下几个请求方式是最常用的，补充一下以下请求代表的语义：</p>
+<ul>
+<li><code>GET</code>：获取资源信息</li>
+<li><code>DELETE</code>：删除指定的资源标识符下的资源</li>
+<li><code>POST</code>：提交一个新的资源，不具备幂等性</li>
+<li><code>PUT</code>：新增或更新一个资源标识符下资源，操作具有幂等性</li>
+<li><code>HEAD</code>：获取该次请求的响应头信息</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">相关文章</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2018/10/ES-分片路由/" rel="bookmark">ES 分片路由</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2018/10/ES-操作-文档操作/" rel="bookmark">ES 操作-文档管理</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2018/11/ES-数据类型元字段与映射/" rel="bookmark">ES 数据类型、元字段与映射</a></div>
+    </li>
+  </ul>
+
+        <div class="reward-container">
+  <div>谢谢支持！</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.jpg" alt="斯特拉不用电 微信支付">
+        <p>微信支付</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>斯特拉不用电
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://caoziye.top/2018/09/ES-%E6%93%8D%E4%BD%9C-%E7%B4%A2%E5%BC%95%E7%AE%A1%E7%90%86/" title="ES 操作-索引管理">https://caoziye.top/2018/09/ES-操作-索引管理/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/ElasticSearch/" rel="tag"># ElasticSearch</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/08/RocketMQ-%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B6%88%E6%81%AF%E8%BF%87%E6%BB%A4/" rel="prev" title="RocketMQ 服务端消息过滤">
+      <i class="fa fa-chevron-left"></i> RocketMQ 服务端消息过滤
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/10/Git-%E5%91%BD%E4%BB%A4%E7%AC%94%E8%AE%B0/" rel="next" title="Git 命令笔记">
+      Git 命令笔记 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#新建索引"><span class="nav-number">1.</span> <span class="nav-text">新建索引</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#更新索引"><span class="nav-number">2.</span> <span class="nav-text">更新索引</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#索引设置"><span class="nav-number">2.1.</span> <span class="nav-text">索引设置</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#查询索引"><span class="nav-number">3.</span> <span class="nav-text">查询索引</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#删除索引"><span class="nav-number">4.</span> <span class="nav-text">删除索引</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#索引开关"><span class="nav-number">5.</span> <span class="nav-text">索引开关</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#索引复制"><span class="nav-number">6.</span> <span class="nav-text">索引复制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#索引收缩"><span class="nav-number">7.</span> <span class="nav-text">索引收缩</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#索引别名"><span class="nav-number">8.</span> <span class="nav-text">索引别名</span></a></li></ol><li class="nav-item nav-level-3"><a class="nav-link" href="#补充-Restful-语义"><span class="nav-number"></span> <span class="nav-text">补充 Restful 语义</span></a></li></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">斯特拉不用电</p>
+  <div class="site-description" itemprop="description">留下思考和记录才能让代码更酷</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">29</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/kun3375" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;kun3375" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:kun3375@gmail.com" title="E-Mail → mailto:kun3375@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh" class="cc-opacity" rel="external nofollow noopener noreferrer" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">斯特拉不用电</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数">99k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:50</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://muse.theme-next.org/" class="theme-link" rel="external nofollow noopener noreferrer" target="_blank">NexT.Muse</a> v7.7.1
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script color="0,0,255" opacity="0.5" zindex="-1" count="99" src="/lib/canvas-nest/canvas-nest-nomobile.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'ae3ec12efda7fbbba32f',
+      clientSecret: 'ca42d298b0fda51fd3b4327e6c7d7f676fd0e815',
+      repo        : 'kun3375.github.io',
+      owner       : 'Kun3375',
+      admin       : ['Kun3375'],
+      id          : decodeURI(location.pathname),
+        language: '',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

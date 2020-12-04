@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.loli.net/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"caoziye.top","root":"/","scheme":"Muse","version":"7.7.1","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="目前被广泛使用的 MQ 有很多，包括 ActiveMQ，Kafka，RabbitMQ，RocketMQ 等等，它们各有长短。而近期所在项目选择了 RocketMQ 作为消息中间件，此前并未系统地了解研究，所以趁此机会整理了一些笔记和想法。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RocketMQ 配置探索">
+<meta property="og:url" content="https://caoziye.top/2018/07/RocketMQ-%E9%85%8D%E7%BD%AE%E6%8E%A2%E7%B4%A2/index.html">
+<meta property="og:site_name" content="码文小记">
+<meta property="og:description" content="目前被广泛使用的 MQ 有很多，包括 ActiveMQ，Kafka，RabbitMQ，RocketMQ 等等，它们各有长短。而近期所在项目选择了 RocketMQ 作为消息中间件，此前并未系统地了解研究，所以趁此机会整理了一些笔记和想法。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://caoziye.top/images/rocketmq-net.png">
+<meta property="article:published_time" content="2018-07-28T06:48:31.000Z">
+<meta property="article:modified_time" content="2018-08-04T04:03:23.492Z">
+<meta property="article:author" content="斯特拉不用电">
+<meta property="article:tag" content="MQ">
+<meta property="article:tag" content="RocketMQ">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://caoziye.top/images/rocketmq-net.png">
+
+<link rel="canonical" href="https://caoziye.top/2018/07/RocketMQ-%E9%85%8D%E7%BD%AE%E6%8E%A2%E7%B4%A2/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>RocketMQ 配置探索 | 码文小记</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">码文小记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">代码还有随感</h1>
+      
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="搜索..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://caoziye.top/2018/07/RocketMQ-%E9%85%8D%E7%BD%AE%E6%8E%A2%E7%B4%A2/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="斯特拉不用电">
+      <meta itemprop="description" content="留下思考和记录才能让代码更酷">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="码文小记">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          RocketMQ 配置探索
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-07-28 14:48:31" itemprop="dateCreated datePublished" datetime="2018-07-28T14:48:31+08:00">2018-07-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2018-08-04 12:03:23" itemprop="dateModified" datetime="2018-08-04T12:03:23+08:00">2018-08-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/RocketMQ/" itemprop="url" rel="index"><span itemprop="name">RocketMQ</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>6.8k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>8 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>目前被广泛使用的 MQ 有很多，包括 ActiveMQ，Kafka，RabbitMQ，RocketMQ 等等，它们各有长短。而近期所在项目选择了 RocketMQ 作为消息中间件，此前并未系统地了解研究，所以趁此机会整理了一些笔记和想法。</p>
+<a id="more"></a>
+
+<h2 id="优势"><a href="#优势" class="headerlink" title="优势"></a>优势</h2><p>简单地说一下在这么多消息中间件中的选型优势。作为阿里的开源项目，想必还是可靠的，尤其是经受过双十一的考验令人信服。</p>
+<ul>
+<li>支持严格的消息顺序；</li>
+<li>支持 Topic 与 Queue 两种模式；</li>
+<li>亿级消息堆积能力；</li>
+<li>比较友好的分布式特性；</li>
+<li>同时支持 Push 与 Pull 方式消费消息；</li>
+</ul>
+<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><ul>
+<li><strong>Producer</strong>：消息生产者，生产消息。</li>
+<li><strong>Consumer</strong>：消息消费者，消费消息。<ul>
+<li><strong>Pull Consumer</strong>：消费者拉模型的实现。通过与 Broker 建立长连接，从中主动拉取消息。</li>
+<li><strong>Push Consumer</strong>：消费者推模型的实现。本质仍然是建立长连接，但是通过注册监听器，在收到消息时回调监听方法。</li>
+</ul>
+</li>
+<li><strong>Producer Group</strong>：生产者集合，通常包含发送逻辑一致的消费者，影响事务消息的流程。</li>
+<li><strong>Consumer Group</strong>：消费者集合，通常包含消费逻辑一致的消费者，影响着负载均衡和集群消息。</li>
+<li><strong>Name Server</strong>：注册服务器，可以由一到多个近乎无状态的节点构成，扮演者类似 Zookeeper 的角色。Broker 向其中注册，而 Producer 和 Consumer 向其中拉取 Broker 地址。</li>
+<li><strong>Broker</strong>：核心组件，保存和转发消息。</li>
+</ul>
+<p>拓扑结构如下：<br><img src="/images/rocketmq-net.png" alt="RocketMQ Network"></p>
+<h2 id="初次使用"><a href="#初次使用" class="headerlink" title="初次使用"></a>初次使用</h2><h3 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h3><p>RocketMQ 是纯 Java 语言的实现，你可以从 Github 上<a href="https://github.com/apache/rocketmq" target="_blank" rel="external nofollow noopener noreferrer">下载</a>源码并使用 Maven 进行编译，当然也可以从<a href="http://rocketmq.apache.org/" target="_blank" rel="external nofollow noopener noreferrer">官网入口</a>下载。</p>
+<h3 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h3><p>第一次启动，简单地测试一下效果，进入 bin 目录，使用 nohup 启动一下 NameService：</p>
+<pre><code>nohup ./mqnamesrv -n 127.0.0.1:9876 &amp;</code></pre><p>然后启动一下 Broker：</p>
+<pre><code>nohup ./mqbroker -n 127.0.0.1:9876 &amp;</code></pre><p>还有一个 mqadmin 也是常用的工具，包含的管理员常用的功能，包含查看集群列表，查看、删除主题等，可以直接通过 <code>./mqadmin</code> 获得帮助。</p>
+<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><p>在 RocketMQ 顺利启动之后，进行一下测试吧，快速的体验一把。<br>从 MavenRepository 找到对应的 RocketMQ 客户端：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- https://mvnrepository.com/artifact/org.apache.rocketmq/rocketmq-client --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.rocketmq<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>rocketmq-client<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>4.2.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>或者打开刚才从 Github 上下载的源码，example 模块下提供了许多测试用例，附上略微改动的生产者和消费者代码：</p>
+<ul>
+<li>生产者<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> MQClientException, InterruptedException </span>&#123;</span><br><span class="line"></span><br><span class="line">    DefaultMQProducer producer = <span class="keyword">new</span> DefaultMQProducer(<span class="string">"ProducerGroupName"</span>);</span><br><span class="line">    producer.setNamesrvAddr(<span class="string">"127.0.0.1:9876"</span>);</span><br><span class="line">    producer.setInstanceName(<span class="string">"p001"</span>);</span><br><span class="line">    <span class="comment">// 可以设定失败重试次数</span></span><br><span class="line">    producer.setRetryTimesWhenSendFailed(<span class="number">3</span>);</span><br><span class="line">    producer.start();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">1</span>; i++) &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Message msg = <span class="keyword">new</span> Message(</span><br><span class="line">	    	<span class="string">"TopicTest1"</span>,</span><br><span class="line">                <span class="string">"TagA"</span>,</span><br><span class="line">                <span class="string">"key113"</span>,</span><br><span class="line">                <span class="string">"Hello world"</span>.getBytes(RemotingHelper.DEFAULT_CHARSET));</span><br><span class="line">            SendResult sendResult = producer.send(msg);</span><br><span class="line">            System.out.printf(<span class="string">"%s%n"</span>, sendResult);</span><br><span class="line"></span><br><span class="line">            QueryResult queryMessage =</span><br><span class="line">                producer.queryMessage(<span class="string">"TopicTest1"</span>, <span class="string">"key113"</span>, <span class="number">10</span>, <span class="number">0</span>, System.currentTimeMillis());</span><br><span class="line">            <span class="keyword">for</span> (MessageExt m : queryMessage.getMessageList()) &#123;</span><br><span class="line">                System.out.printf(<span class="string">"%s%n"</span>, m);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    producer.shutdown();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>消费者<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException, MQClientException </span>&#123;</span><br><span class="line"></span><br><span class="line">    DefaultMQPushConsumer consumer = <span class="keyword">new</span> DefaultMQPushConsumer(<span class="string">"ConsumerGroupName"</span>);</span><br><span class="line">    <span class="comment">// 指定 NameServer 的地址，多个 NameServer 使用 ; 隔开</span></span><br><span class="line">    consumer.setNamesrvAddr(<span class="string">"127.0.0.1:9876"</span>);</span><br><span class="line">    consumer.setInstanceName(<span class="string">"c001"</span>);</span><br><span class="line">    <span class="comment">// 指定订阅的 Topic 以及 Tag，多个 Tag 使用 || 分开，* 代表全部 Tag</span></span><br><span class="line">    consumer.subscribe(<span class="string">"TopicATest1"</span>, <span class="string">"TagA"</span>);</span><br><span class="line">    <span class="comment">// 可以设定开始消费的位置，仅针对 Push Consumer</span></span><br><span class="line">    consumer.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_FIRST_OFFSET);</span><br><span class="line">    <span class="comment">// 可以设定批量消费数量，默认 1，不保证每次的数量，近针对 Push Consumer</span></span><br><span class="line">    consumer.setConsumeMessageBatchMaxSize(<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    consumer.registerMessageListener(<span class="keyword">new</span> MessageListenerConcurrently() &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> ConsumeConcurrentlyStatus <span class="title">consumeMessage</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">            List&lt;MessageExt&gt; msgs, ConsumeConcurrentlyContext context)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">for</span> (MessageExt msg : msgs) &#123;</span><br><span class="line">                System.out.println(<span class="keyword">new</span> String(msg.getBody()));</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> ConsumeConcurrentlyStatus.CONSUME_SUCCESS;  </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    consumer.start();</span><br><span class="line">    System.out.println(<span class="string">"Consumer Started."</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+动手运行一下吧。</li>
+</ul>
+<h2 id="关于配置"><a href="#关于配置" class="headerlink" title="关于配置"></a>关于配置</h2><p>事实上，大多数小伙伴在 RocketMQ 启动时都明显能感觉电脑卡卡的，是因为 RocketMQ 默认需求的内存太大了。那么，如何查看和修订所需要的配置呢？<br>之前我们通过 <code>./mqbroker</code> 启动了 Broker，那么来看一下 mqbroker 的脚本，注意脚本末尾的命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 省略 ROCKETMQ_HOME 的配置</span></span><br><span class="line">sh <span class="variable">$&#123;ROCKETMQ_HOME&#125;</span>/bin/runbroker.sh org.apache.rocketmq.broker.BrokerStartup <span class="variable">$@</span></span><br></pre></td></tr></table></figure>
+<p>这里将启动命令转移给了 runbroker.sh 进行执行。</p>
+<h3 id="JVM-参数配置"><a href="#JVM-参数配置" class="headerlink" title="JVM 参数配置"></a>JVM 参数配置</h3><p>既然如此，继续查看一下 runbroker.sh：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line"><span class="comment">#===========================================================================================</span></span><br><span class="line"><span class="comment"># Java Environment Setting</span></span><br><span class="line"><span class="comment">#===========================================================================================</span></span><br><span class="line">error_exit ()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"ERROR: <span class="variable">$1</span> !!"</span></span><br><span class="line">    <span class="built_in">exit</span> 1</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">[ ! -e <span class="string">"<span class="variable">$JAVA_HOME</span>/bin/java"</span> ] &amp;&amp; JAVA_HOME=<span class="variable">$HOME</span>/jdk/java</span><br><span class="line">[ ! -e <span class="string">"<span class="variable">$JAVA_HOME</span>/bin/java"</span> ] &amp;&amp; JAVA_HOME=/usr/java</span><br><span class="line">[ ! -e <span class="string">"<span class="variable">$JAVA_HOME</span>/bin/java"</span> ] &amp;&amp; error_exit <span class="string">"Please set the JAVA_HOME variable in your environment, We need java(x64)!"</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> JAVA_HOME</span><br><span class="line"><span class="built_in">export</span> JAVA=<span class="string">"<span class="variable">$JAVA_HOME</span>/bin/java"</span></span><br><span class="line"><span class="built_in">export</span> BASE_DIR=$(dirname <span class="variable">$0</span>)/..</span><br><span class="line"><span class="built_in">export</span> CLASSPATH=.:<span class="variable">$&#123;BASE_DIR&#125;</span>/conf:<span class="variable">$&#123;CLASSPATH&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#===========================================================================================</span></span><br><span class="line"><span class="comment"># JVM Configuration</span></span><br><span class="line"><span class="comment">#===========================================================================================</span></span><br><span class="line">JAVA_OPT=<span class="string">"<span class="variable">$&#123;JAVA_OPT&#125;</span> -server -Xms8g -Xmx8g -Xmn4g"</span></span><br><span class="line">JAVA_OPT=<span class="string">"<span class="variable">$&#123;JAVA_OPT&#125;</span> -XX:+UseG1GC -XX:G1HeapRegionSize=16m -XX:G1ReservePercent=25 -XX:InitiatingHeapOccupancyPercent=30 -XX:SoftRefLRUPolicyMSPerMB=0 -XX:SurvivorRatio=8 -XX:+DisableExplicitGC"</span></span><br><span class="line">JAVA_OPT=<span class="string">"<span class="variable">$&#123;JAVA_OPT&#125;</span> -verbose:gc -Xloggc:/dev/shm/mq_gc_%p.log -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintGCApplicationStoppedTime -XX:+PrintAdaptiveSizePolicy"</span></span><br><span class="line">JAVA_OPT=<span class="string">"<span class="variable">$&#123;JAVA_OPT&#125;</span> -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=5 -XX:GCLogFileSize=30m"</span></span><br><span class="line">JAVA_OPT=<span class="string">"<span class="variable">$&#123;JAVA_OPT&#125;</span> -XX:-OmitStackTraceInFastThrow"</span></span><br><span class="line">JAVA_OPT=<span class="string">"<span class="variable">$&#123;JAVA_OPT&#125;</span> -XX:+AlwaysPreTouch"</span></span><br><span class="line">JAVA_OPT=<span class="string">"<span class="variable">$&#123;JAVA_OPT&#125;</span> -XX:MaxDirectMemorySize=15g"</span></span><br><span class="line">JAVA_OPT=<span class="string">"<span class="variable">$&#123;JAVA_OPT&#125;</span> -XX:-UseLargePages -XX:-UseBiasedLocking"</span></span><br><span class="line">JAVA_OPT=<span class="string">"<span class="variable">$&#123;JAVA_OPT&#125;</span> -Djava.ext.dirs=<span class="variable">$&#123;BASE_DIR&#125;</span>/lib"</span></span><br><span class="line"><span class="comment">#JAVA_OPT="$&#123;JAVA_OPT&#125; -Xdebug -Xrunjdwp:transport=dt_socket,address=9555,server=y,suspend=n"</span></span><br><span class="line">JAVA_OPT=<span class="string">"<span class="variable">$&#123;JAVA_OPT&#125;</span> <span class="variable">$&#123;JAVA_OPT_EXT&#125;</span>"</span></span><br><span class="line">JAVA_OPT=<span class="string">"<span class="variable">$&#123;JAVA_OPT&#125;</span> -cp <span class="variable">$&#123;CLASSPATH&#125;</span>"</span></span><br><span class="line"></span><br><span class="line">numactl --interleave=all <span class="built_in">pwd</span> &gt; /dev/null 2&gt;&amp;1</span><br><span class="line"><span class="keyword">if</span> [ $? -eq 0 ]</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">	<span class="keyword">if</span> [ -z <span class="string">"<span class="variable">$RMQ_NUMA_NODE</span>"</span> ] ; <span class="keyword">then</span></span><br><span class="line">		numactl --interleave=all <span class="variable">$JAVA</span> <span class="variable">$&#123;JAVA_OPT&#125;</span> <span class="variable">$@</span></span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		numactl --cpunodebind=<span class="variable">$RMQ_NUMA_NODE</span> --membind=<span class="variable">$RMQ_NUMA_NODE</span> <span class="variable">$JAVA</span> <span class="variable">$&#123;JAVA_OPT&#125;</span> <span class="variable">$@</span></span><br><span class="line">	<span class="keyword">fi</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">	<span class="variable">$JAVA</span> <span class="variable">$&#123;JAVA_OPT&#125;</span> <span class="variable">$@</span></span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
+<p>通过这个文件可以获得很多信息：</p>
+<ul>
+<li>RocketMQ 的 JVM 配置信息<ul>
+<li>需求的内存空间达到了 8g，声明的最大堆外内存达到了 15g，这就是电脑变得卡卡的的原因了。</li>
+<li>可以在启动时配置 <strong>JAVA_OPT_EXT</strong> 变量来配置额外的参数或者覆盖默认配置。</li>
+</ul>
+</li>
+<li>结合 mqbroker.sh 可以发现，最终使用了 BrokerStartup 来启动 RocketMQ，命令行中的参数同时会被传递。</li>
+</ul>
+<h3 id="Broker-实例配置"><a href="#Broker-实例配置" class="headerlink" title="Broker 实例配置"></a>Broker 实例配置</h3><p>那么接下来就去 BrokerStartup 查看一下 RocketMQ 的启动过程。由于这个文件实在是太过冗长，这里不再贴出，感兴趣的小伙伴请自行查看。在这个文件中，主要对命令行中几个具体参数进行了解析：</p>
+<ul>
+<li><code>-m</code>：列出所有的配置项</li>
+<li><code>-p</code>：列出所有的配置项以及默认值</li>
+<li><code>-c</code>：指定一个 properties 文件，读取其中的内容覆盖默认配置并情动</li>
+</ul>
+<h4 id="自定义配置"><a href="#自定义配置" class="headerlink" title="自定义配置"></a>自定义配置</h4><p>所以，很多时候的做法是通过 <code>sh mqbroker -p &gt; mqbroker.properties</code> 来获得一份默认配置文件（网上的方案可能不太准确，具体输出是携带 Rocket 的日志信息的，需要 sed 或者 awk 之类加工处理一下），在此基础上进行配置自定义，然后通后通过 <code>sh mqbroker -c mqbroker.properties</code> 来进行定制化的启动。</p>
+<h4 id="默认配置方案"><a href="#默认配置方案" class="headerlink" title="默认配置方案"></a>默认配置方案</h4><p>同时在 conf 目录下，官方也给出了几种典型的配置方案供参考：</p>
+<ul>
+<li>二主二从异步复制：2m-2s-async 文件夹。这是最典型的生产配置，双 master 获得高可用性，同时主从间的数据同步由异步完成。</li>
+<li>二主二从同步复制：2m-2s-sync 文件夹。除了双 master 的配置，主从间的数据是同步的，也就是说只有在向 salve 成功同步数据才会向客户段返回成功。这保证了在 master 宕机时候消息仍然可以被实时消费，但是性能收到一定影响。</li>
+<li>二主无从：2m-nosalve 文件夹。双主模式仅仅保证了 RocketMQ 的高可用性，然而在一台 master 宕机后，客户端无法消费那批在宕机 master 上持久化的消息，直到宕机 master 恢复正常。当然这个方案节省了硬件资源。</li>
+</ul>
+<p>三种默认配置方案都是采用了异步刷盘，尽管在刷盘间隙宕机会丢失少量数据，但是效率提升可观。</p>
+<h4 id="参考配置类"><a href="#参考配置类" class="headerlink" title="参考配置类"></a>参考配置类</h4><p>Broker 的具体配置分为了具体的四个方面：</p>
+<ul>
+<li>Broker 实例配置：参考源码 <code>org.apache.rocketmq.common.BrokerConfig</code></li>
+<li>Netty 服务端配置：参考源码 <code>org.apache.rocketmq.remoting.netty.NettyServerConfig</code></li>
+<li>Netty 客户端配置：参考源码 <code>org.apache.rocketmq.remoting.netty.NettyClientConfig</code></li>
+<li>Message 持久化配置：参考源码 <code>org.apache.rocketmq.store.config.MessageStoreConfig</code></li>
+</ul>
+<p>关于 RocketMQ 的启动和配置，就先告一段落。</p>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">相关文章</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2018/08/RocketMQ-Consumer-摘要/" rel="bookmark">RocketMQ Consumer 摘要</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2018/08/RocketMQ-Producer-摘要/" rel="bookmark">RocketMQ Producer 摘要</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2018/08/RocketMQ-服务端消息过滤/" rel="bookmark">RocketMQ 服务端消息过滤</a></div>
+    </li>
+  </ul>
+
+        <div class="reward-container">
+  <div>谢谢支持！</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.jpg" alt="斯特拉不用电 微信支付">
+        <p>微信支付</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>斯特拉不用电
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://caoziye.top/2018/07/RocketMQ-%E9%85%8D%E7%BD%AE%E6%8E%A2%E7%B4%A2/" title="RocketMQ 配置探索">https://caoziye.top/2018/07/RocketMQ-配置探索/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/MQ/" rel="tag"># MQ</a>
+              <a href="/tags/RocketMQ/" rel="tag"># RocketMQ</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/07/%E5%AE%9E%E7%8E%B0-MyBatis-%E6%8F%92%E4%BB%B6/" rel="prev" title="实现 MyBatis 插件">
+      <i class="fa fa-chevron-left"></i> 实现 MyBatis 插件
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/08/RocketMQ-%E9%85%8D%E7%BD%AE%E9%A1%B9/" rel="next" title="RokcetMQ 配置项">
+      RokcetMQ 配置项 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#优势"><span class="nav-number">1.</span> <span class="nav-text">优势</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基本概念"><span class="nav-number">2.</span> <span class="nav-text">基本概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#初次使用"><span class="nav-number">3.</span> <span class="nav-text">初次使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#下载"><span class="nav-number">3.1.</span> <span class="nav-text">下载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动"><span class="nav-number">3.2.</span> <span class="nav-text">启动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试"><span class="nav-number">3.3.</span> <span class="nav-text">测试</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于配置"><span class="nav-number">4.</span> <span class="nav-text">关于配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#JVM-参数配置"><span class="nav-number">4.1.</span> <span class="nav-text">JVM 参数配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Broker-实例配置"><span class="nav-number">4.2.</span> <span class="nav-text">Broker 实例配置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#自定义配置"><span class="nav-number">4.2.1.</span> <span class="nav-text">自定义配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#默认配置方案"><span class="nav-number">4.2.2.</span> <span class="nav-text">默认配置方案</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考配置类"><span class="nav-number">4.2.3.</span> <span class="nav-text">参考配置类</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">斯特拉不用电</p>
+  <div class="site-description" itemprop="description">留下思考和记录才能让代码更酷</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">29</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/kun3375" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;kun3375" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:kun3375@gmail.com" title="E-Mail → mailto:kun3375@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh" class="cc-opacity" rel="external nofollow noopener noreferrer" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">斯特拉不用电</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数">99k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:50</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://muse.theme-next.org/" class="theme-link" rel="external nofollow noopener noreferrer" target="_blank">NexT.Muse</a> v7.7.1
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script color="0,0,255" opacity="0.5" zindex="-1" count="99" src="/lib/canvas-nest/canvas-nest-nomobile.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'ae3ec12efda7fbbba32f',
+      clientSecret: 'ca42d298b0fda51fd3b4327e6c7d7f676fd0e815',
+      repo        : 'kun3375.github.io',
+      owner       : 'Kun3375',
+      admin       : ['Kun3375'],
+      id          : decodeURI(location.pathname),
+        language: '',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>
