@@ -1,6 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>ZK 的主机选举与数据同步</title>
+    <url>/2021/02/ZK-%E7%9A%84%E4%B8%BB%E6%9C%BA%E9%80%89%E4%B8%BE%E4%B8%8E%E6%95%B0%E6%8D%AE%E5%90%8C%E6%AD%A5/</url>
+    <content><![CDATA[<h4 id="集群角色"><a href="#集群角色" class="headerlink" title="集群角色"></a>集群角色</h4><h5 id="Leader"><a href="#Leader" class="headerlink" title="Leader"></a>Leader</h5><ul>
+<li>集群内只有一个 Leader，负责调度处理事务请求，保证事务顺序性</li>
+<li>和 Follower 一样可以处理客户端的读请求</li>
+<li>Leader 也是集群内部服务的调度者</li>
+</ul>
+<h5 id="Follower"><a href="#Follower" class="headerlink" title="Follower"></a>Follower</h5><ul>
+<li>处理客户端的读请求；事务请求会转发给 Leader 处理</li>
+<li>参与投票，包括事务 Proposal、Leader 选举</li>
+</ul>
+<h5 id="Observer-3-3-0"><a href="#Observer-3-3-0" class="headerlink" title="Observer(3.3.0+)"></a>Observer(3.3.0+)</h5><ul>
+<li>处理客户端的读请求；事务请求会转发给 Leader 处理</li>
+<li>不参与任何投票，无论是选举还是事务写过半成功；也会不作为 Leader 候选者</li>
+<li>因为不会成为 Leader， 所以不需要对数据进行持久化，故障恢复时会从 Leader 同步整个命名空间</li>
+<li>添加 Observer 可以在不降低事务能力的同时增加读请求的吞吐量</li>
+</ul>
+<h4 id="ZAB-协议"><a href="#ZAB-协议" class="headerlink" title="ZAB 协议"></a>ZAB 协议</h4><p>ZK 保证各服务端同步的核心是他的 Zookeeper Atomic Broadcast 协议。ZAB 被使用在 ZK 的选举过程和同步过程中。</p>
+<h5 id="主机选举"><a href="#主机选举" class="headerlink" title="主机选举"></a>主机选举</h5><ol>
+<li>Server 进入 Looking 状态，每个 Server 发出投票给其他通信的 Server，主要内容包含<ul>
+<li>id(sid) 被推举的 Server 标识，初始情况下是本机 sid</li>
+<li>zxid 被推举的 Server 的 zxid，初始情况下是本机的 zxid</li>
+<li>electionEpoch 选举纪元，判断收到的投票是否是本轮选票</li>
+</ul>
+</li>
+<li>Server 接收他人投票，验证本机状态和选票有效性<a id="more"></a></li>
+<li>处理投票，优先选择 zxid 大者，其次选择 sid 大者。如果投票被更新，则再次广播</li>
+<li>统计投票，一单某 Server 得票超过一半，则被视为 Leader，对应 Server 从 Looking 状态变更为 Leading，其他从 Looking 变更为 Following</li>
+</ol>
+<h5 id="恢复阶段"><a href="#恢复阶段" class="headerlink" title="恢复阶段"></a>恢复阶段</h5><ol>
+<li>Leader 为每个 Follower 准备一个 LearnerHandler 线程服务</li>
+<li>Follower 向 Leader 发送自己的信息，其中包含 peerEpoch</li>
+<li>Leader 接受 Follower 信息，选择最大 peerEpoch + 1 确定为本届的 epoch，将 epoch 与本机信息发送给 Follower</li>
+<li>Follower 接受新的 peerEpoch，并组合新的 zxid 发送给 Leader</li>
+<li>Leader 接受 Follower 的 zxid，与自己相比较来确定数据差异，进行数据同步<ul>
+<li>如果两者 zxid 一致，说明同步完成。否则判断 Follower 的 zxid 是否在 minCommittedLog 与 maxCommittedLog 之间</li>
+<li>如果 Follower zxid 小于 minCommittedLog，直接让 Follower 采用快照恢复</li>
+<li>如果 Follower zxid 大于 maxCommittedLog，此时取信与 Leader，删除 Follower 超出的事务日志</li>
+<li>如果 Follower zxid 介于中间，Leader 会传输 zxid 至 maxCommittedLog 之间的事务</li>
+</ul>
+</li>
+</ol>
+<h5 id="数据广播"><a href="#数据广播" class="headerlink" title="数据广播"></a>数据广播</h5><p>Server 端的几个重要数据结构：</p>
+<ul>
+<li><code>long lastProcessedZxid</code> 记录最新的事务编号</li>
+<li><code>LinkedList&lt;Proposal&gt; committedLog</code> 最近一段时间内的提案队列，默认大小是 500</li>
+<li><code>long minCommittedLog</code> 提案队列中最小的事务编号</li>
+<li><code>long maxCommittedLog</code> 提案队列中最大的事务编号</li>
+<li><code>ConcurrentMap&lt;Long, Proposal&gt; outstandingProposals</code> 保存等待表决的提案，Leader 独占的数据结构</li>
+<li><code>ConcurrentLinkedQueue&lt;Proposal&gt; toBeApplied</code> 保存准备提交的提案，Leader 独占的数据结构<br>事务生效的过程核心在于 Leader</li>
+</ul>
+<ol>
+<li>Leader 接受到客户端写请求，创建提案，保存在 <code>outstandingProposals</code> 当中</li>
+<li>Leader 向 Follower 广播提案，如果获得半数以上通过，则从 <code>outstandingProposals</code> 中删除，转移到 <code>toBeApplied</code></li>
+<li>Leader 想 Follower 广播提交，同时自己也开始提交过程。数据保存进内存树，更新 <code>lastProcessedZxid</code> 以及 <em>Log</em> 相关数据</li>
+<li>Leader 响应客户端并将之前的提案从 <code>toBeApplied</code> 删除。</li>
+</ol>
+]]></content>
+      <categories>
+        <category>Zookeeper</category>
+      </categories>
+      <tags>
+        <tag>Zookeeper</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>修改系统对应用的限制</title>
     <url>/2020/12/%E4%BF%AE%E6%94%B9%E7%B3%BB%E7%BB%9F%E5%AF%B9%E5%BA%94%E7%94%A8%E7%9A%84%E9%99%90%E5%88%B6/</url>
     <content><![CDATA[<h2 id="应用限制的修改"><a href="#应用限制的修改" class="headerlink" title="应用限制的修改"></a>应用限制的修改</h2><p>在调优过程中，在修改应用程序本身参数之前，需要确认系统环境的配置是否满足要求。涉及到内存、文件描述符、文件大小等一系列的限制。而由于系统的保守，一般服务端应用的需求会大于系统的默认限制。那么如何查看和修改，就是首先要解决的问题了。</p>
