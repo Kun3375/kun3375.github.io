@@ -50,12 +50,19 @@
 <li><code>long minCommittedLog</code> 提案队列中最小的事务编号</li>
 <li><code>long maxCommittedLog</code> 提案队列中最大的事务编号</li>
 <li><code>ConcurrentMap&lt;Long, Proposal&gt; outstandingProposals</code> 保存等待表决的提案，Leader 独占的数据结构</li>
-<li><code>ConcurrentLinkedQueue&lt;Proposal&gt; toBeApplied</code> 保存准备提交的提案，Leader 独占的数据结构<br>事务生效的过程核心在于 Leader</li>
+<li><code>ConcurrentLinkedQueue&lt;Proposal&gt; toBeApplied</code> 保存准备提交的提案，Leader 独占的数据结构</li>
 </ul>
+<p>事务生效的过程核心在于 Leader</p>
 <ol>
 <li>Leader 接受到客户端写请求，创建提案，保存在 <code>outstandingProposals</code> 当中</li>
 <li>Leader 向 Follower 广播提案，如果获得半数以上通过，则从 <code>outstandingProposals</code> 中删除，转移到 <code>toBeApplied</code></li>
-<li>Leader 想 Follower 广播提交，同时自己也开始提交过程。数据保存进内存树，更新 <code>lastProcessedZxid</code> 以及 <em>Log</em> 相关数据</li>
+<li>Leader 向 Follower 广播提交，同时自己也开始提交过程。数据保存进内存树，更新 <code>lastProcessedZxid</code> 以及 <em>Log</em> 相关数据。这一步可以更具体一点：<ol>
+<li>先向 Follower 进行广播，通知提交</li>
+<li>主机进行刷盘，每个请求都会被刷盘，毕竟这样才会保证数据不被丢失。但是刷盘的动作每次触发显然很影响效率，这里会有一个间隔，批量地刷盘，以增加部分请求的延迟为代价提升整体的吞吐量</li>
+<li>等待足够的 Follower 回复</li>
+<li>进行下一步响应给客户端</li>
+</ol>
+</li>
 <li>Leader 响应客户端并将之前的提案从 <code>toBeApplied</code> 删除。</li>
 </ol>
 ]]></content>
