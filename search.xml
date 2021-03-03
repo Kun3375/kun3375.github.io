@@ -1,6 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Kafka 手记</title>
+    <url>/2021/03/Kafka-%E6%89%8B%E8%AE%B0/</url>
+    <content><![CDATA[<h3 id="Kafka-架构"><a href="#Kafka-架构" class="headerlink" title="Kafka 架构"></a>Kafka 架构</h3><ul>
+<li><strong>Topic</strong> 消息主题，用来业务上区分不同类型的消息。</li>
+<li><strong>Partition</strong> 物理分区，是一个有消息组成的队列，消息的 <em>offset</em> 记录着它在某个 <em>Partition</em> 下的位置；每个 <em>Topic</em> 下都有若干 <em>Partition<em>。</em>Partitio</em> 上消息被消费 Kafka 并不关心，保留指定时间后删除或者 Partition 文件过大时删除<ul>
+<li><strong>Leader</strong> Kafka 这里 Leader 是针对某个 <em>Partition</em> 而言，负责和 Producer、Consumer 交互</li>
+<li><strong>Follower</strong> 和 <em>Leader</em> 一样针对 <em>Partitio</em> 的概念，只负责同步备份数据，做 <em>Leader</em> 的备胎</li>
+</ul>
+</li>
+<li><strong>Broker</strong> Kafka 服务端，即一个 Kafka 实例，会将自己的信息、Topic 信息注册到 ZK 上。</li>
+<li><strong>Producer</strong> <strong>Consumer</strong> 消息生产者和消费者，没什么好多说的。<em>Consumer</em> 也会向 ZK 注册自己的信息用来负载均衡.<ul>
+<li><strong>ConsumerGroup</strong> 消费者组，一条消息只会被同一组内的一个 Consumer 消费，可以被不同组的 Consumer 消费；这个配置决定了 Kafka 表现为广播模式还是单播模式。</li>
+</ul>
+</li>
+</ul>
+<h3 id="Kafka-重要术语"><a href="#Kafka-重要术语" class="headerlink" title="Kafka 重要术语"></a>Kafka 重要术语</h3><ul>
+<li><code>ISR</code> In-Sync Replicas 同步中的 Partition 集合，其中包括 Leader 本身，刨除了落后过多的副本。<a id="more"></a></li>
+<li><code>HW</code> HighWatermark 对于 Leader 的概念，Consumer 可以看到在 Partition 上的最新消息 offset。</li>
+<li><code>LEO</code> logEndOffset，是每个 Partition 的 log 最后一条 Message 的位置。Leader 上 LEO &gt;= HW。</li>
+</ul>
+<h3 id="Kafka-技术细节"><a href="#Kafka-技术细节" class="headerlink" title="Kafka 技术细节"></a>Kafka 技术细节</h3><h4 id="Kafka-速度快"><a href="#Kafka-速度快" class="headerlink" title="Kafka 速度快"></a>Kafka 速度快</h4><ul>
+<li>零拷贝技术。避免用户态和内核态的多次切换，Java 使用 TransferTo() 来直接从操作系统输入端 Buffer 中转移到输出端</li>
+<li>顺序写入磁盘 WAL，顺序写入可以显著地增加磁盘千倍的性能，尤其对于机械硬盘来说。</li>
+<li>应用层面，支持数据的批量发送和批量获取</li>
+</ul>
+<h4 id="消息发送"><a href="#消息发送" class="headerlink" title="消息发送"></a>消息发送</h4><p>Producer 发送：</p>
+<ol>
+<li>消息发送时会触发一个线程拉取集群元数据，相当于一个懒初始化的过程</li>
+<li>消息发送是同步/异步取决于 <code>producer.type=sync/async</code></li>
+<li>Producer 现将消息进行序列化处理</li>
+<li>选择消息对应投递的 Partition<ol>
+<li>如果消息指定了投递的 Partition 则直接选择该 Partition</li>
+<li>如果消息存在 Key 值，则 <code>Hash(Key)%Partitions</code> 选出 Partition</li>
+<li>轮询选择 Partition</li>
+</ol>
+</li>
+<li>检查消息大小限制</li>
+<li>异步发送的情况，对消息绑定对调函数</li>
+<li>加入缓存等待发送。异步模式采用批次发送，当批次超过 <code>batch.size</code>（默认 16KB） 或是消息滞留时间超过 <code>linger.time</code> 就会发送出去。单条消息超过 <code>batch.size</code> 会单独做一个批次处理</li>
+</ol>
+<p>Broker 收到后：</p>
+<ol>
+<li>Leader Partition 会写入本地 Log</li>
+<li>响应 Follower，Follower 也会把消息进行持久化，然后给 Leader ACK</li>
+<li>Leader 收到 ISR (In-Sync Replicas) 的 ACK 后增加 HW</li>
+<li>返回 Producer ACK。取决于 Producer <code>request.required.acks</code> 配置是否需要 ISR 全部同步、还是 Leader 持久化完成、还是不关心，分别配置为 -1, 1, 0</li>
+</ol>
+<h4 id="消息消费"><a href="#消息消费" class="headerlink" title="消息消费"></a>消息消费</h4><ul>
+<li>对于超过 Partition 数量的 Consumer 会无法进行消息消费</li>
+<li>如果 Consumer 少于 Partition，部分 Consumer 会消费多个 Partition</li>
+<li>如果一个 Consumer 同时消费多个 Partion，无法保证单个 Consumer 消费消息的顺序；如果 Topic 整体存在多个 Partition，则无法保证全局的消息消费顺序</li>
+</ul>
+<h4 id="消息存储"><a href="#消息存储" class="headerlink" title="消息存储"></a>消息存储</h4><ul>
+<li>消息存储在 <topic>-<offset_x>.log 和 .index 文件中，index 用来快速索引消息在 log 文件中的位置</offset_x></topic></li>
+<li>Kafka 由于每个 Partition 都会产生日志文件，当 Partition 过多时候批量写入会退化得不再那么顺序…</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Kafka</category>
+      </categories>
+      <tags>
+        <tag>Kafka</tag>
+        <tag>MQ</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>ZK 的主机选举与数据同步</title>
     <url>/2021/02/ZK-%E7%9A%84%E4%B8%BB%E6%9C%BA%E9%80%89%E4%B8%BE%E4%B8%8E%E6%95%B0%E6%8D%AE%E5%90%8C%E6%AD%A5/</url>
     <content><![CDATA[<h4 id="集群角色"><a href="#集群角色" class="headerlink" title="集群角色"></a>集群角色</h4><h5 id="Leader"><a href="#Leader" class="headerlink" title="Leader"></a>Leader</h5><ul>
@@ -779,8 +845,8 @@
       </categories>
       <tags>
         <tag>Java</tag>
-        <tag>MQ</tag>
         <tag>Kafka</tag>
+        <tag>MQ</tag>
       </tags>
   </entry>
   <entry>

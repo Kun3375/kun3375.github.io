@@ -20,20 +20,21 @@
     var CONFIG = {"hostname":"caoziye.top","root":"/","scheme":"Muse","version":"7.7.1","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="集群角色Leader 集群内只有一个 Leader，负责调度处理事务请求，保证事务顺序性 和 Follower 一样可以处理客户端的读请求 Leader 也是集群内部服务的调度者  Follower 处理客户端的读请求；事务请求会转发给 Leader 处理 参与投票，包括事务 Proposal、Leader 选举  Observer(3.3.0+) 处理客户端的读请求；事务请求会转发给 Leade">
+  <meta name="description" content="Kafka 架构 Topic 消息主题，用来业务上区分不同类型的消息。 Partition 物理分区，是一个有消息组成的队列，消息的 offset 记录着它在某个 Partition 下的位置；每个 Topic 下都有若干 Partition。Partitio 上消息被消费 Kafka 并不关心，保留指定时间后删除或者 Partition 文件过大时删除 Leader Kafka 这里 Leade">
 <meta property="og:type" content="article">
-<meta property="og:title" content="ZK 的主机选举与数据同步">
-<meta property="og:url" content="https://caoziye.top/2021/02/ZK-%E7%9A%84%E4%B8%BB%E6%9C%BA%E9%80%89%E4%B8%BE%E4%B8%8E%E6%95%B0%E6%8D%AE%E5%90%8C%E6%AD%A5/index.html">
+<meta property="og:title" content="Kafka 手记">
+<meta property="og:url" content="https://caoziye.top/2021/03/Kafka-%E6%89%8B%E8%AE%B0/index.html">
 <meta property="og:site_name" content="码文小记">
-<meta property="og:description" content="集群角色Leader 集群内只有一个 Leader，负责调度处理事务请求，保证事务顺序性 和 Follower 一样可以处理客户端的读请求 Leader 也是集群内部服务的调度者  Follower 处理客户端的读请求；事务请求会转发给 Leader 处理 参与投票，包括事务 Proposal、Leader 选举  Observer(3.3.0+) 处理客户端的读请求；事务请求会转发给 Leade">
+<meta property="og:description" content="Kafka 架构 Topic 消息主题，用来业务上区分不同类型的消息。 Partition 物理分区，是一个有消息组成的队列，消息的 offset 记录着它在某个 Partition 下的位置；每个 Topic 下都有若干 Partition。Partitio 上消息被消费 Kafka 并不关心，保留指定时间后删除或者 Partition 文件过大时删除 Leader Kafka 这里 Leade">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-02-25T15:27:24.000Z">
-<meta property="article:modified_time" content="2021-02-26T07:01:21.521Z">
+<meta property="article:published_time" content="2021-03-03T15:46:22.000Z">
+<meta property="article:modified_time" content="2021-03-03T15:50:37.637Z">
 <meta property="article:author" content="斯特拉不用电">
-<meta property="article:tag" content="Zookeeper">
+<meta property="article:tag" content="Kafka">
+<meta property="article:tag" content="MQ">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://caoziye.top/2021/02/ZK-%E7%9A%84%E4%B8%BB%E6%9C%BA%E9%80%89%E4%B8%BE%E4%B8%8E%E6%95%B0%E6%8D%AE%E5%90%8C%E6%AD%A5/">
+<link rel="canonical" href="https://caoziye.top/2021/03/Kafka-%E6%89%8B%E8%AE%B0/">
 
 
 <script id="page-configurations">
@@ -45,7 +46,7 @@
   };
 </script>
 
-  <title>ZK 的主机选举与数据同步 | 码文小记</title>
+  <title>Kafka 手记 | 码文小记</title>
   
 
 
@@ -186,7 +187,7 @@
   
   
   <article itemscope="" itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://caoziye.top/2021/02/ZK-%E7%9A%84%E4%B8%BB%E6%9C%BA%E9%80%89%E4%B8%BE%E4%B8%8E%E6%95%B0%E6%8D%AE%E5%90%8C%E6%AD%A5/">
+    <link itemprop="mainEntityOfPage" href="https://caoziye.top/2021/03/Kafka-%E6%89%8B%E8%AE%B0/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -199,7 +200,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          ZK 的主机选举与数据同步
+          Kafka 手记
         </h2>
 
         <div class="post-meta">
@@ -208,23 +209,17 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2021-02-25 23:27:24" itemprop="dateCreated datePublished" datetime="2021-02-25T23:27:24+08:00">2021-02-25</time>
+              <time title="创建时间：2021-03-03 23:46:22 / 修改时间：23:50:37" itemprop="dateCreated datePublished" datetime="2021-03-03T23:46:22+08:00">2021-03-03</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-02-26 15:01:21" itemprop="dateModified" datetime="2021-02-26T15:01:21+08:00">2021-02-26</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/Zookeeper/" itemprop="url" rel="index"><span itemprop="name">Zookeeper</span></a>
+                  <a href="/categories/Kafka/" itemprop="url" rel="index"><span itemprop="name">Kafka</span></a>
                 </span>
             </span>
 
@@ -241,7 +236,7 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>1.8k</span>
+              <span>1.6k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -260,68 +255,60 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h4 id="集群角色"><a href="#集群角色" class="headerlink" title="集群角色"></a>集群角色</h4><h5 id="Leader"><a href="#Leader" class="headerlink" title="Leader"></a>Leader</h5><ul>
-<li>集群内只有一个 Leader，负责调度处理事务请求，保证事务顺序性</li>
-<li>和 Follower 一样可以处理客户端的读请求</li>
-<li>Leader 也是集群内部服务的调度者</li>
-</ul>
-<h5 id="Follower"><a href="#Follower" class="headerlink" title="Follower"></a>Follower</h5><ul>
-<li>处理客户端的读请求；事务请求会转发给 Leader 处理</li>
-<li>参与投票，包括事务 Proposal、Leader 选举</li>
-</ul>
-<h5 id="Observer-3-3-0"><a href="#Observer-3-3-0" class="headerlink" title="Observer(3.3.0+)"></a>Observer(3.3.0+)</h5><ul>
-<li>处理客户端的读请求；事务请求会转发给 Leader 处理</li>
-<li>不参与任何投票，无论是选举还是事务写过半成功；也会不作为 Leader 候选者</li>
-<li>因为不会成为 Leader， 所以不需要对数据进行持久化，故障恢复时会从 Leader 同步整个命名空间</li>
-<li>添加 Observer 可以在不降低事务能力的同时增加读请求的吞吐量</li>
-</ul>
-<h4 id="ZAB-协议"><a href="#ZAB-协议" class="headerlink" title="ZAB 协议"></a>ZAB 协议</h4><p>ZK 保证各服务端同步的核心是他的 Zookeeper Atomic Broadcast 协议。ZAB 被使用在 ZK 的选举过程和同步过程中。</p>
-<h5 id="主机选举"><a href="#主机选举" class="headerlink" title="主机选举"></a>主机选举</h5><ol>
-<li>Server 进入 Looking 状态，每个 Server 发出投票给其他通信的 Server，主要内容包含<ul>
-<li>id(sid) 被推举的 Server 标识，初始情况下是本机 sid</li>
-<li>zxid 被推举的 Server 的 zxid，初始情况下是本机的 zxid</li>
-<li>electionEpoch 选举纪元，判断收到的投票是否是本轮选票</li>
+        <h3 id="Kafka-架构"><a href="#Kafka-架构" class="headerlink" title="Kafka 架构"></a>Kafka 架构</h3><ul>
+<li><strong>Topic</strong> 消息主题，用来业务上区分不同类型的消息。</li>
+<li><strong>Partition</strong> 物理分区，是一个有消息组成的队列，消息的 <em>offset</em> 记录着它在某个 <em>Partition</em> 下的位置；每个 <em>Topic</em> 下都有若干 <em>Partition<em>。</em>Partitio</em> 上消息被消费 Kafka 并不关心，保留指定时间后删除或者 Partition 文件过大时删除<ul>
+<li><strong>Leader</strong> Kafka 这里 Leader 是针对某个 <em>Partition</em> 而言，负责和 Producer、Consumer 交互</li>
+<li><strong>Follower</strong> 和 <em>Leader</em> 一样针对 <em>Partitio</em> 的概念，只负责同步备份数据，做 <em>Leader</em> 的备胎</li>
 </ul>
 </li>
-<li>Server 接收他人投票，验证本机状态和选票有效性<a id="more"></a></li>
-<li>处理投票，优先选择 zxid 大者，其次选择 sid 大者。如果投票被更新，则再次广播</li>
-<li>统计投票，一单某 Server 得票超过一半，则被视为 Leader，对应 Server 从 Looking 状态变更为 Leading，其他从 Looking 变更为 Following</li>
-</ol>
-<h5 id="恢复阶段"><a href="#恢复阶段" class="headerlink" title="恢复阶段"></a>恢复阶段</h5><ol>
-<li>Leader 为每个 Follower 准备一个 LearnerHandler 线程服务</li>
-<li>Follower 向 Leader 发送自己的信息，其中包含 peerEpoch</li>
-<li>Leader 接受 Follower 信息，选择最大 peerEpoch + 1 确定为本届的 epoch，将 epoch 与本机信息发送给 Follower</li>
-<li>Follower 接受新的 peerEpoch，并组合新的 zxid 发送给 Leader</li>
-<li>Leader 接受 Follower 的 zxid，与自己相比较来确定数据差异，进行数据同步<ul>
-<li>如果两者 zxid 一致，说明同步完成。否则判断 Follower 的 zxid 是否在 minCommittedLog 与 maxCommittedLog 之间</li>
-<li>如果 Follower zxid 小于 minCommittedLog，直接让 Follower 采用快照恢复</li>
-<li>如果 Follower zxid 大于 maxCommittedLog，此时取信与 Leader，删除 Follower 超出的事务日志</li>
-<li>如果 Follower zxid 介于中间，Leader 会传输 zxid 至 maxCommittedLog 之间的事务</li>
+<li><strong>Broker</strong> Kafka 服务端，即一个 Kafka 实例，会将自己的信息、Topic 信息注册到 ZK 上。</li>
+<li><strong>Producer</strong> <strong>Consumer</strong> 消息生产者和消费者，没什么好多说的。<em>Consumer</em> 也会向 ZK 注册自己的信息用来负载均衡.<ul>
+<li><strong>ConsumerGroup</strong> 消费者组，一条消息只会被同一组内的一个 Consumer 消费，可以被不同组的 Consumer 消费；这个配置决定了 Kafka 表现为广播模式还是单播模式。</li>
 </ul>
 </li>
-</ol>
-<h5 id="数据广播"><a href="#数据广播" class="headerlink" title="数据广播"></a>数据广播</h5><p>Server 端的几个重要数据结构：</p>
-<ul>
-<li><code>long lastProcessedZxid</code> 记录最新的事务编号</li>
-<li><code>LinkedList&lt;Proposal&gt; committedLog</code> 最近一段时间内的提案队列，默认大小是 500</li>
-<li><code>long minCommittedLog</code> 提案队列中最小的事务编号</li>
-<li><code>long maxCommittedLog</code> 提案队列中最大的事务编号</li>
-<li><code>ConcurrentMap&lt;Long, Proposal&gt; outstandingProposals</code> 保存等待表决的提案，Leader 独占的数据结构</li>
-<li><code>ConcurrentLinkedQueue&lt;Proposal&gt; toBeApplied</code> 保存准备提交的提案，Leader 独占的数据结构</li>
 </ul>
-<p>事务生效的过程核心在于 Leader</p>
+<h3 id="Kafka-重要术语"><a href="#Kafka-重要术语" class="headerlink" title="Kafka 重要术语"></a>Kafka 重要术语</h3><ul>
+<li><code>ISR</code> In-Sync Replicas 同步中的 Partition 集合，其中包括 Leader 本身，刨除了落后过多的副本。<a id="more"></a></li>
+<li><code>HW</code> HighWatermark 对于 Leader 的概念，Consumer 可以看到在 Partition 上的最新消息 offset。</li>
+<li><code>LEO</code> logEndOffset，是每个 Partition 的 log 最后一条 Message 的位置。Leader 上 LEO &gt;= HW。</li>
+</ul>
+<h3 id="Kafka-技术细节"><a href="#Kafka-技术细节" class="headerlink" title="Kafka 技术细节"></a>Kafka 技术细节</h3><h4 id="Kafka-速度快"><a href="#Kafka-速度快" class="headerlink" title="Kafka 速度快"></a>Kafka 速度快</h4><ul>
+<li>零拷贝技术。避免用户态和内核态的多次切换，Java 使用 TransferTo() 来直接从操作系统输入端 Buffer 中转移到输出端</li>
+<li>顺序写入磁盘 WAL，顺序写入可以显著地增加磁盘千倍的性能，尤其对于机械硬盘来说。</li>
+<li>应用层面，支持数据的批量发送和批量获取</li>
+</ul>
+<h4 id="消息发送"><a href="#消息发送" class="headerlink" title="消息发送"></a>消息发送</h4><p>Producer 发送：</p>
 <ol>
-<li>Leader 接受到客户端写请求，创建提案，保存在 <code>outstandingProposals</code> 当中</li>
-<li>Leader 向 Follower 广播提案，如果获得半数以上通过，则从 <code>outstandingProposals</code> 中删除，转移到 <code>toBeApplied</code></li>
-<li>Leader 向 Follower 广播提交，同时自己也开始提交过程。数据保存进内存树，更新 <code>lastProcessedZxid</code> 以及 <em>Log</em> 相关数据。这一步可以更具体一点：<ol>
-<li>先向 Follower 进行广播，通知提交</li>
-<li>主机进行刷盘，每个请求都会被刷盘，毕竟这样才会保证数据不被丢失。但是刷盘的动作每次触发显然很影响效率，这里会有一个间隔，批量地刷盘，以增加部分请求的延迟为代价提升整体的吞吐量</li>
-<li>等待足够的 Follower 回复</li>
-<li>进行下一步响应给客户端</li>
+<li>消息发送时会触发一个线程拉取集群元数据，相当于一个懒初始化的过程</li>
+<li>消息发送是同步/异步取决于 <code>producer.type=sync/async</code></li>
+<li>Producer 现将消息进行序列化处理</li>
+<li>选择消息对应投递的 Partition<ol>
+<li>如果消息指定了投递的 Partition 则直接选择该 Partition</li>
+<li>如果消息存在 Key 值，则 <code>Hash(Key)%Partitions</code> 选出 Partition</li>
+<li>轮询选择 Partition</li>
 </ol>
 </li>
-<li>Leader 响应客户端并将之前的提案从 <code>toBeApplied</code> 删除。</li>
+<li>检查消息大小限制</li>
+<li>异步发送的情况，对消息绑定对调函数</li>
+<li>加入缓存等待发送。异步模式采用批次发送，当批次超过 <code>batch.size</code>（默认 16KB） 或是消息滞留时间超过 <code>linger.time</code> 就会发送出去。单条消息超过 <code>batch.size</code> 会单独做一个批次处理</li>
 </ol>
+<p>Broker 收到后：</p>
+<ol>
+<li>Leader Partition 会写入本地 Log</li>
+<li>响应 Follower，Follower 也会把消息进行持久化，然后给 Leader ACK</li>
+<li>Leader 收到 ISR (In-Sync Replicas) 的 ACK 后增加 HW</li>
+<li>返回 Producer ACK。取决于 Producer <code>request.required.acks</code> 配置是否需要 ISR 全部同步、还是 Leader 持久化完成、还是不关心，分别配置为 -1, 1, 0</li>
+</ol>
+<h4 id="消息消费"><a href="#消息消费" class="headerlink" title="消息消费"></a>消息消费</h4><ul>
+<li>对于超过 Partition 数量的 Consumer 会无法进行消息消费</li>
+<li>如果 Consumer 少于 Partition，部分 Consumer 会消费多个 Partition</li>
+<li>如果一个 Consumer 同时消费多个 Partion，无法保证单个 Consumer 消费消息的顺序；如果 Topic 整体存在多个 Partition，则无法保证全局的消息消费顺序</li>
+</ul>
+<h4 id="消息存储"><a href="#消息存储" class="headerlink" title="消息存储"></a>消息存储</h4><ul>
+<li>消息存储在 <topic>-<offset_x>.log 和 .index 文件中，index 用来快速索引消息在 log 文件中的位置</offset_x></topic></li>
+<li>Kafka 由于每个 Partition 都会产生日志文件，当 Partition 过多时候批量写入会退化得不再那么顺序…</li>
+</ul>
 
     </div>
 
@@ -329,6 +316,18 @@
     
     
       
+  <div class="popular-posts-header">相关文章</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2019/04/SpringKafkaConsumer-增效/" rel="bookmark">SpringKafkaListener 增效</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2018/08/RocketMQ-Producer-摘要/" rel="bookmark">RocketMQ Producer 摘要</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2018/08/RocketMQ-Consumer-摘要/" rel="bookmark">RocketMQ Consumer 摘要</a></div>
+    </li>
+  </ul>
 
         <div class="reward-container">
   <div>谢谢支持！</div>
@@ -354,7 +353,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://caoziye.top/2021/02/ZK-%E7%9A%84%E4%B8%BB%E6%9C%BA%E9%80%89%E4%B8%BE%E4%B8%8E%E6%95%B0%E6%8D%AE%E5%90%8C%E6%AD%A5/" title="ZK 的主机选举与数据同步">https://caoziye.top/2021/02/ZK-的主机选举与数据同步/</a>
+    <a href="https://caoziye.top/2021/03/Kafka-%E6%89%8B%E8%AE%B0/" title="Kafka 手记">https://caoziye.top/2021/03/Kafka-手记/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -365,7 +364,8 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/Zookeeper/" rel="tag"># Zookeeper</a>
+              <a href="/tags/Kafka/" rel="tag"># Kafka</a>
+              <a href="/tags/MQ/" rel="tag"># MQ</a>
           </div>
 
         
@@ -374,13 +374,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/12/%E4%BF%AE%E6%94%B9%E7%B3%BB%E7%BB%9F%E5%AF%B9%E5%BA%94%E7%94%A8%E7%9A%84%E9%99%90%E5%88%B6/" rel="prev" title="修改系统对应用的限制">
-      <i class="fa fa-chevron-left"></i> 修改系统对应用的限制
+    <a href="/2021/02/ZK-%E7%9A%84%E4%B8%BB%E6%9C%BA%E9%80%89%E4%B8%BE%E4%B8%8E%E6%95%B0%E6%8D%AE%E5%90%8C%E6%AD%A5/" rel="prev" title="ZK 的主机选举与数据同步">
+      <i class="fa fa-chevron-left"></i> ZK 的主机选举与数据同步
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2021/03/Kafka-%E6%89%8B%E8%AE%B0/" rel="next" title="Kafka 手记">
-      Kafka 手记 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -441,7 +438,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#集群角色"><span class="nav-number">1.</span> <span class="nav-text">集群角色</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Leader"><span class="nav-number">1.1.</span> <span class="nav-text">Leader</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Follower"><span class="nav-number">1.2.</span> <span class="nav-text">Follower</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Observer-3-3-0"><span class="nav-number">1.3.</span> <span class="nav-text">Observer(3.3.0+)</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ZAB-协议"><span class="nav-number">2.</span> <span class="nav-text">ZAB 协议</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#主机选举"><span class="nav-number">2.1.</span> <span class="nav-text">主机选举</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#恢复阶段"><span class="nav-number">2.2.</span> <span class="nav-text">恢复阶段</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#数据广播"><span class="nav-number">2.3.</span> <span class="nav-text">数据广播</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Kafka-架构"><span class="nav-number">1.</span> <span class="nav-text">Kafka 架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Kafka-重要术语"><span class="nav-number">2.</span> <span class="nav-text">Kafka 重要术语</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Kafka-技术细节"><span class="nav-number">3.</span> <span class="nav-text">Kafka 技术细节</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Kafka-速度快"><span class="nav-number">3.1.</span> <span class="nav-text">Kafka 速度快</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#消息发送"><span class="nav-number">3.2.</span> <span class="nav-text">消息发送</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#消息消费"><span class="nav-number">3.3.</span> <span class="nav-text">消息消费</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#消息存储"><span class="nav-number">3.4.</span> <span class="nav-text">消息存储</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
