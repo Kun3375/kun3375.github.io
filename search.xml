@@ -1,6 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>中间件们如何保障数据不丢失？</title>
+    <url>/2021/04/%E4%B8%AD%E9%97%B4%E4%BB%B6%E4%BB%AC%E5%A6%82%E4%BD%95%E4%BF%9D%E9%9A%9C%E6%95%B0%E6%8D%AE%E4%B8%8D%E4%B8%A2%E5%A4%B1%EF%BC%9F/</url>
+    <content><![CDATA[<h4 id="MySQL"><a href="#MySQL" class="headerlink" title="MySQL"></a>MySQL</h4><p>来看看 MySQL 保证数据不丢失的方案：</p>
+<ol>
+<li>配置 <code>sync_binlog=1</code> 每次事务提交 binlog 都进行刷盘；</li>
+<li>配置 <code>innodb_flush_log_at_trx_commit=1</code> 每次事务提交 redo_log 都进行刷盘；</li>
+</ol>
+<p>bin_log、redo_log 持久化的意义不同：</p>
+<ul>
+<li>bin_log 每次都进行持久化，保障了归档内容的完整性；</li>
+<li>redo_log 每次持久化保证了故障恢复的能力，不丢失已完成的事务；</li>
+<li>redo_log 二阶段提交的机制，完整恢复已提交事务需要 <code>sync_binlog=1</code> 配合。<ul>
+<li>如果 redo_log 中事务为 commited，则恢复数据页</li>
+<li>如果 redo_log 中事务为 prepare，则判断 binlog，binlog 中存在则恢复，不存在则舍弃</li>
+</ul>
+</li>
+</ul>
+<p>主备通常不会采用半同步复制方案。只有半同步复制方案下才能保障主机宕机依旧能保有全部数据，但是这影响性能且容易让主机不稳定。异步方案则始终存在主备延迟问题，减轻延迟主要是降低从机负载、减少主机慢 MDL DDL。</p>
+<a id="more"></a>
+
+<h4 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a>Redis</h4><p>持久化方案：</p>
+<ul>
+<li><strong>rdb</strong> 内存快照，<code>save m n</code> 配置设置 M 秒内 N+ 个 key 变动，则触发全盘保存</li>
+<li><strong>aof</strong> 命令追加，每条命令都写入 aof_buf 等待持久化到磁盘，增量记录数据信息。依赖 <code>appendfsync</code> 配置决定刷盘策略<ul>
+<li>no 依赖操作系统进行 write/flush</li>
+<li>always 每次写入进行 flush，只有这个选项会在回复客户端前同步触发刷盘</li>
+<li>everysec 每秒进行 flush</li>
+</ul>
+</li>
+<li>混合持久化，4.0+ 功能，通过 <code>aof-use-rdb-preamblev yes</code> 开启，持久化文件为 rdb + aof 格式。开启后台线程进行 rdb，期间命令记录在缓冲区内，完成 rdb 后追加缓冲内的命令 aof。</li>
+</ul>
+<p>仅当 aof 策略 <code>appendfsync=always</code> 时保障单机数据不丢失，但是极大降低了 redis 的高速特性，一般不会使用。主备模式下，从机数据也是异步复制，无法完全保障不丢失数据。为了保证数据备份和减少主备的延迟：</p>
+<ul>
+<li><code>min-slaves-to-write N</code> 至少要有 N 个合格备机才继续接收指令</li>
+<li><code>min-slaves-max-lag M</code> 备机延迟至少少于 M 秒才继续接收指令</li>
+</ul>
+<h4 id="Kafka"><a href="#Kafka" class="headerlink" title="Kafka"></a>Kafka</h4><p>kafka 消息丢失的情况是多种多样的，比如：</p>
+<ul>
+<li>Producer 异步发出消息，实际失败</li>
+<li>Broker 弄丢了消息</li>
+<li>Consumer 提前 ACK；offset 错误</li>
+</ul>
+<p>如果消息不允许丢失，则不允许生产者异步发送消息、消费者异步ACK；剩下则要保障 broker 端不丢数据即时刷盘：<code>log.flush.interval.messages=1</code><br>这样 broker 每次收到消息都会保，但是每次刷盘极大拖累 kafka 效率。<br>通常只减少后台 flush 间隔来提高数据保障，因为 kafka 多副本机制，所以集群是 partition replica 一定程度上可以保证数据的容灾。<br>如果需要数据备份，生产者可以通过 <code>request.required.acks=-1</code> 要求 ISR 同步完成后返回响应。</p>
+<h4 id="RocketMQ"><a href="#RocketMQ" class="headerlink" title="RocketMQ"></a>RocketMQ</h4><p>除了类似 Kafka 的情况，所有消息队列客户端问题外，RocketMQ 也提供了数据不丢失的配置选项：</p>
+<ul>
+<li><code>flushDiskType=SYNC_FLUSH</code> 同步刷盘，比起异步刷盘性能更差，但是保证了主机不会丢失数据</li>
+<li><code>brokerRole=SYNC_MASTER</code> 同步复制选项，比如主从异步复制性能更差，但是保证主从一致</li>
+</ul>
+<h4 id="Zookeeper"><a href="#Zookeeper" class="headerlink" title="Zookeeper"></a>Zookeeper</h4><p>ZK 是一个数据强一致性的组件，保证数据不丢失似乎是他天生的职责，看卡它是怎么做的。</p>
+<ol>
+<li>当 zk 事务通过表决时候，向所有 follower 广播通知提交</li>
+<li>Leader 刷盘</li>
+<li>等待足够 follower 响应</li>
+<li>ack to client</li>
+</ol>
+<p>所以收到 ACK 的事务一定会被落盘，且被同步到其他节点上。但是每次 flush 过于消耗性能是如何解决的？ZK 的思路是牺牲延迟来增加吞吐量，每次刷盘会有短周期，集中对多个事务进行刷盘，部分事务的请求延迟会被略微拉大，但是整体上是的 ZK 能够承载更大的吞吐量。</p>
+<p>to be continue…</p>
+]]></content>
+      <categories>
+        <category>System</category>
+      </categories>
+      <tags>
+        <tag>MySQL</tag>
+        <tag>Kafka</tag>
+        <tag>RocketMQ</tag>
+        <tag>Zookeeper</tag>
+        <tag>Redis</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Kafka 手记</title>
     <url>/2021/03/Kafka-%E6%89%8B%E8%AE%B0/</url>
     <content><![CDATA[<h3 id="Kafka-架构"><a href="#Kafka-架构" class="headerlink" title="Kafka 架构"></a>Kafka 架构</h3><ul>
