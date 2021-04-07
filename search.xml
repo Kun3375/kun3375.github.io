@@ -57,6 +57,9 @@
 <li>消息存储在 <topic>-<offset_x>.log 和 .index 文件中，index 用来快速索引消息在 log 文件中的位置</offset_x></topic></li>
 <li>Kafka 由于每个 Partition 都会产生日志文件，当 Partition 过多时候批量写入会退化得不再那么顺序…</li>
 </ul>
+<h4 id="刷盘策略"><a href="#刷盘策略" class="headerlink" title="刷盘策略"></a>刷盘策略</h4><p>三个参数控制 Kafka 刷盘行为：  </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">log.flush.interval.messages </span><br><span class="line">log.flush.interval.ms</span><br><span class="line">log.flush.scheduler.interval.ms &#x2F;&#x2F; 默认 3000 ms</span><br></pre></td></tr></table></figure>
+<p>默认 3s 定时刷盘，在 Kafka 架构下多副本基本保障了数据不丢失，特别是 <code>request.required.acks=-1</code> 配置下。所以是否需要实时刷盘 <code>log.flush.interval.messages=1</code> 需要结合业务慎重决定。毕竟实时刷盘性能降低太多，同时 Kafka 也不是那么适合在线业务。</p>
 ]]></content>
       <categories>
         <category>Kafka</category>
