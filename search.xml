@@ -1,6 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>XXL-JOB-ADMIN 原理分析</title>
+    <url>/2021/06/XXL-JOB-ADMIN-%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/</url>
+    <content><![CDATA[<p>在 xxl-job-admin 中 <code>XxlJobScheduler</code> 是一个重要的类，初始化了所有的会用到的组件：</p>
+<ul>
+<li><code>JobScheduleHelper</code> 任务调度组件</li>
+<li><code>JobTriggerPoolHelper</code> 任务执行的线程池组件</li>
+<li><code>JobRegistryHelper</code> 维护执行器 executor 信息的组件</li>
+<li><code>JobLogReportHelper</code> 日志访问组件</li>
+<li><code>JobCompleteHelper</code> 回调处理组件</li>
+<li><code>JobFailMonitorHelper</code> 失败监听组件，负责告警等</li>
+</ul>
+<p>几个组件都是单独的线程或者线程来进行核心逻辑的处理，所以在一开始会被初始化，在后台持续工作。</p>
+<p>同时 <code>XxlJobScheduler</code> 还持有了一个 <code>address -&gt; executorClient</code> 的 <code>Map</code>，之后在执行任务时候是通过具体的地址取得 Client 对象（一个 Http 代理）来通知执行器执行。</p>
+<h3 id="组件的功能"><a href="#组件的功能" class="headerlink" title="组件的功能"></a>组件的功能</h3><h4 id="JobRegistryHelper"><a href="#JobRegistryHelper" class="headerlink" title="JobRegistryHelper"></a>JobRegistryHelper</h4><p>这一部分职责比较简单，主要负责其他 Admin 和 Executor 的注册和移除。内部有两部分：</p>
+<ul>
+<li><code>registryOrRemoveThreadPool</code> 收到的注册或者移除请求都交给线程池异步处理。</li>
+<li><code>registryMonitorThread</code> 定期清理超过 3 个心跳周期（3*30s）没有请求 <code>register</code> 的其他 Admin、Executor，同时更新对应的 <code>XxlJobGroup</code> 记录。</li>
+</ul>
+<a id="more"></a>
+
+<h4 id="JobTriggerPoolHelper-amp-XxlJobTrigger"><a href="#JobTriggerPoolHelper-amp-XxlJobTrigger" class="headerlink" title="JobTriggerPoolHelper &amp; XxlJobTrigger"></a>JobTriggerPoolHelper &amp; XxlJobTrigger</h4><p>在 XXL-JOB 中任务被触发主要有这几种方式：</p>
+<ul>
+<li>手动点击触发</li>
+<li>job-admin 自动触发</li>
+<li>父任务完成触发子任务</li>
+<li>失败重试触发</li>
+</ul>
+<p>无论是哪种方式都使用 <code>JobTriggerPoolHelper#trigger</code> 来完成任务执行。这就顺藤摸瓜看一下 <code>JobTriggerPoolHelper</code> 的实现。<br>这个类中维护了两个线程池：</p>
+<ul>
+<li><code>fastTriggerPool</code> 默认任务会被提交到这里执行</li>
+<li><code>slowTriggerPool</code> 慢速任务会被提交到这里执行</li>
+</ul>
+<p>这一举措是为了避免慢速任务抢占过多的线程资源，耽搁那些本身执行就很快的任务。两个池子的核心池大小是 10，最大线程数是可以配置的，给的缓存队列大小是 1000。那么 XXL-JOB 按照什么依据切换任务执行的线程池呢？默认任务执行超过 10 次每次耗时超过 500ms 的话，之后会被转入 <code>slowTriggerPool</code>。</p>
+<p>确定完使用的线程池之后，会由 <code>XxlJobTrigger#trigger</code> 执行：</p>
+<ol>
+<li>通过 jobId 查询保存的 jobInfo，这主要是我们新增任务时录入的配置。</li>
+<li>一些任务参数、执行器地址、广播配置等，对 jobInfo 进行覆盖处理。这因为上层触发可能是由于手动执行、Failover 等可能，部分参数需要具体控制。</li>
+<li>将任务提交给 <code>XxlJobTrigger#processTrigger</code> 进行处理，如果是分片广播的模式，会指定不同的分片参数循环调用。</li>
+</ol>
+<p>来看 <code>XxlJobTrigger#processTrigger</code>。</p>
+<ol>
+<li>初始化并插入任务日志。</li>
+<li>通过配置的路由策略初始化执行器的地址，如果采用空闲判断之类的方式，这一步就会访问配置的执行器。</li>
+<li>执行任务 <code>XxlJobTrigger#runExecutor</code>。从之前了解的 <code>XxlJobScheduler</code> 中获取对应执行器的代理发出 Http 请求。</li>
+<li>更新任务日志，主要内容是调度信息和执行器信息。</li>
+</ol>
+<p><code>XxlJobTrigger</code> 发送任务请求之后，剩下的任务执行，就看 Executor 的了。</p>
+<h4 id="JobCompleteHelper-amp-XxlJobCompleter"><a href="#JobCompleteHelper-amp-XxlJobCompleter" class="headerlink" title="JobCompleteHelper &amp; XxlJobCompleter"></a>JobCompleteHelper &amp; XxlJobCompleter</h4><p>这两个对象旨在处理回调行为（Executor 在完成了任务之后会把结果返回，和任务触发不是一个同步过程）。</p>
+<ul>
+<li><code>XxlJobCompleter</code> 主要用来更新任务处理结果信息，同时在成功的时候利用 <code>JobTriggerPoolHelper#trigger</code> 对子任务进行触发。</li>
+<li><code>JobCompleteHelper</code> 里面包含了一个监视线程和一组回调处理的线程池：<ul>
+<li><code>callbackThreadPool</code> 则使用 <code>XxlJobCompleter</code> 处理统一的完成逻辑。</li>
+<li><code>monitorThread</code> 单一线程，进行间歇扫描。行为逻辑很简单，扫描了一直处于 <em>处理中</em> 状态的任务（<code>XxlJobTrigger</code> 留下了任务日志记录），且如果同时执行器不在线/心跳丢失（<code>JobRegistryHelper</code> 持久化），则将任务更新至 <em>失败</em>。</li>
+</ul>
+</li>
+</ul>
+<h4 id="JobFailMonitorHelper"><a href="#JobFailMonitorHelper" class="headerlink" title="JobFailMonitorHelper"></a>JobFailMonitorHelper</h4><p>通过上面 <code>JobCompleteHelper</code> 对正常回调和超时的任务更新完终态。如果有失败的任务，需要告警或者重试，这些动作都由 <code>JobFailMonitorHelper</code> 来完成。原理也是一样，通过一个线程去间歇扫描 <code>XxlJobLog</code>。</p>
+<h4 id="JobLogReportHelper"><a href="#JobLogReportHelper" class="headerlink" title="JobLogReportHelper"></a>JobLogReportHelper</h4><p>这一组件主要对 <code>XxlJobLog</code> 进行数据统计，我们在登录控制台时候看到的表格视图等信息就是来源于这。</p>
+<p>XXL-JOB-ADMIN 主要的逻辑就基本解读完了，可以从这几个异步任务的行为了解它大部分的业务。另一方面关于 Executor 的行为则较为简单，暂时没有进行总结。</p>
+<hr>
+<p>(全文基于 <em>2.3.0</em> 版本)  </p>
+]]></content>
+      <categories>
+        <category>System</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
+        <tag>System</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>中间件们如何保障数据不丢失？</title>
     <url>/2021/04/%E4%B8%AD%E9%97%B4%E4%BB%B6%E4%BB%AC%E5%A6%82%E4%BD%95%E4%BF%9D%E9%9A%9C%E6%95%B0%E6%8D%AE%E4%B8%8D%E4%B8%A2%E5%A4%B1%EF%BC%9F/</url>
     <content><![CDATA[<h4 id="MySQL"><a href="#MySQL" class="headerlink" title="MySQL"></a>MySQL</h4><p>来看看 MySQL 保证数据不丢失的方案：</p>
@@ -63,8 +134,8 @@
         <category>System</category>
       </categories>
       <tags>
-        <tag>MySQL</tag>
         <tag>Kafka</tag>
+        <tag>MySQL</tag>
         <tag>RocketMQ</tag>
         <tag>Zookeeper</tag>
         <tag>Redis</tag>

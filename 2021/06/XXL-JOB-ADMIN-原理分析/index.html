@@ -20,21 +20,21 @@
     var CONFIG = {"hostname":"caoziye.top","root":"/","scheme":"Muse","version":"7.7.1","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="内核配置先来了解几个关于网络的内核配置。 目录以 CentOS 7 为例，目录 &#x2F;proc&#x2F;sys&#x2F; 存放着内核相关配置，其中网络相关的主要集中在 &#x2F;proc&#x2F;sys&#x2F;net&#x2F;core&#x2F;、&#x2F;proc&#x2F;sys&#x2F;net&#x2F;ipv4&#x2F;、&#x2F;proc&#x2F;sys&#x2F;net&#x2F;ipv6&#x2F; 几个目录下。在这几个目录下，不同参数名称对应一个文件，修改文件值可以调整对应参数。 同时，想要修改 &#x2F;proc&#x2F;sys&#x2F; 下参数也可">
+  <meta name="description" content="在 xxl-job-admin 中 XxlJobScheduler 是一个重要的类，初始化了所有的会用到的组件：  JobScheduleHelper 任务调度组件 JobTriggerPoolHelper 任务执行的线程池组件 JobRegistryHelper 维护执行器 executor 信息的组件 JobLogReportHelper 日志访问组件 JobCompleteHelper 回调">
 <meta property="og:type" content="article">
-<meta property="og:title" content="网络配置参数和调优的一些总结">
-<meta property="og:url" content="https://caoziye.top/2019/10/%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE%E5%8F%82%E6%95%B0%E5%92%8C%E8%B0%83%E4%BC%98%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:title" content="XXL-JOB-ADMIN 原理分析">
+<meta property="og:url" content="https://caoziye.top/2021/06/XXL-JOB-ADMIN-%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/index.html">
 <meta property="og:site_name" content="码文小记">
-<meta property="og:description" content="内核配置先来了解几个关于网络的内核配置。 目录以 CentOS 7 为例，目录 &#x2F;proc&#x2F;sys&#x2F; 存放着内核相关配置，其中网络相关的主要集中在 &#x2F;proc&#x2F;sys&#x2F;net&#x2F;core&#x2F;、&#x2F;proc&#x2F;sys&#x2F;net&#x2F;ipv4&#x2F;、&#x2F;proc&#x2F;sys&#x2F;net&#x2F;ipv6&#x2F; 几个目录下。在这几个目录下，不同参数名称对应一个文件，修改文件值可以调整对应参数。 同时，想要修改 &#x2F;proc&#x2F;sys&#x2F; 下参数也可">
+<meta property="og:description" content="在 xxl-job-admin 中 XxlJobScheduler 是一个重要的类，初始化了所有的会用到的组件：  JobScheduleHelper 任务调度组件 JobTriggerPoolHelper 任务执行的线程池组件 JobRegistryHelper 维护执行器 executor 信息的组件 JobLogReportHelper 日志访问组件 JobCompleteHelper 回调">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2019-10-28T04:06:12.000Z">
-<meta property="article:modified_time" content="2020-03-01T08:49:45.703Z">
+<meta property="article:published_time" content="2021-06-03T12:09:36.000Z">
+<meta property="article:modified_time" content="2021-06-04T08:26:25.785Z">
 <meta property="article:author" content="斯特拉不用电">
 <meta property="article:tag" content="Java">
-<meta property="article:tag" content="TCP">
+<meta property="article:tag" content="System">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://caoziye.top/2019/10/%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE%E5%8F%82%E6%95%B0%E5%92%8C%E8%B0%83%E4%BC%98%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%BB%E7%BB%93/">
+<link rel="canonical" href="https://caoziye.top/2021/06/XXL-JOB-ADMIN-%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/">
 
 
 <script id="page-configurations">
@@ -46,7 +46,7 @@
   };
 </script>
 
-  <title>网络配置参数和调优的一些总结 | 码文小记</title>
+  <title>XXL-JOB-ADMIN 原理分析 | 码文小记</title>
   
 
 
@@ -187,7 +187,7 @@
   
   
   <article itemscope="" itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://caoziye.top/2019/10/%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE%E5%8F%82%E6%95%B0%E5%92%8C%E8%B0%83%E4%BC%98%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%BB%E7%BB%93/">
+    <link itemprop="mainEntityOfPage" href="https://caoziye.top/2021/06/XXL-JOB-ADMIN-%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -200,7 +200,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          网络配置参数和调优的一些总结
+          XXL-JOB-ADMIN 原理分析
         </h2>
 
         <div class="post-meta">
@@ -210,14 +210,14 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2019-10-28 12:06:12" itemprop="dateCreated datePublished" datetime="2019-10-28T12:06:12+08:00">2019-10-28</time>
+              <time title="创建时间：2021-06-03 20:09:36" itemprop="dateCreated datePublished" datetime="2021-06-03T20:09:36+08:00">2021-06-03</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-03-01 16:49:45" itemprop="dateModified" datetime="2020-03-01T16:49:45+08:00">2020-03-01</time>
+                <time title="修改时间：2021-06-04 16:26:25" itemprop="dateModified" datetime="2021-06-04T16:26:25+08:00">2021-06-04</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -225,7 +225,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/Net/" itemprop="url" rel="index"><span itemprop="name">Net</span></a>
+                  <a href="/categories/System/" itemprop="url" rel="index"><span itemprop="name">System</span></a>
                 </span>
             </span>
 
@@ -261,54 +261,65 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h3 id="内核配置"><a href="#内核配置" class="headerlink" title="内核配置"></a>内核配置</h3><p>先来了解几个关于网络的内核配置。</p>
-<h4 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h4><p>以 CentOS 7 为例，目录 <code>/proc/sys/</code> 存放着内核相关配置，其中网络相关的主要集中在 <code>/proc/sys/net/core/</code>、<code>/proc/sys/net/ipv4/</code>、<code>/proc/sys/net/ipv6/</code> 几个目录下。在这几个目录下，不同参数名称对应一个文件，修改文件值可以调整对应参数。</p>
-<p>同时，想要修改 <code>/proc/sys/</code> 下参数也可以通过修改 <code>/etc/sysctl.conf</code> 配置文件达到目的。如：想要修改 <code>/proc/sys/net/ipv4/tcp_max_syn_backlog</code> 为 <code>1024</code>，可以添加一行 <code>net.ipv4.tcp_max_syn_backlog = 1024</code>。也可以将自定义配置放入 <code>/etc/sysctl.d/</code> 中，自定义 <code>60-&lt;custom&gt;.conf</code> 的文件。具体可详见另一篇更改系统设置的文章。</p>
+        <p>在 xxl-job-admin 中 <code>XxlJobScheduler</code> 是一个重要的类，初始化了所有的会用到的组件：</p>
+<ul>
+<li><code>JobScheduleHelper</code> 任务调度组件</li>
+<li><code>JobTriggerPoolHelper</code> 任务执行的线程池组件</li>
+<li><code>JobRegistryHelper</code> 维护执行器 executor 信息的组件</li>
+<li><code>JobLogReportHelper</code> 日志访问组件</li>
+<li><code>JobCompleteHelper</code> 回调处理组件</li>
+<li><code>JobFailMonitorHelper</code> 失败监听组件，负责告警等</li>
+</ul>
+<p>几个组件都是单独的线程或者线程来进行核心逻辑的处理，所以在一开始会被初始化，在后台持续工作。</p>
+<p>同时 <code>XxlJobScheduler</code> 还持有了一个 <code>address -&gt; executorClient</code> 的 <code>Map</code>，之后在执行任务时候是通过具体的地址取得 Client 对象（一个 Http 代理）来通知执行器执行。</p>
+<h3 id="组件的功能"><a href="#组件的功能" class="headerlink" title="组件的功能"></a>组件的功能</h3><h4 id="JobRegistryHelper"><a href="#JobRegistryHelper" class="headerlink" title="JobRegistryHelper"></a>JobRegistryHelper</h4><p>这一部分职责比较简单，主要负责其他 Admin 和 Executor 的注册和移除。内部有两部分：</p>
+<ul>
+<li><code>registryOrRemoveThreadPool</code> 收到的注册或者移除请求都交给线程池异步处理。</li>
+<li><code>registryMonitorThread</code> 定期清理超过 3 个心跳周期（3*30s）没有请求 <code>register</code> 的其他 Admin、Executor，同时更新对应的 <code>XxlJobGroup</code> 记录。</li>
+</ul>
 <a id="more"></a>
 
-<h4 id="主要参数说明"><a href="#主要参数说明" class="headerlink" title="主要参数说明"></a>主要参数说明</h4><h5 id="一般需要调优的参数"><a href="#一般需要调优的参数" class="headerlink" title="一般需要调优的参数"></a>一般需要调优的参数</h5><ul>
-<li><code>somaxconn</code> 完成连接队列上线。应用完成连接队列大小计算方式：  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">min(backlog, somaxconn)</span><br></pre></td></tr></table></figure>
-  <code>backlog</code> 为打开 socket 时候的传入值，完成连接队列大小取决于该参数系统配置的最小值</li>
-<li><code>tcp_max_syn_backlog</code> tcp 半连接队列上限。应用半连接队列大小计算方式：    <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">table_entries &#x3D; min(min（somaxconn，backlog）,tcp_max_syn_backlog)</span><br><span class="line">roundup_pow_of_two(table_entries + 1) # 大于 table_entries + 1 的最小 2 的 n 次幂</span><br></pre></td></tr></table></figure>
-  <code>somaxconn</code> 和 <code>tcp_max_syn_backlog</code> 同时影响半连接队列的大小。所以对于一般应用程序需要在开启 Socket 时候指定 <code>backlog</code>，还需要提前对系统进行调优。<ul>
-<li>默认情况下 <code>somaxconn == tcp_max_syn_backlog == 128</code> 需要配置提高，不然可能导致应用配置无效。</li>
-<li>举例来说 redis、nginx 使用的 backlog 为 511。在系统配置满足的情况下，半连接队列为 512，完成连接队列为 511</li>
+<h4 id="JobTriggerPoolHelper-amp-XxlJobTrigger"><a href="#JobTriggerPoolHelper-amp-XxlJobTrigger" class="headerlink" title="JobTriggerPoolHelper &amp; XxlJobTrigger"></a>JobTriggerPoolHelper &amp; XxlJobTrigger</h4><p>在 XXL-JOB 中任务被触发主要有这几种方式：</p>
+<ul>
+<li>手动点击触发</li>
+<li>job-admin 自动触发</li>
+<li>父任务完成触发子任务</li>
+<li>失败重试触发</li>
+</ul>
+<p>无论是哪种方式都使用 <code>JobTriggerPoolHelper#trigger</code> 来完成任务执行。这就顺藤摸瓜看一下 <code>JobTriggerPoolHelper</code> 的实现。<br>这个类中维护了两个线程池：</p>
+<ul>
+<li><code>fastTriggerPool</code> 默认任务会被提交到这里执行</li>
+<li><code>slowTriggerPool</code> 慢速任务会被提交到这里执行</li>
+</ul>
+<p>这一举措是为了避免慢速任务抢占过多的线程资源，耽搁那些本身执行就很快的任务。两个池子的核心池大小是 10，最大线程数是可以配置的，给的缓存队列大小是 1000。那么 XXL-JOB 按照什么依据切换任务执行的线程池呢？默认任务执行超过 10 次每次耗时超过 500ms 的话，之后会被转入 <code>slowTriggerPool</code>。</p>
+<p>确定完使用的线程池之后，会由 <code>XxlJobTrigger#trigger</code> 执行：</p>
+<ol>
+<li>通过 jobId 查询保存的 jobInfo，这主要是我们新增任务时录入的配置。</li>
+<li>一些任务参数、执行器地址、广播配置等，对 jobInfo 进行覆盖处理。这因为上层触发可能是由于手动执行、Failover 等可能，部分参数需要具体控制。</li>
+<li>将任务提交给 <code>XxlJobTrigger#processTrigger</code> 进行处理，如果是分片广播的模式，会指定不同的分片参数循环调用。</li>
+</ol>
+<p>来看 <code>XxlJobTrigger#processTrigger</code>。</p>
+<ol>
+<li>初始化并插入任务日志。</li>
+<li>通过配置的路由策略初始化执行器的地址，如果采用空闲判断之类的方式，这一步就会访问配置的执行器。</li>
+<li>执行任务 <code>XxlJobTrigger#runExecutor</code>。从之前了解的 <code>XxlJobScheduler</code> 中获取对应执行器的代理发出 Http 请求。</li>
+<li>更新任务日志，主要内容是调度信息和执行器信息。</li>
+</ol>
+<p><code>XxlJobTrigger</code> 发送任务请求之后，剩下的任务执行，就看 Executor 的了。</p>
+<h4 id="JobCompleteHelper-amp-XxlJobCompleter"><a href="#JobCompleteHelper-amp-XxlJobCompleter" class="headerlink" title="JobCompleteHelper &amp; XxlJobCompleter"></a>JobCompleteHelper &amp; XxlJobCompleter</h4><p>这两个对象旨在处理回调行为（Executor 在完成了任务之后会把结果返回，和任务触发不是一个同步过程）。</p>
+<ul>
+<li><code>XxlJobCompleter</code> 主要用来更新任务处理结果信息，同时在成功的时候利用 <code>JobTriggerPoolHelper#trigger</code> 对子任务进行触发。</li>
+<li><code>JobCompleteHelper</code> 里面包含了一个监视线程和一组回调处理的线程池：<ul>
+<li><code>callbackThreadPool</code> 则使用 <code>XxlJobCompleter</code> 处理统一的完成逻辑。</li>
+<li><code>monitorThread</code> 单一线程，进行间歇扫描。行为逻辑很简单，扫描了一直处于 <em>处理中</em> 状态的任务（<code>XxlJobTrigger</code> 留下了任务日志记录），且如果同时执行器不在线/心跳丢失（<code>JobRegistryHelper</code> 持久化），则将任务更新至 <em>失败</em>。</li>
 </ul>
 </li>
-<li><code>tcp_abort_on_overflow</code> 控制完成连接队列满时，收到客户端 ACK 时的处理方案。默认为 0，会忽略该次 ACK，导致向客户端重发 ACK+SYN，期望客户端再次发送 ACK 时候完成连接队列有空闲。设置为 1 会直接发送 RST 给客户端。</li>
 </ul>
-<p>由 TCP 全连接队列和半连接队列导致问题的典型案例可以参看<a href="http://jm.taobao.org/2017/05/25/525-1/" target="_blank" rel="external nofollow noopener noreferrer">阿里这一次问题复盘</a></p>
+<h4 id="JobFailMonitorHelper"><a href="#JobFailMonitorHelper" class="headerlink" title="JobFailMonitorHelper"></a>JobFailMonitorHelper</h4><p>通过上面 <code>JobCompleteHelper</code> 对正常回调和超时的任务更新完终态。如果有失败的任务，需要告警或者重试，这些动作都由 <code>JobFailMonitorHelper</code> 来完成。原理也是一样，通过一个线程去间歇扫描 <code>XxlJobLog</code>。</p>
+<h4 id="JobLogReportHelper"><a href="#JobLogReportHelper" class="headerlink" title="JobLogReportHelper"></a>JobLogReportHelper</h4><p>这一组件主要对 <code>XxlJobLog</code> 进行数据统计，我们在登录控制台时候看到的表格视图等信息就是来源于这。</p>
+<p>XXL-JOB-ADMIN 主要的逻辑就基本解读完了，可以从这几个异步任务的行为了解它大部分的业务。另一方面关于 Executor 的行为则较为简单，暂时没有进行总结。</p>
 <hr>
-<ul>
-<li><code>tcp_timestamps</code> 连接需要额外使用 10 个字节来发送对方和回复的时间戳，用来辅助判断 TCP 包顺序判断。以下两个选项需要双方都开启 <code>tcp_timestamp</code> 才能正常生效</li>
-<li><code>tcp_tw_reuse</code> 一般针对客户端方生效（比如压测发起机），是否允许将处于 TIME_WAIT 状态 socket 用于开启新的连接。如果禁用需要等待 2 个 MSL</li>
-<li><code>tcp_tw_recycle</code> 系统缓存不同 IP 请求的最新 timestamp，如果来自同一主机的 SYN 请求时间小于缓存时间会被丢弃，如果大于则复用 TIME_WAIT 连接。但是由于大部分网络请求都经过 NAT，所以容易产生错误错误的过滤。一般不会开启。</li>
-</ul>
-<h5 id="其他参数"><a href="#其他参数" class="headerlink" title="其他参数"></a>其他参数</h5><ul>
-<li><code>tcp_syncookies</code> 控制是否在连接 ESTABLISHED 阶段才进行资源分配，默认 1。<ul>
-<li>1 连接队列满时生效</li>
-<li>0 不生效，始终在收到 SYN 时分配资源</li>
-<li>2 始终生效</li>
-</ul>
-</li>
-<li><code>tcp_fastopen</code> 应用程序作为服务端是否支持 TCP FastOpen</li>
-</ul>
-<h5 id="Socket-选项"><a href="#Socket-选项" class="headerlink" title="Socket 选项"></a>Socket 选项</h5><ul>
-<li><code>SO_REUSEADDR</code> 允许应用程序绑定同一端口</li>
-<li><code>SO_LINGER</code> 默认为禁用，此时 <code>close()</code> 方法会直接返回，同时将 buffer 中内容交给操作系统发出并执行四次挥手；设置开启时需要指定时间，<code>close()</code> 方法会进行等待内容的全部发出并进行四次挥手，直到超时时间，如果超过时间阈值时将直接发送 RST 直接中断连接不再进行数据发送和四次挥手</li>
-</ul>
-<h3 id="服务器配置"><a href="#服务器配置" class="headerlink" title="服务器配置"></a>服务器配置</h3><p>默认情况下 Java 程序给出的 SererSocket 默认 <code>backlog</code> 为 100，系统的 <code>somaxconn</code> 为 128，这对于一些访问量高的程序来说可能并不够。一般来说，首先会把服务器的调高如 1024（因为无论是 ng、redis 还是一些 web 服务 128 都挺小的）。同时如果使用 <em>tomcat</em> 还需要注意一下几个配置：</p>
-<ul>
-<li><code>maxThreads</code> 工作线程池最大数，默认 200</li>
-<li><code>maxConnections</code> 最多连接的 Socket 数量。BIO 默认 200，NIO 默认 10000，APR 默认 8192</li>
-<li><code>disableKeepAlivePercentage</code> 需要主动关闭长连接的阈值</li>
-<li><code>acceptCount</code> 对应 socket 的 backlog 数值，通过 netstat/ss 观察到有丢弃的连接时需要调整 accept 队列容量</li>
-</ul>
-<p>作为一些及时性要求高的应用或者还需要在 TCP 连接建立时候关闭 delay ack 的优化，因为默认的情况下为了提高传输效率会开启 Nagle 算法（将短时间内的多个 ack 合并成一个包，类型响应合并）</p>
-<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
-<li><a href="http://jm.taobao.org/2017/05/25/525-1/" target="_blank" rel="external nofollow noopener noreferrer">http://jm.taobao.org/2017/05/25/525-1/</a></li>
-<li><a href="http://ifeve.com/tomcat-connector-tuning-1/" target="_blank" rel="external nofollow noopener noreferrer">http://ifeve.com/tomcat-connector-tuning-1/</a></li>
-</ul>
+<p>(全文基于 <em>2.3.0</em> 版本)  </p>
 
     </div>
 
@@ -353,7 +364,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://caoziye.top/2019/10/%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE%E5%8F%82%E6%95%B0%E5%92%8C%E8%B0%83%E4%BC%98%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%BB%E7%BB%93/" title="网络配置参数和调优的一些总结">https://caoziye.top/2019/10/网络配置参数和调优的一些总结/</a>
+    <a href="https://caoziye.top/2021/06/XXL-JOB-ADMIN-%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/" title="XXL-JOB-ADMIN 原理分析">https://caoziye.top/2021/06/XXL-JOB-ADMIN-原理分析/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -365,7 +376,7 @@
       <footer class="post-footer">
           <div class="post-tags">
               <a href="/tags/Java/" rel="tag"># Java</a>
-              <a href="/tags/TCP/" rel="tag"># TCP</a>
+              <a href="/tags/System/" rel="tag"># System</a>
           </div>
 
         
@@ -374,13 +385,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2019/10/TCP-Options/" rel="prev" title="TCP 头部选项的理解">
-      <i class="fa fa-chevron-left"></i> TCP 头部选项的理解
+    <a href="/2021/04/%E4%B8%AD%E9%97%B4%E4%BB%B6%E4%BB%AC%E5%A6%82%E4%BD%95%E4%BF%9D%E9%9A%9C%E6%95%B0%E6%8D%AE%E4%B8%8D%E4%B8%A2%E5%A4%B1%EF%BC%9F/" rel="prev" title="中间件们如何保障数据不丢失？">
+      <i class="fa fa-chevron-left"></i> 中间件们如何保障数据不丢失？
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2020/02/Netty-ByteBuf-%E7%9B%B8%E5%85%B3%E5%8F%82%E6%95%B0%E6%84%8F%E4%B9%89/" rel="next" title="Netty ByteBuf 相关参数意义">
-      Netty ByteBuf 相关参数意义 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -441,7 +449,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#内核配置"><span class="nav-number">1.</span> <span class="nav-text">内核配置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#目录"><span class="nav-number">1.1.</span> <span class="nav-text">目录</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#主要参数说明"><span class="nav-number">1.2.</span> <span class="nav-text">主要参数说明</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#一般需要调优的参数"><span class="nav-number">1.2.1.</span> <span class="nav-text">一般需要调优的参数</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#其他参数"><span class="nav-number">1.2.2.</span> <span class="nav-text">其他参数</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Socket-选项"><span class="nav-number">1.2.3.</span> <span class="nav-text">Socket 选项</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#服务器配置"><span class="nav-number">2.</span> <span class="nav-text">服务器配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#组件的功能"><span class="nav-number">1.</span> <span class="nav-text">组件的功能</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#JobRegistryHelper"><span class="nav-number">1.1.</span> <span class="nav-text">JobRegistryHelper</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#JobTriggerPoolHelper-amp-XxlJobTrigger"><span class="nav-number">1.2.</span> <span class="nav-text">JobTriggerPoolHelper &amp; XxlJobTrigger</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#JobCompleteHelper-amp-XxlJobCompleter"><span class="nav-number">1.3.</span> <span class="nav-text">JobCompleteHelper &amp; XxlJobCompleter</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#JobFailMonitorHelper"><span class="nav-number">1.4.</span> <span class="nav-text">JobFailMonitorHelper</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#JobLogReportHelper"><span class="nav-number">1.5.</span> <span class="nav-text">JobLogReportHelper</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
