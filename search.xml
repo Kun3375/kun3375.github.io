@@ -1,6 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>sysstat 工具总结 - sar</title>
+    <url>/2022/01/sysstat-%E5%B7%A5%E5%85%B7%E6%80%BB%E7%BB%93/</url>
+    <content><![CDATA[<h3 id="sar-工具"><a href="#sar-工具" class="headerlink" title="sar 工具"></a>sar 工具</h3><p>sar 工具是 System Activity Reporter。可以十分方便的检测和存储系统的性能指标并输出报告，具备两个主要的功能。</p>
+<ul>
+<li><em>即时采样和输出</em>  即 sar 命令（<code>/usr/bin/sar</code>）</li>
+<li><em>每日信息统计</em>  由 <code>/usr/lib64/sa/</code> 下的工具配合 cron 完成</li>
+</ul>
+<h4 id="sar-命令功能和使用"><a href="#sar-命令功能和使用" class="headerlink" title="sar 命令功能和使用"></a>sar 命令功能和使用</h4><p>sar 的使用很简单，命令方式是：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sar -&lt;option&gt; &lt;interval&gt; &lt;count&gt;</span><br></pre></td></tr></table></figure>
+
+<h5 id="sar-查询系统平均负载情况"><a href="#sar-查询系统平均负载情况" class="headerlink" title="sar 查询系统平均负载情况"></a>sar 查询系统平均负载情况</h5><p>例子：统计系统负载，每秒采样，进行三次:</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sar -q 1 3</span><br></pre></td></tr></table></figure>
+<p><img src="https://blog-1258216698.cos.ap-hongkong.myqcloud.com/sysstat/sarq13.png" alt="sar -q"></p>
+<ul>
+<li><strong>runq-sz</strong>：运行队列的长度（等待运行的进程数）</li>
+<li><strong>plist-sz</strong>：进程列表中进程（线程也算）的数量</li>
+<li><strong>ldavg-1</strong>：最后 1 分钟的系统平均负载</li>
+<li><strong>ldavg-5</strong>：过去 5 分钟的系统平均负载</li>
+<li><strong>ldavg-15</strong>：过去 15 分钟的系统平均负载</li>
+<li><strong>blocked</strong> 由于 io 阻塞的线程数量</li>
+</ul>
+<p>以上的结果和 <code>top</code> 得到的信息基本一致，一般主要考虑 5 及 15 分钟的平均负载。基数是服务器核数，比如服务器核心数是 1，ldavg = 0.6 意味着服务器载荷为 60%；如果服务器核心数是 2，则负载应看做 30%。</p>
+<a id="more"></a>
+
+<h5 id="sar-查询-CPU-负载情况"><a href="#sar-查询-CPU-负载情况" class="headerlink" title="sar 查询 CPU 负载情况"></a>sar 查询 CPU 负载情况</h5><p>例子：统计 CPU 负载，每秒采样，进行三次：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sar -u 1 3</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://blog-1258216698.cos.ap-hongkong.myqcloud.com/sysstat/saru13.png" alt="sar -u"></p>
+<ul>
+<li><strong>%user</strong>：用户态进程运行占用 CPU 总时间的百分比。</li>
+<li><strong>%nice</strong>：用户态进程 nice 操作所占用 CPU 总时间的百分比。</li>
+<li><strong>%system</strong>：在核心态进程运行所使用 CPU 总时间的百分比。</li>
+<li><strong>%iowait</strong>：用于等待 I/O 占用 CPU 总时间的百分比。</li>
+<li><strong>%steal</strong>：为虚拟进程提供服务而等待虚拟 CPU 的百分比。</li>
+<li><strong>%idle</strong>：CPU 空闲时间占用 CPU 总时间的百分比。</li>
+</ul>
+<p>一般关注 %idle 时间占比即可，但是如果 %idle 占比下降或者过小，可以再看 CPU 时间是花在什么处理上更多，比如 %iowait 过高以为读写过多或者有网络和磁盘等的瓶颈，需要再结合 <code>sar -b</code>、<code>iostat</code>、<code>netstat</code> 等查看；如果 %user 过高，需要 <code>sar -q</code>、<code>top</code>、<code>jstack</code> 之类分析。</p>
+<p><code>-u</code> 这是针对所有核心进行的统计，也可以手动指定核心，用 <code>-P &lt;core index&gt;</code> 来指定，或者使用 <code>-P ALL</code> 来选择全部核心。使用 <code>-P ALL</code> 除了会像 <code>-u</code> 一样输出整体统计，也会同时列数单个 CPU 核心的情况</p>
+<h5 id="sar-查询磁盘使用情况"><a href="#sar-查询磁盘使用情况" class="headerlink" title="sar 查询磁盘使用情况"></a>sar 查询磁盘使用情况</h5><p>例子：统计磁盘使用率，每秒采样，进行三次：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sar -b 1 3</span><br></pre></td></tr></table></figure>
+<p><img src="https://blog-1258216698.cos.ap-hongkong.myqcloud.com/sysstat/sarb13.png" alt="sar -b"></p>
+<ul>
+<li><strong>rtps</strong> 每秒读请求发起的次数</li>
+<li><strong>wtps</strong> 每秒写请求发起的次数，fsync 这样的调用会触发，在文件系统层面可能会合并应用层逻辑上的多次写操作</li>
+<li><strong>tps</strong> 以上两者相加</li>
+<li><strong>bread/s</strong> 每秒读取的 block 数量</li>
+<li><strong>bwrtn/s</strong> 每秒写入的 block 数量</li>
+</ul>
+<p>对于磁盘 I/O 状态的检查比较容易，以上任何值过高，配合上 CPU iowait 过高的情况都能发现问题。要统计具体的写入或者读取速率需要 <em>bread/s</em> 或者 <em>bwrtn/s</em> 乘上 <em>block size</em> 。具体的 <em>block size</em> 因文件系统而异，同时也可以格式化时自定义，以 CentOS XFS 为例一般默认 4096 bytes。可以通过 <code>fdisk -l</code> 或者 <code>stat -f &lt;file&gt;</code> 等方法看到。</p>
+<h5 id="sar-统计网络信息"><a href="#sar-统计网络信息" class="headerlink" title="sar 统计网络信息"></a>sar 统计网络信息</h5><p>使用 <code>-n [keyword]</code> 来进行网络方面的信息统计。由于网络指标比较多，所以必须使用关键字指示 sar 需要输出的内容。可选项比较多，有 <strong>DEV</strong>、<strong>NFS</strong>、<strong>TCP</strong>、<strong>ICMP</strong> 等等（具体看 <code>man sar</code>），其中 <strong>DEV</strong> 和 <strong>EDEV</strong> 这样的比较常用。</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sar -n DEV 1 3</span><br><span class="line">sar -n EDEV 1 3</span><br></pre></td></tr></table></figure>
+<p><img src="https://blog-1258216698.cos.ap-hongkong.myqcloud.com/sysstat/sarn11.png" alt="sar -n"></p>
+<ul>
+<li><strong>IFACE</strong> 你的网卡，LAN 口名称</li>
+<li><strong>rxpck/s</strong> 每秒钟接收的数据包</li>
+<li><strong>txpck/s</strong> 每秒钟发送的数据包</li>
+<li><strong>rxbyt/s</strong> 每秒钟接收的字节数</li>
+<li><strong>txbyt/s</strong> 每秒钟发送的字节数</li>
+<li><strong>rxcmp/s</strong> 每秒钟接收的压缩数据包</li>
+<li><strong>txcmp/s</strong> 每秒钟发送的压缩数据包</li>
+<li><strong>rxmcst/s</strong> 每秒钟接收的多播数据包</li>
+<li><strong>rxerr/s</strong> 每秒钟接收的坏数据包</li>
+<li><strong>txerr/s</strong> 每秒钟发送的坏数据包</li>
+<li><strong>coll/s</strong> 每秒冲突数</li>
+<li><strong>rxdrop/s</strong> 因为缓冲充满，每秒钟丢弃的已接收数据包数</li>
+<li><strong>txdrop/s</strong> 因为缓冲充满，每秒钟丢弃的已发送数据包数</li>
+<li><strong>txcarr/s</strong> 发送数据包时，每秒载波错误数</li>
+<li><strong>rxfram/s</strong> 每秒接收数据包的帧对齐错误数</li>
+<li><strong>rxfifo/s</strong> 接收的数据包每秒FIFO过速的错误数</li>
+<li><strong>txfifo/s</strong> 发送的数据包每秒FIFO过速的错误数</li>
+</ul>
+<p>一般来说，<code>-n EDEV</code> 下展示的内容都会为 0；如果不是为 0，多少存在着网络问题，容易出现的是 <strong>rxdrop/s</strong>、<strong>rxdrop/s</strong> 意味着网络超载的情况。而 <code>-n DEV</code> 下展示的一般意义的统计数据，比如 <strong>rxbyt/s</strong>、<strong>txbyt/s</strong> 可以查看机器的下行和上行流量</p>
+<h5 id="sar-的其他用法"><a href="#sar-的其他用法" class="headerlink" title="sar 的其他用法"></a>sar 的其他用法</h5><p>option 选项一般用来指定统计不同的信息，除了上述的 <code>-q</code>、<code>-u</code> 等选项，还有比如：</p>
+<ul>
+<li>-S swap 用量相关的信息；-W swapping 交换信息</li>
+<li>-r 内存 相关信息；-u CPU 相关信息</li>
+<li>-v inode 和 文件相关的信息</li>
+<li>-n 网络相关统计信息</li>
+<li>-b I/O 相关信息</li>
+</ul>
+<p>功能上更不常用的就不列举了，其他特殊的还有</p>
+<ul>
+<li><code>-o &lt;filename&gt;</code> 指定统计信息输出到目标文件；</li>
+<li><code>-f &lt;filename&gt;</code> 指定目标文件读取采样信息</li>
+<li><code>-s [ hh:mm:ss ]</code> 如果 <code>-f</code> 指定了采样文件，可以从中加入筛选-开始时间（开区间）</li>
+<li><code>-e [ hh:mm:ss ]</code> 同上，指定结束时间</li>
+</ul>
+<h4 id="sar-对系统持续统计"><a href="#sar-对系统持续统计" class="headerlink" title="sar 对系统持续统计"></a>sar 对系统持续统计</h4><p>在 /usr/lib64/sa 下有几个 sar 执行持续统计的工具，并在 sysstat 安装后写入 crontab 定时调用：</p>
+<ul>
+<li><strong>sa1</strong> 每天使用，统计并存储系统信息至二进制文件，<strong>sadc</strong> 的前端程序</li>
+<li><strong>sa2</strong> 每天使用，利用每日系统信息输出报告，<strong>sar</strong> 的一个前端程序</li>
+<li><strong>sadc</strong> 系统收集统计的工具，是 <strong>sa1</strong>、<strong>sar</strong> 的后端程序</li>
+</ul>
+<p>具体流程是</p>
+<ol>
+<li>每隔 10 分钟使用 sa1 统计一次系统信息，记录到 <code>/var/log/sa/sa&lt;DD&gt;</code> 中。这是 sar 的二进制统计信息，会在当天不断追加，可以使用 <code>sar -f &lt;file&gt;</code> 进行查看。</li>
+<li>每天 23:53 使用 sa2 利用之前的 sa1 的日志输出一次报告，输出到 <code>/var/log/sa/sar&lt;DD&gt;</code>。就是将之前 saDD 二进制内容加工成文本信息，如同使用 sar 命令的结果一样，之后可以使用 cat 之类的方式直接查看。里面内容会比较多，默认使用了 <code>sa2 -A</code>，可以在报告中只关心一部分内容，调整参数即可精简报告内容，而 saDD 文件中还是会有全部的统计数据。</li>
+</ol>
+<p>这部分数据可以用于回溯服务器曾经的状态。下面是 /etc/cron.d/sysstat</p>
+<blockquote>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># Run system activity accounting tool every 10 minutes</span><br><span class="line">*&#x2F;10 * * * * root &#x2F;usr&#x2F;lib64&#x2F;sa&#x2F;sa1 1 1</span><br><span class="line"># 0 * * * * root &#x2F;usr&#x2F;lib64&#x2F;sa&#x2F;sa1 600 6 &amp;</span><br><span class="line"># Generate a daily summary of process accounting at 23:53</span><br><span class="line">53 23 * * * root &#x2F;usr&#x2F;lib64&#x2F;sa&#x2F;sa2 -A</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>Linux</category>
+      </categories>
+      <tags>
+        <tag>System</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>XXL-JOB-ADMIN 原理分析</title>
     <url>/2021/06/XXL-JOB-ADMIN-%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/</url>
     <content><![CDATA[<p>在 xxl-job-admin 中 <code>XxlJobScheduler</code> 是一个重要的类，初始化了所有的会用到的组件：</p>
@@ -137,8 +247,8 @@
         <tag>Kafka</tag>
         <tag>MySQL</tag>
         <tag>RocketMQ</tag>
-        <tag>Zookeeper</tag>
         <tag>Redis</tag>
+        <tag>Zookeeper</tag>
       </tags>
   </entry>
   <entry>

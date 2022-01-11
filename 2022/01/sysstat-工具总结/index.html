@@ -20,21 +20,25 @@
     var CONFIG = {"hostname":"caoziye.top","root":"/","scheme":"Muse","version":"7.7.1","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="上一篇介绍完了 RocketMQ 消费者的默认实现，现在来瞅一瞅生产者的用法。 设置必要的属性同样的，是 DefaultMQProducer，新建实例之后，在使用生产者发送消息之前，需要初始化几个属性：  InstanceName 实例名称这是为了当一个 JVM 上启动了多个生产者时，区分不同的生产者实例，系统默认名称为 DEFAULT RetryTimesWhenSendFailed 重试次数当">
+  <meta name="description" content="sar 工具sar 工具是 System Activity Reporter。可以十分方便的检测和存储系统的性能指标并输出报告，具备两个主要的功能。  即时采样和输出  即 sar 命令（&#x2F;usr&#x2F;bin&#x2F;sar） 每日信息统计  由 &#x2F;usr&#x2F;lib64&#x2F;sa&#x2F; 下的工具配合 cron 完成  sar 命令功能和使用sar 的使用很简单，命令方式是： 1sar -&lt;option&gt; &amp;">
 <meta property="og:type" content="article">
-<meta property="og:title" content="RocketMQ Producer 摘要">
-<meta property="og:url" content="https://caoziye.top/2018/08/RocketMQ-Producer-%E6%91%98%E8%A6%81/index.html">
+<meta property="og:title" content="sysstat 工具总结 - sar">
+<meta property="og:url" content="https://caoziye.top/2022/01/sysstat-%E5%B7%A5%E5%85%B7%E6%80%BB%E7%BB%93/index.html">
 <meta property="og:site_name" content="码文小记">
-<meta property="og:description" content="上一篇介绍完了 RocketMQ 消费者的默认实现，现在来瞅一瞅生产者的用法。 设置必要的属性同样的，是 DefaultMQProducer，新建实例之后，在使用生产者发送消息之前，需要初始化几个属性：  InstanceName 实例名称这是为了当一个 JVM 上启动了多个生产者时，区分不同的生产者实例，系统默认名称为 DEFAULT RetryTimesWhenSendFailed 重试次数当">
+<meta property="og:description" content="sar 工具sar 工具是 System Activity Reporter。可以十分方便的检测和存储系统的性能指标并输出报告，具备两个主要的功能。  即时采样和输出  即 sar 命令（&#x2F;usr&#x2F;bin&#x2F;sar） 每日信息统计  由 &#x2F;usr&#x2F;lib64&#x2F;sa&#x2F; 下的工具配合 cron 完成  sar 命令功能和使用sar 的使用很简单，命令方式是： 1sar -&lt;option&gt; &amp;">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2018-08-18T05:01:01.000Z">
-<meta property="article:modified_time" content="2020-02-26T17:48:54.566Z">
+<meta property="og:image" content="https://blog-1258216698.cos.ap-hongkong.myqcloud.com/sysstat/sarq13.png">
+<meta property="og:image" content="https://blog-1258216698.cos.ap-hongkong.myqcloud.com/sysstat/saru13.png">
+<meta property="og:image" content="https://blog-1258216698.cos.ap-hongkong.myqcloud.com/sysstat/sarb13.png">
+<meta property="og:image" content="https://blog-1258216698.cos.ap-hongkong.myqcloud.com/sysstat/sarn11.png">
+<meta property="article:published_time" content="2022-01-05T10:23:02.000Z">
+<meta property="article:modified_time" content="2022-01-11T15:59:48.697Z">
 <meta property="article:author" content="斯特拉不用电">
-<meta property="article:tag" content="MQ">
-<meta property="article:tag" content="RocketMQ">
+<meta property="article:tag" content="System">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog-1258216698.cos.ap-hongkong.myqcloud.com/sysstat/sarq13.png">
 
-<link rel="canonical" href="https://caoziye.top/2018/08/RocketMQ-Producer-%E6%91%98%E8%A6%81/">
+<link rel="canonical" href="https://caoziye.top/2022/01/sysstat-%E5%B7%A5%E5%85%B7%E6%80%BB%E7%BB%93/">
 
 
 <script id="page-configurations">
@@ -46,7 +50,7 @@
   };
 </script>
 
-  <title>RocketMQ Producer 摘要 | 码文小记</title>
+  <title>sysstat 工具总结 - sar | 码文小记</title>
   
 
 
@@ -187,7 +191,7 @@
   
   
   <article itemscope="" itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://caoziye.top/2018/08/RocketMQ-Producer-%E6%91%98%E8%A6%81/">
+    <link itemprop="mainEntityOfPage" href="https://caoziye.top/2022/01/sysstat-%E5%B7%A5%E5%85%B7%E6%80%BB%E7%BB%93/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -200,7 +204,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          RocketMQ Producer 摘要
+          sysstat 工具总结 - sar
         </h2>
 
         <div class="post-meta">
@@ -210,14 +214,14 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2018-08-18 13:01:01" itemprop="dateCreated datePublished" datetime="2018-08-18T13:01:01+08:00">2018-08-18</time>
+              <time title="创建时间：2022-01-05 18:23:02" itemprop="dateCreated datePublished" datetime="2022-01-05T18:23:02+08:00">2022-01-05</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-02-27 01:48:54" itemprop="dateModified" datetime="2020-02-27T01:48:54+08:00">2020-02-27</time>
+                <time title="修改时间：2022-01-11 23:59:48" itemprop="dateModified" datetime="2022-01-11T23:59:48+08:00">2022-01-11</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -225,7 +229,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/RocketMQ/" itemprop="url" rel="index"><span itemprop="name">RocketMQ</span></a>
+                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
                 </span>
             </span>
 
@@ -242,14 +246,14 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>1.6k</span>
+              <span>2.9k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>2 分钟</span>
+              <span>3 分钟</span>
             </span>
 
         </div>
@@ -261,52 +265,106 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>上一篇介绍完了 RocketMQ 消费者的默认实现，现在来瞅一瞅生产者的用法。</p>
-<h2 id="设置必要的属性"><a href="#设置必要的属性" class="headerlink" title="设置必要的属性"></a>设置必要的属性</h2><p>同样的，是 DefaultMQProducer，新建实例之后，在使用生产者发送消息之前，需要初始化几个属性：</p>
+        <h3 id="sar-工具"><a href="#sar-工具" class="headerlink" title="sar 工具"></a>sar 工具</h3><p>sar 工具是 System Activity Reporter。可以十分方便的检测和存储系统的性能指标并输出报告，具备两个主要的功能。</p>
 <ul>
-<li><code>InstanceName</code> 实例名称<br>这是为了当一个 JVM 上启动了多个生产者时，区分不同的生产者实例，系统默认名称为 DEFAULT</li>
-<li><code>RetryTimesWhenSendFailed</code> 重试次数<br>当消息投递失败时，有可能是因为网络原因，可以设置多投递几次减少丢消息的情况。<br>很多实用者在使用时，为了避免重复的消息设置不重试是不正确的做法：因为 RocketMQ 本身并不保证消息的不重复，作为客户端对消息进行幂等处理是必要的。而在次前提下，对发送失败的场景拒绝重发，不仅对避免重复消息没有任何意义，同时也增加了消息的丢失的可能。</li>
-<li><code>NamesrvAddr</code><br>需要 NameServer 的地址，写法和 Consumer 一致<a id="more"></a>
+<li><em>即时采样和输出</em>  即 sar 命令（<code>/usr/bin/sar</code>）</li>
+<li><em>每日信息统计</em>  由 <code>/usr/lib64/sa/</code> 下的工具配合 cron 完成</li>
+</ul>
+<h4 id="sar-命令功能和使用"><a href="#sar-命令功能和使用" class="headerlink" title="sar 命令功能和使用"></a>sar 命令功能和使用</h4><p>sar 的使用很简单，命令方式是：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sar -&lt;option&gt; &lt;interval&gt; &lt;count&gt;</span><br></pre></td></tr></table></figure>
 
-</li>
-</ul>
-<h2 id="消息发送方式和投递结果"><a href="#消息发送方式和投递结果" class="headerlink" title="消息发送方式和投递结果"></a>消息发送方式和投递结果</h2><h3 id="发送方式"><a href="#发送方式" class="headerlink" title="发送方式"></a>发送方式</h3><ul>
-<li>同步发送：<code>Producer.send(Message message)</code></li>
-<li>异步发送：<code>Producer.send(Message message, SendCallback callback)</code></li>
-</ul>
-<h3 id="发送结果"><a href="#发送结果" class="headerlink" title="发送结果"></a>发送结果</h3><p>对于消息发送的结果，存在四中可能返回的状态。而且在不同的配置方式下，意义可能有所不同</p>
+<h5 id="sar-查询系统平均负载情况"><a href="#sar-查询系统平均负载情况" class="headerlink" title="sar 查询系统平均负载情况"></a>sar 查询系统平均负载情况</h5><p>例子：统计系统负载，每秒采样，进行三次:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sar -q 1 3</span><br></pre></td></tr></table></figure>
+<p><img src="https://blog-1258216698.cos.ap-hongkong.myqcloud.com/sysstat/sarq13.png" alt="sar -q"></p>
 <ul>
-<li><strong><code>SEND_OK</code></strong><br>发送成功，标志着消息已经成功被发送到 Broker。（这时候不一定意味着主从复制完成或者刷盘完成）</li>
-<li><strong><code>FLUSH_DISK_TIMEOUT</code></strong><br>刷盘时间超时，只有在刷盘策略为 <code>SYNC_FLUSH</code> 时才可能出现</li>
-<li><strong><code>FLUSH_SLAVE_TIMEOUT</code></strong><br>主从同步时间超时，只有在主备形式下使用 <code>SYNC_MASTER</code> 才可能出现</li>
-<li><strong><code>SLAVE_NOT_AVAILABLE</code></strong><br>从机缺失，只有在主备形式下使用 <code>SYNC_MASTER</code> 才可能出现，类似于 FLUSH_SLAVE_TIMEOUT<br>对于不同的业务场景具体需求，如何处理消息发送的结果是程序质量的一个重要考量点</li>
+<li><strong>runq-sz</strong>：运行队列的长度（等待运行的进程数）</li>
+<li><strong>plist-sz</strong>：进程列表中进程（线程也算）的数量</li>
+<li><strong>ldavg-1</strong>：最后 1 分钟的系统平均负载</li>
+<li><strong>ldavg-5</strong>：过去 5 分钟的系统平均负载</li>
+<li><strong>ldavg-15</strong>：过去 15 分钟的系统平均负载</li>
+<li><strong>blocked</strong> 由于 io 阻塞的线程数量</li>
 </ul>
-<h2 id="特殊的消息"><a href="#特殊的消息" class="headerlink" title="特殊的消息"></a>特殊的消息</h2><h3 id="延迟消息"><a href="#延迟消息" class="headerlink" title="延迟消息"></a>延迟消息</h3><p>RocketMQ 支持延迟消息，Broker 收到消息后并不会立即投递，而是等待一段时间后再讲消息送出去。</p>
+<p>以上的结果和 <code>top</code> 得到的信息基本一致，一般主要考虑 5 及 15 分钟的平均负载。基数是服务器核数，比如服务器核心数是 1，ldavg = 0.6 意味着服务器载荷为 60%；如果服务器核心数是 2，则负载应看做 30%。</p>
+<a id="more"></a>
+
+<h5 id="sar-查询-CPU-负载情况"><a href="#sar-查询-CPU-负载情况" class="headerlink" title="sar 查询 CPU 负载情况"></a>sar 查询 CPU 负载情况</h5><p>例子：统计 CPU 负载，每秒采样，进行三次：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sar -u 1 3</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://blog-1258216698.cos.ap-hongkong.myqcloud.com/sysstat/saru13.png" alt="sar -u"></p>
 <ul>
-<li>使用方式：在消息发送前执行 <code>Message.setDelayTimeLevel(int level)</code></li>
-<li>延迟等级：默认 1s/5s/10s/30s/1m/2m/3m/4m/5m/6m/7m/8m/9m/10m/20m/30m/1h/2h，索引 1 开始<br>尽管 RocketMQ 的延迟消息不支持任意精度，但是各等级的延迟是可以预设的，更改配置文件即可</li>
+<li><strong>%user</strong>：用户态进程运行占用 CPU 总时间的百分比。</li>
+<li><strong>%nice</strong>：用户态进程 nice 操作所占用 CPU 总时间的百分比。</li>
+<li><strong>%system</strong>：在核心态进程运行所使用 CPU 总时间的百分比。</li>
+<li><strong>%iowait</strong>：用于等待 I/O 占用 CPU 总时间的百分比。</li>
+<li><strong>%steal</strong>：为虚拟进程提供服务而等待虚拟 CPU 的百分比。</li>
+<li><strong>%idle</strong>：CPU 空闲时间占用 CPU 总时间的百分比。</li>
 </ul>
-<h3 id="队列选择"><a href="#队列选择" class="headerlink" title="队列选择"></a>队列选择</h3><p>对于一个 Topic 通常有多个 MessageQueue 来接收消息，默认情况下 Producer 轮流向各个 MessageQueue 发送消息，而 Consumer 根据默认的负载策略进行消费，所以无法明确对应 Producer 的消息是哪个 Consumer 消费。在需要指定特定 MessageQueue 来投递消息时，可以实现 <code>MessageQueueSelector</code> 接口，定制选择逻辑；发送时选择带有选择器的重载方法即可</p>
-<h3 id="事务消息"><a href="#事务消息" class="headerlink" title="事务消息"></a>事务消息</h3><p>介绍事务消息是必要的，但是并不推荐使用。因为事务消息会造成磁盘脏页，影响磁盘性能，在 4.x 版本中已经移除，需要使用时需要手动根据顶层接口实现。简单的说，RocketMQ 的事务消息流程如下：</p>
+<p>一般关注 %idle 时间占比即可，但是如果 %idle 占比下降或者过小，可以再看 CPU 时间是花在什么处理上更多，比如 %iowait 过高以为读写过多或者有网络和磁盘等的瓶颈，需要再结合 <code>sar -b</code>、<code>iostat</code>、<code>netstat</code> 等查看；如果 %user 过高，需要 <code>sar -q</code>、<code>top</code>、<code>jstack</code> 之类分析。</p>
+<p><code>-u</code> 这是针对所有核心进行的统计，也可以手动指定核心，用 <code>-P &lt;core index&gt;</code> 来指定，或者使用 <code>-P ALL</code> 来选择全部核心。使用 <code>-P ALL</code> 除了会像 <code>-u</code> 一样输出整体统计，也会同时列数单个 CPU 核心的情况</p>
+<h5 id="sar-查询磁盘使用情况"><a href="#sar-查询磁盘使用情况" class="headerlink" title="sar 查询磁盘使用情况"></a>sar 查询磁盘使用情况</h5><p>例子：统计磁盘使用率，每秒采样，进行三次：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sar -b 1 3</span><br></pre></td></tr></table></figure>
+<p><img src="https://blog-1258216698.cos.ap-hongkong.myqcloud.com/sysstat/sarb13.png" alt="sar -b"></p>
+<ul>
+<li><strong>rtps</strong> 每秒读请求发起的次数</li>
+<li><strong>wtps</strong> 每秒写请求发起的次数，fsync 这样的调用会触发，在文件系统层面可能会合并应用层逻辑上的多次写操作</li>
+<li><strong>tps</strong> 以上两者相加</li>
+<li><strong>bread/s</strong> 每秒读取的 block 数量</li>
+<li><strong>bwrtn/s</strong> 每秒写入的 block 数量</li>
+</ul>
+<p>对于磁盘 I/O 状态的检查比较容易，以上任何值过高，配合上 CPU iowait 过高的情况都能发现问题。要统计具体的写入或者读取速率需要 <em>bread/s</em> 或者 <em>bwrtn/s</em> 乘上 <em>block size</em> 。具体的 <em>block size</em> 因文件系统而异，同时也可以格式化时自定义，以 CentOS XFS 为例一般默认 4096 bytes。可以通过 <code>fdisk -l</code> 或者 <code>stat -f &lt;file&gt;</code> 等方法看到。</p>
+<h5 id="sar-统计网络信息"><a href="#sar-统计网络信息" class="headerlink" title="sar 统计网络信息"></a>sar 统计网络信息</h5><p>使用 <code>-n [keyword]</code> 来进行网络方面的信息统计。由于网络指标比较多，所以必须使用关键字指示 sar 需要输出的内容。可选项比较多，有 <strong>DEV</strong>、<strong>NFS</strong>、<strong>TCP</strong>、<strong>ICMP</strong> 等等（具体看 <code>man sar</code>），其中 <strong>DEV</strong> 和 <strong>EDEV</strong> 这样的比较常用。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sar -n DEV 1 3</span><br><span class="line">sar -n EDEV 1 3</span><br></pre></td></tr></table></figure>
+<p><img src="https://blog-1258216698.cos.ap-hongkong.myqcloud.com/sysstat/sarn11.png" alt="sar -n"></p>
+<ul>
+<li><strong>IFACE</strong> 你的网卡，LAN 口名称</li>
+<li><strong>rxpck/s</strong> 每秒钟接收的数据包</li>
+<li><strong>txpck/s</strong> 每秒钟发送的数据包</li>
+<li><strong>rxbyt/s</strong> 每秒钟接收的字节数</li>
+<li><strong>txbyt/s</strong> 每秒钟发送的字节数</li>
+<li><strong>rxcmp/s</strong> 每秒钟接收的压缩数据包</li>
+<li><strong>txcmp/s</strong> 每秒钟发送的压缩数据包</li>
+<li><strong>rxmcst/s</strong> 每秒钟接收的多播数据包</li>
+<li><strong>rxerr/s</strong> 每秒钟接收的坏数据包</li>
+<li><strong>txerr/s</strong> 每秒钟发送的坏数据包</li>
+<li><strong>coll/s</strong> 每秒冲突数</li>
+<li><strong>rxdrop/s</strong> 因为缓冲充满，每秒钟丢弃的已接收数据包数</li>
+<li><strong>txdrop/s</strong> 因为缓冲充满，每秒钟丢弃的已发送数据包数</li>
+<li><strong>txcarr/s</strong> 发送数据包时，每秒载波错误数</li>
+<li><strong>rxfram/s</strong> 每秒接收数据包的帧对齐错误数</li>
+<li><strong>rxfifo/s</strong> 接收的数据包每秒FIFO过速的错误数</li>
+<li><strong>txfifo/s</strong> 发送的数据包每秒FIFO过速的错误数</li>
+</ul>
+<p>一般来说，<code>-n EDEV</code> 下展示的内容都会为 0；如果不是为 0，多少存在着网络问题，容易出现的是 <strong>rxdrop/s</strong>、<strong>rxdrop/s</strong> 意味着网络超载的情况。而 <code>-n DEV</code> 下展示的一般意义的统计数据，比如 <strong>rxbyt/s</strong>、<strong>txbyt/s</strong> 可以查看机器的下行和上行流量</p>
+<h5 id="sar-的其他用法"><a href="#sar-的其他用法" class="headerlink" title="sar 的其他用法"></a>sar 的其他用法</h5><p>option 选项一般用来指定统计不同的信息，除了上述的 <code>-q</code>、<code>-u</code> 等选项，还有比如：</p>
+<ul>
+<li>-S swap 用量相关的信息；-W swapping 交换信息</li>
+<li>-r 内存 相关信息；-u CPU 相关信息</li>
+<li>-v inode 和 文件相关的信息</li>
+<li>-n 网络相关统计信息</li>
+<li>-b I/O 相关信息</li>
+</ul>
+<p>功能上更不常用的就不列举了，其他特殊的还有</p>
+<ul>
+<li><code>-o &lt;filename&gt;</code> 指定统计信息输出到目标文件；</li>
+<li><code>-f &lt;filename&gt;</code> 指定目标文件读取采样信息</li>
+<li><code>-s [ hh:mm:ss ]</code> 如果 <code>-f</code> 指定了采样文件，可以从中加入筛选-开始时间（开区间）</li>
+<li><code>-e [ hh:mm:ss ]</code> 同上，指定结束时间</li>
+</ul>
+<h4 id="sar-对系统持续统计"><a href="#sar-对系统持续统计" class="headerlink" title="sar 对系统持续统计"></a>sar 对系统持续统计</h4><p>在 /usr/lib64/sa 下有几个 sar 执行持续统计的工具，并在 sysstat 安装后写入 crontab 定时调用：</p>
+<ul>
+<li><strong>sa1</strong> 每天使用，统计并存储系统信息至二进制文件，<strong>sadc</strong> 的前端程序</li>
+<li><strong>sa2</strong> 每天使用，利用每日系统信息输出报告，<strong>sar</strong> 的一个前端程序</li>
+<li><strong>sadc</strong> 系统收集统计的工具，是 <strong>sa1</strong>、<strong>sar</strong> 的后端程序</li>
+</ul>
+<p>具体流程是</p>
 <ol>
-<li>向 Broker 发送消息（消息状态为未确认状态）</li>
-<li>Broker 对收到的消息完成持久化，返回成功状态。发送的第一阶段结束</li>
-<li>执行本地逻辑</li>
-<li>事务消息的结束<ul>
-<li>本地逻辑结束，客户端向 Broker 确认消息<ul>
-<li>commit：提交，该消息将会被 Broker 进行投递</li>
-<li>rollback：回滚，Broker 会删除之前接收到的消息</li>
-</ul>
-</li>
-<li>超过一定时间，服务端对客户端发起回查请求<br>Producer 对回查请求返回 commit 或者 rollback 的响应。如果此时发送消息的 Producer 无法访问，回查请求会发送给同一 ProducerGroup 内的其他 Producer</li>
-</ul>
-</li>
+<li>每隔 10 分钟使用 sa1 统计一次系统信息，记录到 <code>/var/log/sa/sa&lt;DD&gt;</code> 中。这是 sar 的二进制统计信息，会在当天不断追加，可以使用 <code>sar -f &lt;file&gt;</code> 进行查看。</li>
+<li>每天 23:53 使用 sa2 利用之前的 sa1 的日志输出一次报告，输出到 <code>/var/log/sa/sar&lt;DD&gt;</code>。就是将之前 saDD 二进制内容加工成文本信息，如同使用 sar 命令的结果一样，之后可以使用 cat 之类的方式直接查看。里面内容会比较多，默认使用了 <code>sa2 -A</code>，可以在报告中只关心一部分内容，调整参数即可精简报告内容，而 saDD 文件中还是会有全部的统计数据。</li>
 </ol>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
-<li><a href="https://github.com/apache/rocketmq" target="_blank" rel="external nofollow noopener noreferrer">RocketMQ on GitHub</a></li>
-<li>《RocketMQ 实战与原理解析》机械工业出版社 杨开元</li>
-</ul>
-
+<p>这部分数据可以用于回溯服务器曾经的状态。下面是 /etc/cron.d/sysstat</p>
+<blockquote>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># Run system activity accounting tool every 10 minutes</span><br><span class="line">*&#x2F;10 * * * * root &#x2F;usr&#x2F;lib64&#x2F;sa&#x2F;sa1 1 1</span><br><span class="line"># 0 * * * * root &#x2F;usr&#x2F;lib64&#x2F;sa&#x2F;sa1 600 6 &amp;</span><br><span class="line"># Generate a daily summary of process accounting at 23:53</span><br><span class="line">53 23 * * * root &#x2F;usr&#x2F;lib64&#x2F;sa&#x2F;sa2 -A</span><br></pre></td></tr></table></figure>
     </div>
 
     
@@ -316,13 +374,10 @@
   <div class="popular-posts-header">相关文章</div>
   <ul class="popular-posts">
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2018/08/RocketMQ-日志设置/" rel="bookmark">RocketMQ 日志设置</a></div>
+      <div class="popular-posts-title"><a href="/2021/06/XXL-JOB-ADMIN-原理分析/" rel="bookmark">XXL-JOB-ADMIN 原理分析</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2018/08/RocketMQ-服务端消息过滤/" rel="bookmark">RocketMQ 服务端消息过滤</a></div>
-    </li>
-    <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2018/08/RocketMQ-Consumer-摘要/" rel="bookmark">RocketMQ Consumer 摘要</a></div>
+      <div class="popular-posts-title"><a href="/2020/12/修改系统对应用的限制/" rel="bookmark">修改系统对应用的限制</a></div>
     </li>
   </ul>
 
@@ -350,7 +405,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://caoziye.top/2018/08/RocketMQ-Producer-%E6%91%98%E8%A6%81/" title="RocketMQ Producer 摘要">https://caoziye.top/2018/08/RocketMQ-Producer-摘要/</a>
+    <a href="https://caoziye.top/2022/01/sysstat-%E5%B7%A5%E5%85%B7%E6%80%BB%E7%BB%93/" title="sysstat 工具总结 - sar">https://caoziye.top/2022/01/sysstat-工具总结/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -361,8 +416,7 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/MQ/" rel="tag"># MQ</a>
-              <a href="/tags/RocketMQ/" rel="tag"># RocketMQ</a>
+              <a href="/tags/System/" rel="tag"># System</a>
           </div>
 
         
@@ -371,13 +425,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2018/08/RocketMQ-Consumer-%E6%91%98%E8%A6%81/" rel="prev" title="RocketMQ Consumer 摘要">
-      <i class="fa fa-chevron-left"></i> RocketMQ Consumer 摘要
+    <a href="/2021/06/XXL-JOB-ADMIN-%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/" rel="prev" title="XXL-JOB-ADMIN 原理分析">
+      <i class="fa fa-chevron-left"></i> XXL-JOB-ADMIN 原理分析
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2018/08/RocketMQ-%E6%97%A5%E5%BF%97%E8%AE%BE%E7%BD%AE/" rel="next" title="RocketMQ 日志设置">
-      RocketMQ 日志设置 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -438,7 +489,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#设置必要的属性"><span class="nav-number">1.</span> <span class="nav-text">设置必要的属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#消息发送方式和投递结果"><span class="nav-number">2.</span> <span class="nav-text">消息发送方式和投递结果</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#发送方式"><span class="nav-number">2.1.</span> <span class="nav-text">发送方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#发送结果"><span class="nav-number">2.2.</span> <span class="nav-text">发送结果</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#特殊的消息"><span class="nav-number">3.</span> <span class="nav-text">特殊的消息</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#延迟消息"><span class="nav-number">3.1.</span> <span class="nav-text">延迟消息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#队列选择"><span class="nav-number">3.2.</span> <span class="nav-text">队列选择</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#事务消息"><span class="nav-number">3.3.</span> <span class="nav-text">事务消息</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#sar-工具"><span class="nav-number">1.</span> <span class="nav-text">sar 工具</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#sar-命令功能和使用"><span class="nav-number">1.1.</span> <span class="nav-text">sar 命令功能和使用</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#sar-查询系统平均负载情况"><span class="nav-number">1.1.1.</span> <span class="nav-text">sar 查询系统平均负载情况</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#sar-查询-CPU-负载情况"><span class="nav-number">1.1.2.</span> <span class="nav-text">sar 查询 CPU 负载情况</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#sar-查询磁盘使用情况"><span class="nav-number">1.1.3.</span> <span class="nav-text">sar 查询磁盘使用情况</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#sar-统计网络信息"><span class="nav-number">1.1.4.</span> <span class="nav-text">sar 统计网络信息</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#sar-的其他用法"><span class="nav-number">1.1.5.</span> <span class="nav-text">sar 的其他用法</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#sar-对系统持续统计"><span class="nav-number">1.2.</span> <span class="nav-text">sar 对系统持续统计</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
