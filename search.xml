@@ -327,8 +327,8 @@
         <category>System</category>
       </categories>
       <tags>
-        <tag>Kafka</tag>
         <tag>MySQL</tag>
+        <tag>Kafka</tag>
         <tag>RocketMQ</tag>
         <tag>Zookeeper</tag>
         <tag>Redis</tag>
